@@ -1,5 +1,4 @@
-from common.string import isletter, sjoin
-import re
+from common.string import isletter, sjoin, remove_white_spaces
 from common.funcfun import sreduce
 
 class Basics:
@@ -9,7 +8,7 @@ class Basics:
 		return sreduce(functions, text)
 	
 	def remove_white_spaces(self, text):
-		return re.sub('\s+', ' ', text)
+		return remove_white_spaces(text)
 	
 	def remove_nonletters(self, text):
 		return sjoin(map(lambda x: isletter(x) or ' ', text))
