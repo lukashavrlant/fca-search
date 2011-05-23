@@ -62,7 +62,7 @@ class BooleanParser:
 				stop = i
 				break
 		
-		if start >= 0 and stop > 0:
+		if start >= 0 and stop > 0 and start < stop:
 			return start, stop
 		else:
 			return False
@@ -71,22 +71,7 @@ class BooleanParser:
 		query = replace_dict(query, {'(':' ( ', ')':' ) '})
 		query = self.normalize(query)
 		tokens = query.split()
-		tokens = self.addand(tokens)
 		return tokens
-	
-	def addand(self, tokens):
-		normtokens = []
-		lasttoken = True
-		skipped = self.operators + ['(']
-		for token in tokens:
-			if token in skipped:
-				lasttoken = True
-			else:
-				if not lasttoken:
-					normtokens.append('AND')
-				lasttoken = False
-			normtokens.append(token)
-		return normtokens
 	
 	def normalize(self, query):
 		return remove_white_spaces(query).strip()
