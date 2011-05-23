@@ -12,4 +12,4 @@ class Basics:
 		return re.sub('\s+', ' ', text)
 	
 	def remove_nonletters(self, text):
-		return sjoin(lmap(lambda x: isletter(x) or ' ', text))
+		return sjoin(map(lambda x: isletter(x) or ' ', text))
