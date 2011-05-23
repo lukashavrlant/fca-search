@@ -53,8 +53,7 @@ class BooleanParser:
 		return self.parse_pure_list(tokens)
 	
 	def find_pair(self, tokens):
-		start = -1
-		stop = -1
+		start, stop = -1, -1
 		for i in range(len(tokens)):
 			if tokens[i] == '(':
 				start = i
@@ -69,9 +68,7 @@ class BooleanParser:
 	
 	def lexical(self, query):
 		query = replace_dict(query, {'(':' ( ', ')':' ) '})
-		query = self.normalize(query)
-		tokens = query.split()
-		return tokens
+		return self.normalize(query).split()
 	
 	def normalize(self, query):
 		return remove_white_spaces(query).strip()
