@@ -6,7 +6,8 @@ import unicodedata
 
 class Basics:
 	def compile(self, text):
-		functions = [self.remove_punctuation, self.remove_white_spaces, lambda x: x.lower()]
+		functions = [self.remove_punctuation, self.remove_white_spaces, self.strip_accents,
+					lambda x: x.lower(), lambda x: x.strip()]
 		return sreduce(functions, text)
 	
 	def remove_white_spaces(self, text):
