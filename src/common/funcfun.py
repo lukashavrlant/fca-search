@@ -5,6 +5,9 @@ def each(function, *args):
 def lmap(function, *args):
 	return list(map(function, *args))
 
+def gmap(function):
+	return lambda *x: map(function, *x)
+
 def lfilter(function, *args):
 	return list(filter(function, *args))
 

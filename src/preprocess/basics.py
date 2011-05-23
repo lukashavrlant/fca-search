@@ -1,20 +1,15 @@
-from common.string import replace_single
+from common.string import isletter, sjoin
 import re
-import string
-from common.funcfun import sreduce
-import unicodedata
+from common.funcfun import sreduce, lmap
 
 class Basics:
 	def compile(self, text):
-		functions = [self.remove_punctuation, self.remove_white_spaces, self.strip_accents,
+		functions = [self.remove_nonletters, self.remove_white_spaces, 
 					lambda x: x.lower(), lambda x: x.strip()]
 		return sreduce(functions, text)
 	
 	def remove_white_spaces(self, text):
 		return re.sub('\s+', ' ', text)
 	
-	def remove_punctuation(self, text):
-		return replace_single(text, list(string.punctuation), ' ')
-	
-	def strip_accents(self, s):
-		return ''.join((c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn'))
+	def remove_nonletters(self, text):
+		return sjoin(lmap(lambda x: isletter(x) or ' ', text))
