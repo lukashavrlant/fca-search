@@ -5,7 +5,7 @@ from common.funcfun import sreduce
 
 class Basics:
 	def compile(self, text):
-		functions =[self.remove_punctuation, self.remove_white_spaces]
+		functions =[self.remove_punctuation, self.remove_white_spaces, lambda x: x.lower()]
 		return sreduce(functions, text)
 	
 	def remove_white_spaces(self, text):
