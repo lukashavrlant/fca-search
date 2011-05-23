@@ -8,6 +8,9 @@ def lmap(function, *args):
 def gmap(function):
 	return lambda *x: map(function, *x)
 
+def glmap(function):
+	return lambda *x: lmap(function, *x)
+
 def lfilter(function, *args):
 	return list(filter(function, *args))
 

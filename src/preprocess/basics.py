@@ -1,6 +1,6 @@
 from common.string import isletter, sjoin
 import re
-from common.funcfun import sreduce, lmap
+from common.funcfun import sreduce
 
 class Basics:
 	def compile(self, text):
