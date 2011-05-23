@@ -1,6 +1,7 @@
 import re
 import unicodedata
 import string
+from common.funcfun import sreduce
 
 def replace_single(text, strings, replacement):
 	return re.sub('|'.join(map(re.escape, strings)), replacement, text)	
@@ -24,3 +25,10 @@ def strip_accents(s):
 
 def remove_white_spaces(text):
 	return re.sub('\s+', ' ', text)
+
+def remove_nonletters(text, replace = ''):
+	return sjoin(map(lambda x: isletter(x) or replace, text))
+
+def normalize_text(text):
+	functions = [lambda x: remove_nonletters(x, ' '), remove_white_spaces, lambda x: x.lower().strip()]
+	return sreduce(functions, text)
