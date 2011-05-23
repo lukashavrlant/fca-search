@@ -2,7 +2,6 @@ from collections import Counter
 from common.funcfun import lmap
 from functools import reduce
 from operator import add
-from itertools import groupby
 
 
 class Database:
