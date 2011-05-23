@@ -1,6 +1,5 @@
 def splitlist(list, delimiter):
-	newlists = []
-	temp = []
+	newlists, temp = [], []
 	for i in list:
 		if i == delimiter:
 			newlists.append(temp)
