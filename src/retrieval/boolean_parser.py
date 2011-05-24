@@ -1,5 +1,5 @@
 from common.funcfun import lmap, lfilter
-from common.string import remove_white_spaces, replace_dict
+from common.string import replace_white_spaces, replace_dict
 from common.list import splitlist
 class Node:
 	def __init__(self, type):
@@ -71,4 +71,4 @@ class BooleanParser:
 		return self.normalize(query).split()
 	
 	def normalize(self, query):
-		return remove_white_spaces(query).strip()
+		return replace_white_spaces(query).strip()

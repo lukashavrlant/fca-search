@@ -23,12 +23,12 @@ def isletter(char):
 def strip_accents(s):
 	return ''.join((c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn'))
 
-def remove_white_spaces(text):
-	return re.sub('\s+', ' ', text)
+def replace_white_spaces(text, replace = ''):
+	return re.sub('\s+', replace, text)
 
 def remove_nonletters(text, replace = ''):
 	return sjoin(map(lambda x: isletter(x) or replace, text))
 
 def normalize_text(text):
-	functions = [lambda x: remove_nonletters(x, ' '), remove_white_spaces, lambda x: x.lower().strip()]
+	functions = [lambda x: remove_nonletters(x, ' '), lambda x: replace_white_spaces(x, ' '), lambda x: x.lower().strip()]
 	return sreduce(functions, text)
