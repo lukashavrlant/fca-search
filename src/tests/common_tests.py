@@ -1,6 +1,6 @@
 import unittest
-from common.string import *
-import string
+from common.string import * 
+from common.list import splitlist
 
 
 class TestString(unittest.TestCase):
@@ -37,3 +37,10 @@ class TestString(unittest.TestCase):
 	def test_replace_dict(self):
 		self.assertEquals('?bcdefghijklmnopqrstuvwend', 
 						replace_dict(string.ascii_lowercase, {'a':'?', 'xyz':'end'}))
+		
+
+class TestList(unittest.TestCase):
+	def test_splitlist(self):
+		self.assertEqual([[1, 2, 3], [4, 5, 6], [7, 8, 9]], splitlist([1,2,3,'x',4,5,6,'x',7,8,9], 'x'))
+		self.assertEqual([[1, 2, 3, 'x', 4, 5, 6, 'x', 7, 8, 9]], splitlist([1,2,3,'x',4,5,6,'x',7,8,9], 'xy'))
+		self.assertEqual([[], [], []], splitlist(['a','a'], 'a'))
