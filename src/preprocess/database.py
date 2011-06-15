@@ -5,6 +5,7 @@ from operator import add
 from preprocess.words import get_words
 from preprocess.html_remover import HTMLRemover
 from common.string import normalize_text
+from common.io import savefile
 
 def getinfo(documents):
 	counters = list(enumerate(map(lambda x: Counter(x), documents)))
@@ -33,3 +34,7 @@ def compile_text(sites):
 	sites = map(normalize_text, sites)
 	sites = map(get_words, sites)
 	return group(getinfo(list(sites)))
+
+def save_database(database, dir):
+	for k, v in database.items():
+		savefile(str(v), dir + k + '.txt')
