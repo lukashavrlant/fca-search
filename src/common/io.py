@@ -19,7 +19,7 @@ def readfile(path):
 	file = open(path, 'r')
 	s = file.read()
 	file.close()
-	return s.decode('utf-8')
+	return s
 
 def readfiles(paths):
 	return lmap(readfile, paths)
