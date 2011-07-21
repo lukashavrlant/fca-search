@@ -18,7 +18,7 @@ def getinfo(documents):
 def occurences(counters, word):
 	return lmap(lambda x: (x[0], x[1][word]), filter(lambda x: word in x[1], counters))
 
-def group(database, keylen = 1):
+def group(database, keylen):
 	dic = {}
 	for record in database:
 		key = record[0][0][:keylen]
@@ -28,12 +28,12 @@ def group(database, keylen = 1):
 			dic[key] = [record]
 	return dic
 
-def toindex(sites):
+def toindex(sites, keylen):
 	htmlrem = HTMLRemover()
 	sites = map(htmlrem.compile, sites)
 	sites = map(normalize_text, sites)
 	sites = map(get_words, sites)
-	return group(getinfo(list(sites)))
+	return group(getinfo(list(sites)), keylen)
 
 def save_index(index, dir):
 	for k, v in index.items():
