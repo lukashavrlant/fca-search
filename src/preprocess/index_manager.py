@@ -2,9 +2,11 @@ from common.io import downloads
 from preprocess.index_builder import toindex, save_index
 
 class IndexManager:
+	keylen = 1
+	
 	def build(self, urls, directory):
 		sites = downloads(urls)
-		index = toindex(sites)
+		index = toindex(sites, self.keylen)
 		save_index(index, directory)
 		
 	
