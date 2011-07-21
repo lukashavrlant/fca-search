@@ -3,6 +3,8 @@ from retrieval.record import Record
 from functools import reduce
 from operator import and_
 from common.funcfun import lmap
+from common.string import normalize_text
+from preprocess.words import get_words
 
 class Index:
 	dtb = {}
@@ -12,7 +14,8 @@ class Index:
 		self.keylen = keylen
 		self.translation = self._get_translation()
 		
-	def get_documents(self, stems):
+	def get_documents(self, query):
+		stems = get_words(normalize_text(query))
 		return lmap(self._translate, reduce(and_, map(self._get_documents, stems)))
 	
 	def _get_documents(self, stem):
