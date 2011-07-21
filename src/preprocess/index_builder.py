@@ -5,7 +5,6 @@ from operator import add
 from preprocess.words import get_words
 from preprocess.html_remover import HTMLRemover
 from common.string import normalize_text
-from common.io import savefile
 
 def getinfo(documents):
 	counters = list(enumerate(map(lambda x: Counter(x), documents)))
