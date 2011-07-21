@@ -7,7 +7,11 @@ class IndexManager:
 	def build(self, urls, directory):
 		sites = downloads(urls)
 		index = toindex(sites, self.keylen)
-		save_index(index, directory)
+		
+		try:
+			save_index(index, directory)
+		except IOError as err:
+			print("I/O error: {0}".format(err))
 		
 	
 ## download files
