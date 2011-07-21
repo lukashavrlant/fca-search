@@ -19,6 +19,8 @@ class Record:
 					top = middle
 				else:
 					bottom = middle + 1
+			if bottom == top:
+				break
 					
 		return False
 				

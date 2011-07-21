@@ -20,13 +20,24 @@ class Index:
 	
 	def _get_documents(self, stem):
 		record = self._get_record(stem[:self.keylen])
-		return set(record.stem(stem).docids)
+		
+		if record:
+			documents = record.stem(stem)
+			if documents:
+				return set(documents.docids)
+
+		return set()
+		
 		
 	def _get_record(self, prefix):
 		return self.dtb.get(prefix) or self._load_record(prefix)
 		
 	def _load_record(self, prefix):
-		record = Record(readfile(self.directory + prefix + '.txt'))
+		try:
+			record = Record(readfile(self.directory + prefix + '.txt'))
+		except:
+			record = None
+		
 		self.dtb[prefix] = record
 		return record
 	
