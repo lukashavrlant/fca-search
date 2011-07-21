@@ -1,7 +1,9 @@
-from html.parser import HTMLParser
+from html.parser import HTMLParser, HTMLParseError
 
 class HTMLRemover(HTMLParser):
 	"Remove HTML tags, comments, and useless content like scripts or styles"
+	
+	count = 0
 	
 	def __init__(self):
 		self.disabledElements = ['script', 'style']
@@ -9,7 +11,12 @@ class HTMLRemover(HTMLParser):
 		
 	def compile(self, html):
 		self.reset()
-		self.feed(html)
+		
+		try:
+			self.feed(html)
+		except HTMLParseError:
+			self.count += 1
+			
 		return self.get_data()	
 	
 	def get_data(self):

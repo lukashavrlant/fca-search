@@ -31,5 +31,5 @@ def toindex(sites, keylen):
 	htmlrem = HTMLRemover()
 	sites = map(htmlrem.compile, sites)
 	sites = map(normalize_text, sites)
-	sites = map(get_words, sites)
+	sites = map(get_words, sites) 
 	return group(getinfo(list(sites)), keylen)
