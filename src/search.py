@@ -1,4 +1,5 @@
 from retrieval.index import Index
+from retrieval.boolean_parser import BooleanParser
 
 ## functions 
 def getCommand(text):
@@ -17,7 +18,7 @@ def getQuery(text):
 INDEX_DIR = '../files/database/'
 KEYLEN = 1
 
-index = Index(INDEX_DIR)
+index = Index(INDEX_DIR, BooleanParser())
 
 print('Welcome in FCA search!')
 

@@ -3,22 +3,32 @@ from retrieval.record import Record
 from functools import reduce
 from operator import and_
 from common.funcfun import lmap
-from common.string import normalize_text
-from preprocess.words import get_words
+from retrieval.boolean_parser import Node
 
 class Index:
 	dtb = {}
 	
-	def __init__(self, directory, keylen = 1):
+	def __init__(self, directory, parser, keylen = 1):
 		self.directory = directory
+		self.parser = parser
 		self.keylen = keylen
 		self.translation = self._get_translation()
 		
 	def get_documents(self, query):
-		stems = get_words(normalize_text(query))
-		return lmap(self._translate, reduce(and_, map(self._get_documents, stems)))
+		#stems = get_words(normalize_text(query))
+		syntacticTree = self.parser.parse(query)
+		return self._get_documents_for_node(syntacticTree)
+		
+	def _get_documents_for_node(self, node):
+		if isinstance(node, Node):
+			pass
+		else:
+			return self._get_documents_for_stem(node)
 	
-	def _get_documents(self, stem):
+	def _get_documents_for_stems(self, stems):
+		return lmap(self._translate, reduce(and_, map(self._get_documents_for_stem, stems)))
+	
+	def _get_documents_for_stem(self, stem):
 		record = self._get_record(stem[:self.keylen])
 		
 		if record:
