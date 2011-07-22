@@ -19,20 +19,20 @@ class BooleanParser:
 		self.tokens = self.operators + self.parenthesis
 	
 	def parse(self, query):
-		tokens = self.lexical(query)
-		return self.syntactic(tokens)
+		tokens = self._lexical(query)
+		return self._syntactic(tokens)
 	
-	def parse_pure_list(self, tokens):
+	def _parse_pure_list(self, tokens):
 		tokens = lfilter(lambda x: x != 'AND', tokens)
 		if 'OR' not in tokens:
-			return self.parse_list_ands(tokens)
+			return self._parse_list_ands(tokens)
 		else:
 			node = Node('OR')
 			slist = splitlist(tokens, 'OR')
-			node.children=lmap(self.parse_list_ands, slist)
+			node.children=lmap(self._parse_list_ands, slist)
 			return node
 	
-	def parse_list_ands(self, tokens):
+	def _parse_list_ands(self, tokens):
 		if len(tokens) == 1:
 			return tokens[0]
 		
@@ -40,19 +40,19 @@ class BooleanParser:
 		node.children = tokens
 		return node
 		
-	def syntactic(self, tokens):
+	def _syntactic(self, tokens):
 		while(True):
-			pair = self.find_pair(tokens)
+			pair = self._find_pair(tokens)
 			if not(pair):
 				break
 			inner = tokens[pair[0]+1:pair[1]]
-			node = self.parse_pure_list(inner)
+			node = self._parse_pure_list(inner)
 			tokens[pair[0]:pair[1]]=''
 			tokens[pair[0]] = node
 			
-		return self.parse_pure_list(tokens)
+		return self._parse_pure_list(tokens)
 	
-	def find_pair(self, tokens):
+	def _find_pair(self, tokens):
 		start, stop = -1, -1
 		for i in range(len(tokens)):
 			if tokens[i] == '(':
@@ -66,9 +66,9 @@ class BooleanParser:
 		else:
 			return False
 	
-	def lexical(self, query):
+	def _lexical(self, query):
 		query = replace_dict(query, {'(':' ( ', ')':' ) '})
-		return self.normalize(query).split()
+		return self._normalize(query).split()
 	
-	def normalize(self, query):
-		return replace_white_spaces(query).strip()
+	def _normalize(self, query):
+		return replace_white_spaces(query, ' ').strip()
