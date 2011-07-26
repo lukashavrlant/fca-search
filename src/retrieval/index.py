@@ -16,7 +16,6 @@ class Index:
 		self.translation = self._get_translation()
 		
 	def get_documents(self, query):
-		#stems = get_words(normalize_text(query))
 		syntacticTree = self.parser.parse(query)
 		documents = self._by_node(syntacticTree)
 		links = lmap(self._translate, documents)
@@ -28,6 +27,8 @@ class Index:
 				return self._by_and_node(node.children)
 			if node.type == 'OR':
 				return self._by_or_node(node.children)
+			if node.type == 'NOT':
+				return self._by_not_node(node.children[0])
 		else:
 			return self._by_word(node)
 		
@@ -36,6 +37,11 @@ class Index:
 	
 	def _by_or_node(self, children):
 		return reduce(or_, map(self._by_node, children))
+	
+	def _by_not_node(self, argument):
+		allDocuments = set(range(len(self.translation)))
+		matchedDoc = self._by_node(argument) 
+		return allDocuments - matchedDoc 
 	
 	def _by_words(self, words):
 		return lmap(self._translate, reduce(and_, map(self._by_word, words)))
