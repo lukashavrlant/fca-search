@@ -9,9 +9,9 @@ class IndexManager:
 		"Builds an index in 'directory'"
 		try:
 			sites = downloads(urls)
-			index = toindex(sites, self.keylen)
-			self._save_index(index, directory)
-			self._save_translation(urls, directory)
+			indexInfo = toindex(sites, urls, self.keylen)
+			self._save_index(indexInfo['index'], directory)
+			self._save_translation(indexInfo['urls'], directory)
 		except HTTPError as err:
 			print("HTTP error: {0}".format(err))
 			print("Filename: " + err.filename)

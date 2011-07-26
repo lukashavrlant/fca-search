@@ -11,12 +11,7 @@ class HTMLRemover(HTMLParser):
 		
 	def compile(self, html):
 		self.reset()
-		
-		try:
-			self.feed(html)
-		except HTMLParseError:
-			self.count += 1
-			
+		self.feed(html)
 		return self.get_data()	
 	
 	def get_data(self):

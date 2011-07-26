@@ -6,6 +6,7 @@ from preprocess.words import get_words
 from preprocess.html_remover import HTMLRemover
 from common.string import normalize_text, strip_accents
 from common.czech_stemmer import cz_stem
+from html.parser import HTMLParseError
 
 def getinfo(documents):
 	counters = list(enumerate(map(lambda x: Counter(x), documents)))
@@ -28,12 +29,21 @@ def group(database, keylen):
 			dic[key] = [record]
 	return dic
 
-def toindex(sites, keylen):
+def toindex(sites, urls, keylen):
 	htmlrem = HTMLRemover()
-	sites = map(htmlrem.compile, sites)
-	sites = map(normalize_text, sites)
-	sites = map(get_words, sites) 
-	return group(getinfo(list(sites)), keylen)
+	parsedSites = []
+	correctUrl = []
+	
+	for site, url in zip(sites, urls):
+		try:
+			parsedSites.append(get_words(normalize_text(htmlrem.compile(site)), []))
+			correctUrl.append(url)
+		except HTMLParseError:
+			print('Cannot parse ' + str(url))
+	
+	index = group(getinfo(list(parsedSites)), keylen)
+
+	return {'index': index, 'urls': correctUrl}
 
 def getstem(word):
 	word = normalize_text(word)

@@ -40,7 +40,7 @@ class Index:
 	
 	def _by_not_node(self, argument):
 		allDocuments = set(range(len(self.translation)))
-		matchedDoc = self._by_node(argument) 
+		matchedDoc = self._by_node(argument)
 		return allDocuments - matchedDoc 
 	
 	def _by_words(self, words):
