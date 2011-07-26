@@ -6,17 +6,19 @@ class Node:
 		self.type = type
 		
 	def __repr__(self):
-		return '(' + (' ' + self.type + ' ').join(map(repr, self.children)) + ')'
+		if len(self.children) == 1:
+			return self.type + '(' + repr(self.children[0]) + ')'
+		else:
+			return '(' + (' ' + self.type + ' ').join(map(repr, self.children)) + ')'
 	
 	def __str__(self):
 		return self.__repr__()
 		
 
 class BooleanParser:
-	def __init__(self):
-		self.operators = ['AND', 'OR']
-		self.parenthesis = ['(', ')']
-		self.tokens = self.operators + self.parenthesis
+	unary = ['NOT', 'NEAR?']
+	binary = ['AND', 'OR']
+	parenthesis = ['(', ')']
 	
 	def parse(self, query):
 		tokens = self._lexical(query)
@@ -35,6 +37,17 @@ class BooleanParser:
 	def _parse_list_ands(self, tokens):
 		if len(tokens) == 1:
 			return tokens[0]
+		
+		for operator in self.unary:
+			while(True):
+				try:
+					index = tokens.index(operator)
+				except ValueError:
+					break
+				
+				node = Node(operator)
+				node.children = [tokens[index+1]]
+				tokens[index:index+2] = [node]
 		
 		node = Node('AND')
 		node.children = tokens
