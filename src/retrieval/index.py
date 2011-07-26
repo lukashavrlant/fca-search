@@ -1,9 +1,10 @@
 from common.io import readfile
 from retrieval.record import Record
 from functools import reduce
-from operator import and_
+from operator import and_, or_
 from common.funcfun import lmap
 from retrieval.boolean_parser import Node
+from preprocess.index_builder import getstem
 
 class Index:
 	dtb = {}
@@ -17,18 +18,30 @@ class Index:
 	def get_documents(self, query):
 		#stems = get_words(normalize_text(query))
 		syntacticTree = self.parser.parse(query)
-		return self._get_documents_for_node(syntacticTree)
+		documents = self._get_documents_for_node(syntacticTree)
+		links = lmap(self._translate, documents)
+		return links
 		
 	def _get_documents_for_node(self, node):
 		if isinstance(node, Node):
-			pass
+			if node.type == 'AND':
+				return self._get_document_for_node_and(node.children)
+			if node.type == 'OR':
+				return self._get_document_for_node_or(node.children)
 		else:
-			return self._get_documents_for_stem(node)
+			return self._get_documents_for_word(node)
+		
+	def _get_document_for_node_and(self, children):
+		return reduce(and_, map(self._get_documents_for_node, children))
 	
-	def _get_documents_for_stems(self, stems):
-		return lmap(self._translate, reduce(and_, map(self._get_documents_for_stem, stems)))
+	def _get_document_for_node_or(self, children):
+		return reduce(or_, map(self._get_documents_for_node, children))
 	
-	def _get_documents_for_stem(self, stem):
+	def _get_documents_for_words(self, words):
+		return lmap(self._translate, reduce(and_, map(self._get_documents_for_word, words)))
+	
+	def _get_documents_for_word(self, word):
+		stem = getstem(word) 
 		record = self._get_record(stem[:self.keylen])
 		
 		if record:
