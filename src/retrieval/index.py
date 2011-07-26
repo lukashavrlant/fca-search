@@ -18,29 +18,29 @@ class Index:
 	def get_documents(self, query):
 		#stems = get_words(normalize_text(query))
 		syntacticTree = self.parser.parse(query)
-		documents = self._get_documents_for_node(syntacticTree)
+		documents = self._by_node(syntacticTree)
 		links = lmap(self._translate, documents)
 		return links
 		
-	def _get_documents_for_node(self, node):
+	def _by_node(self, node):
 		if isinstance(node, Node):
 			if node.type == 'AND':
-				return self._get_document_for_node_and(node.children)
+				return self._by_and_node(node.children)
 			if node.type == 'OR':
-				return self._get_document_for_node_or(node.children)
+				return self._by_or_node(node.children)
 		else:
-			return self._get_documents_for_word(node)
+			return self._by_word(node)
 		
-	def _get_document_for_node_and(self, children):
-		return reduce(and_, map(self._get_documents_for_node, children))
+	def _by_and_node(self, children):
+		return reduce(and_, map(self._by_node, children))
 	
-	def _get_document_for_node_or(self, children):
-		return reduce(or_, map(self._get_documents_for_node, children))
+	def _by_or_node(self, children):
+		return reduce(or_, map(self._by_node, children))
 	
-	def _get_documents_for_words(self, words):
-		return lmap(self._translate, reduce(and_, map(self._get_documents_for_word, words)))
+	def _by_words(self, words):
+		return lmap(self._translate, reduce(and_, map(self._by_word, words)))
 	
-	def _get_documents_for_word(self, word):
+	def _by_word(self, word):
 		stem = getstem(word) 
 		record = self._get_record(stem[:self.keylen])
 		
