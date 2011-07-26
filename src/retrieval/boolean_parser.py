@@ -16,9 +16,8 @@ class Node:
 		
 
 class BooleanParser:
-	unary = ['NOT', 'NEAR?']
+	unary = ['NOT']
 	binary = ['AND', 'OR']
-	parenthesis = ['(', ')']
 	
 	def parse(self, query):
 		tokens = self._lexical(query)
