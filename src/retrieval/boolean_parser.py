@@ -13,7 +13,7 @@ class Node:
 	
 	def __str__(self):
 		return self.__repr__()
-		
+
 
 class BooleanParser:
 	unary = ['NOT']
@@ -32,7 +32,7 @@ class BooleanParser:
 			slist = splitlist(tokens, 'OR')
 			node.children=lmap(self._parse_list_ands, slist)
 			return node
-	
+
 	def _parse_list_ands(self, tokens):
 		if len(tokens) == 1:
 			return tokens[0]
