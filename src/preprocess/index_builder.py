@@ -13,8 +13,10 @@ def getinfo(documents):
 	allwords = reduce(add, documents)
 	allwords_counter = Counter(allwords)
 	words = sorted(set(allwords))
-	occ = lmap(lambda x: ((x, allwords_counter[x]), occurences(counters, x)), words)
-	return occ
+	occurencesIndex = lmap(lambda x: ((x, allwords_counter[x]), occurences(counters, x)), words)
+	print(allwords_counter)
+	#return occurencesIndex
+	return {'allwords' : allwords_counter, 'occurences' : occurencesIndex}
 
 def occurences(counters, word):
 	return lmap(lambda x: (x[0], x[1][word]), filter(lambda x: word in x[1], counters))
@@ -41,9 +43,11 @@ def toindex(sites, urls, keylen):
 		except HTMLParseError:
 			print('Cannot parse ' + str(url))
 	
-	index = group(getinfo(list(parsedSites)), keylen)
+	sitesInfo = getinfo(list(parsedSites))
+	index = group(sitesInfo['occurences'], keylen)
+	
 
-	return {'index': index, 'urls': correctUrl}
+	return {'index': index, 'urls': correctUrl, 'allwords' : sitesInfo['allwords']}
 
 def getstem(word):
 	word = normalize_text(word)

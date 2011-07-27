@@ -7,11 +7,16 @@ class IndexManager:
 	
 	def build(self, urls, directory):
 		"Builds an index in 'directory'"
+		
+		indexDir = directory + 'index/'
+		infoDir = directory + 'info/'
+		
 		try:
 			sites = downloads(urls)
 			indexInfo = toindex(sites, urls, self.keylen)
-			self._save_index(indexInfo['index'], directory)
-			self._save_translation(indexInfo['urls'], directory)
+			self._save_index(indexInfo['index'], indexDir)
+			self._save_data(indexInfo['urls'], infoDir, 'translation.txt')
+			self._save_data(indexInfo['allwords'], infoDir, 'allwords.txt')
 		except HTTPError as err:
 			print("HTTP error: {0}".format(err))
 			print("Filename: " + err.filename)
@@ -25,3 +30,6 @@ class IndexManager:
 			
 	def _save_translation(self, urls, directory):
 		savefile(repr(urls), directory + 'translation.txt')
+		
+	def _save_data(self, data, directory, name):
+		savefile(repr(data), directory + name)
