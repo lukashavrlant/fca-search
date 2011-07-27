@@ -46,8 +46,7 @@ def toindex(sites, urls, keylen):
 	sitesInfo = getinfo(list(parsedSites))
 	index = group(sitesInfo['occurences'], keylen)
 	
-
-	return {'index': index, 'urls': correctUrl, 'allwords' : sitesInfo['allwords']}
+	return {'index': index, 'urls': correctUrl, 'allwords':sitesInfo['allwords']}
 
 def getstem(word):
 	word = normalize_text(word)
