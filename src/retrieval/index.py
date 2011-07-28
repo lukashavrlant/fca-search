@@ -63,7 +63,7 @@ class Index:
 		
 	def _load_record(self, prefix):
 		try:
-			record = Record(readfile(self.directory + prefix + '.txt'))
+			record = Record(readfile(self.directory + 'index/' + prefix + '.txt'))
 		except:
 			record = None
 		
@@ -71,7 +71,7 @@ class Index:
 		return record
 	
 	def _get_translation(self):
-		return eval(readfile(self.directory + 'translation.txt'))
+		return eval(readfile(self.directory + 'info/translation.txt'))
 	
 	def _translate(self, docid):
 		return self.translation[docid]
