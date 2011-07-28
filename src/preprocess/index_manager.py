@@ -34,7 +34,7 @@ class IndexManager:
 		
 	def _get_site_info(self, info):
 		arr = []
-		for url, wordscount in zip(info['urls'], info['wordscount']):
-			dic = {'url':url, 'wordscount':wordscount}
+		for url, wordscount, id in zip(info['urls'], info['wordscount'], range(len(info['urls']))):
+			dic = {'url':url, 'wordscount':wordscount, 'id':id}
 			arr.append(dic)
 		return arr
