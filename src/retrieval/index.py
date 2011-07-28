@@ -9,11 +9,11 @@ from other.constants import INDEX_FOLDER, DOCUMENT_INFO_NAME, INFO_FOLDER
 
 class Index:
 	dtb = {}
+	keylen = 1
 	
-	def __init__(self, directory, parser, keylen = 1):
+	def __init__(self, directory, parser):
 		self.directory = directory
 		self.parser = parser
-		self.keylen = keylen
 		self.translation = self._get_translation()
 		
 	def get_documents(self, query):
@@ -21,6 +21,12 @@ class Index:
 		documents = self._by_node(syntacticTree)
 		links = lmap(self._translate, documents)
 		return links
+	
+	def get_stem_info(self, stem):
+		return self._get_record(stem[:self.keylen]).stem(stem)
+	
+	def get_stems_count(self, stem, documentID):
+		return self.get_stem_info(stem).documents.get(documentID, 0)
 		
 	def _by_node(self, node):
 		if isinstance(node, Node):
