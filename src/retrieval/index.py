@@ -72,7 +72,7 @@ class Index:
 		try:
 			record = Record(readfile(self.directory + INDEX_FOLDER + prefix + '.txt'))
 		except:
-			record = None
+			record = Record('')
 		
 		self.dtb[prefix] = record
 		return record

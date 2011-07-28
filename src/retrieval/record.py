@@ -1,9 +1,15 @@
 from retrieval.stem import Stem
 class Record:
 	def __init__(self, line):
-		self.record = eval(line)
+		if line:
+			self.record = eval(line)
+		else:
+			self.record = False
 		
 	def stem(self, stem):
+		if not self.record:
+			return Stem()
+				
 		length = len(self.record)
 		
 		bottom = 0
@@ -22,7 +28,7 @@ class Record:
 			if bottom == top:
 				break
 					
-		return False
+		return Stem()
 				
 	
 	def get_stem_value(self, index):
