@@ -10,23 +10,25 @@ from other.constants import INDEX_FOLDER, DOCUMENT_INFO_NAME, INFO_FOLDER
 class Index:
 	dtb = {}
 	keylen = 1
+	total_records = 0
 	
-	def __init__(self, directory, parser):
+	def __init__(self, directory):
 		self.directory = directory
-		self.parser = parser
-		self.translation = self._get_translation()
+		self.documents_info = self._get_translation()
+		self.total_records = len(self.documents_info)
 		
-	def get_documents(self, query):
-		syntacticTree = self.parser.parse(query)
-		documents = self._by_node(syntacticTree)
-		links = lmap(self._translate, documents)
-		return links
+	def get_documents(self, parsedQuery):
+		documents = self._by_node(parsedQuery)
+		return lmap(self._translate, documents)
 	
 	def get_stem_info(self, stem):
 		return self._get_record(stem[:self.keylen]).stem(stem)
 	
-	def get_stems_count(self, stem, documentID):
-		return self.get_stem_info(stem).documents.get(documentID, 0)
+	def term_frequency(self, term, documentID):
+		return self.get_stem_info(term).documents.get(documentID, 0)
+	
+	def document_frequency(self, term):
+		return len(self.get_stem_info(term).documents)
 		
 	def _by_node(self, node):
 		if isinstance(node, Node):
@@ -46,7 +48,7 @@ class Index:
 		return reduce(or_, map(self._by_node, children))
 	
 	def _by_not_node(self, argument):
-		allDocuments = set(range(len(self.translation)))
+		allDocuments = set(range(len(self.documents_info)))
 		matchedDoc = self._by_node(argument)
 		return allDocuments - matchedDoc 
 	
@@ -81,4 +83,4 @@ class Index:
 		return eval(readfile(self.directory + INFO_FOLDER + DOCUMENT_INFO_NAME))
 	
 	def _translate(self, docid):
-		return self.translation[docid]
+		return self.documents_info[docid]

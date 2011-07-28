@@ -1,6 +1,7 @@
 from common.funcfun import lmap, lfilter
 from common.string import replace_white_spaces, replace_dict
 from common.list import splitlist
+from preprocess.index_builder import getstem
 class Node:
 	def __init__(self, type):
 		self.type = type
@@ -22,6 +23,18 @@ class BooleanParser:
 	def parse(self, query):
 		tokens = self._lexical(query)
 		return self._syntactic(tokens)
+	
+	def terms(self, syntacticTree):
+		terms = []
+		
+		if isinstance(syntacticTree, Node):
+			if syntacticTree.type in ['AND', 'OR']:
+				for child in syntacticTree.children:
+					terms += self.terms(child)
+		else:
+			terms.append(syntacticTree)
+			
+		return terms
 	
 	def _parse_pure_list(self, tokens):
 		tokens = lfilter(lambda x: x != 'AND', tokens)
