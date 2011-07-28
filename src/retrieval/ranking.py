@@ -19,6 +19,6 @@ def score(terms, documents, index):
 	score = {}
 	
 	for doc in documents:
-		score[doc['url']] = document_score(terms, doc['id'], index)
+		doc['score'] = document_score(terms, doc['id'], index)
 		
-	return score
+	return documents

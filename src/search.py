@@ -1,5 +1,5 @@
-from retrieval.index import Index
-from retrieval.boolean_parser import BooleanParser
+from retrieval.search_engine import SearchEngine
+from common.string import replace_single
 
 ## functions 
 def getCommand(text):
@@ -15,10 +15,8 @@ def getQuery(text):
 
 
 ## main
-INDEX_DIR = '../files/database/'
-KEYLEN = 1
+google = SearchEngine('../files/database/')
 
-index = Index(INDEX_DIR, BooleanParser())
 
 print('Welcome in FCA search!')
 
@@ -31,9 +29,11 @@ while(True):
 		break
 	elif cmd == 'q':
 		query = getQuery(cmdstring)
-		result = index.get_documents(query)
-		for url in result:
-			print(url)
+		result = google.search(query)
+		for item in result:
+			item['score'] = round(item['score'], 3)
+			item['url'] = item['url'].replace('http://', '')
+			print(item)
 		print('Number results: ' + str(len(result)))
 	else:
 		print('Unknown command')

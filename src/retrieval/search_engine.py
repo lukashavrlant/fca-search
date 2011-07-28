@@ -16,7 +16,7 @@ class SearchEngine:
 		parsedQuery, terms = self._parse_query(query)
 		documents = self.index.get_documents(parsedQuery)
 		rankedResults = score(terms, documents, self.index)
-		sortedResults = sorted(rankedResults.items(), key=itemgetter(1), reverse=True)
+		sortedResults = sorted(rankedResults, key=lambda doc: doc['score'], reverse=True)
 		return sortedResults
 		
 		
