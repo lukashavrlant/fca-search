@@ -1,6 +1,7 @@
 from common.io import downloads, savefile
 from preprocess.index_builder import toindex
 from urllib.error import HTTPError
+from other.constants import DOCUMENT_INFO_NAME, ALL_WORDS_NAME
 
 class IndexManager:
 	keylen = 1
@@ -15,8 +16,8 @@ class IndexManager:
 			sites = downloads(urls)
 			indexInfo = toindex(sites, urls, self.keylen)
 			self._save_index(indexInfo['index'], indexDir)
-			self._save_data(indexInfo['urls'], infoDir, 'translation.txt')
-			self._save_data(indexInfo['allwords'], infoDir, 'allwords.txt')
+			self._save_data(self._get_site_info(indexInfo), infoDir, DOCUMENT_INFO_NAME)
+			self._save_data(indexInfo['allwords'], infoDir, ALL_WORDS_NAME)
 		except HTTPError as err:
 			print("HTTP error: {0}".format(err))
 			print("Filename: " + err.filename)
@@ -27,9 +28,13 @@ class IndexManager:
 	def _save_index(self, index, dir):
 		for k, v in index.items():
 			savefile(str(v), dir + k + '.txt')
-			
-	def _save_translation(self, urls, directory):
-		savefile(repr(urls), directory + 'translation.txt')
 		
 	def _save_data(self, data, directory, name):
 		savefile(repr(data), directory + name)
+		
+	def _get_site_info(self, info):
+		arr = []
+		for url, wordscount in zip(info['urls'], info['wordscount']):
+			dic = {'url':url, 'wordscount':wordscount}
+			arr.append(dic)
+		return arr
