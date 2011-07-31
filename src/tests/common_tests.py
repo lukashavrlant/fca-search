@@ -1,6 +1,8 @@
 import unittest
-from common.string import * 
+import string
 from common.list import splitlist
+from common.string import sjoin, isletter, strip_accents, remove_nonletters,\
+	normalize_text, replace_white_spaces, replace_single, replace_dict
 
 
 class TestString(unittest.TestCase):
