@@ -21,9 +21,10 @@ class BooleanParser:
 	unary = ['NOT']
 	binary = ['AND', 'OR']
 	
-	def parse(self, query):
+	def parse(self, query, stopwords = []):
 		tokens = self._lexical(query)
-		return self._syntactic(tokens)
+		tree = self._syntactic(tokens)
+		return self._simplify(tree, stopwords)
 	
 	def terms(self, syntacticTree):
 		terms = []
@@ -37,9 +38,9 @@ class BooleanParser:
 			
 		return terms
 	
-	def simplify(self, node, stopwords = []):
+	def _simplify(self, node, stopwords = []):
 		if isinstance(node, Node):
-			simplified = lmap(lambda x: self.simplify(x, stopwords), node.children)
+			simplified = lmap(lambda x: self._simplify(x, stopwords), node.children)
 			filtered = lfilter(self._not_empty_node, simplified)
 			if filtered:
 				if len(filtered) == 1 and node.type not in self.unary:
@@ -80,12 +81,13 @@ class BooleanParser:
 			while(True):
 				try:
 					index = tokens.index(operator)
-				except ValueError:
-					break
-				
-				node = Node(operator)
-				node.children = [tokens[index+1]]
-				tokens[index:index+2] = [node]
+					node = Node(operator)
+					node.children = [tokens[index+1]]
+					tokens[index:index+2] = [node]
+				except ValueError: # No more operator
+					break			
+				except IndexError: # No argument found
+					tokens[index] = ''
 		
 		node = Node('AND')
 		node.children = tokens
