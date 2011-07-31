@@ -42,5 +42,3 @@ class TestIndex(unittest.TestCase):
 		self.assertEqual(lfun('rovnice'), 118)
 		self.assertEqual(lfun('nonsense'), 0)
 		self.assertEqual(lfun('(průměry OR nesmysly) NOT derivace'), 8)
-		
-		print(len(fun('')))
