@@ -1,16 +1,18 @@
 from retrieval.boolean_parser import BooleanParser
 from retrieval.ranking import score
 from retrieval.index import Index
-from operator import itemgetter
 from common.funcfun import lmap
 from preprocess.index_builder import getstem
 
 class SearchEngine:
 	parser = BooleanParser()
 	index = None
+	stopwords = []
+	lastQuery = None
 	
-	def __init__(self, index_folder):
+	def __init__(self, index_folder, stopwords = []):
 		self.index = Index(index_folder)
+		self.stopwords = stopwords
 	
 	def search(self, query):
 		parsedQuery, terms = self._parse_query(query)
@@ -21,6 +23,6 @@ class SearchEngine:
 		
 		
 	def _parse_query(self, query):
-		parsedQuery = self.parser.parse(query)
-		terms = self.parser.terms(parsedQuery)
-		return parsedQuery, lmap(getstem, terms)
+		self.lastQuery = self.parser.parse(query, self.stopwords)
+		terms = self.parser.terms(self.lastQuery)
+		return self.lastQuery, lmap(getstem, terms)
