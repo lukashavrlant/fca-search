@@ -39,7 +39,7 @@ class BooleanParser:
 	
 	def _simplify(self, node, stopwords = []):
 		if isinstance(node, Node):
-			simplified = lmap(lambda x: self._simplify(x, stopwords), node.children)
+			simplified = map(lambda x: self._simplify(x, stopwords), node.children)
 			filtered = lfilter(self._not_empty_node, simplified)
 			if filtered:
 				if len(filtered) == 1 and node.type not in self.unary:
@@ -59,8 +59,7 @@ class BooleanParser:
 		if isinstance(node, Node):
 			return True
 		
-		forbidden = ['', '()']
-		return node not in forbidden
+		return node not in ['', '()']
 	
 	def _parse_pure_list(self, tokens):
 		tokens = lfilter(lambda x: x != 'AND', tokens)
