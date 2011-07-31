@@ -1,5 +1,4 @@
 from retrieval.search_engine import SearchEngine
-from common.string import replace_single
 
 ## functions 
 def getCommand(text):
@@ -15,7 +14,7 @@ def getQuery(text):
 
 
 ## main
-google = SearchEngine('../files/database/')
+google = SearchEngine('../files/database/', ['stop'])
 
 
 print('Welcome in FCA search!')
@@ -34,6 +33,7 @@ while(True):
 			item['score'] = round(item['score'], 3)
 			item['url'] = item['url'].replace('http://', '')
 			print(item)
+		print('Search query: ' + str(google.lastQuery))
 		print('Number results: ' + str(len(result)))
 	else:
 		print('Unknown command')
