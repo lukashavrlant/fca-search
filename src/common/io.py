@@ -1,5 +1,6 @@
 from urllib.request import urlopen
 from common.funcfun import each, lmap
+import codecs
 
 def download(site):
 	return urlopen(site).read().decode('utf-8')
@@ -14,12 +15,12 @@ def savefile(content, path):
 	
 def savefiles(contents, paths):
 	each(savefile, contents, paths)
-	
+
 def readfile(path):
-	file = open(path, 'r')
-	s = file.read()
-	file.close()
-	return s
+	fileObj = codecs.open(path, "r", "utf-8")
+	u = fileObj.read() 
+	fileObj.close()
+	return u
 
 def readfiles(paths):
 	return lmap(readfile, paths)
