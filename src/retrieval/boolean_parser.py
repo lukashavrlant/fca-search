@@ -50,7 +50,7 @@ class BooleanParser:
 			else:
 				return ''
 		else:
-			if node in stopwords:
+			if to_normal_lower(node) in stopwords:
 				return ''
 			else:
 				return node
@@ -60,7 +60,7 @@ class BooleanParser:
 			return True
 		
 		forbidden = ['', '()']
-		return to_normal_lower(node) not in forbidden
+		return node not in forbidden
 	
 	def _parse_pure_list(self, tokens):
 		tokens = lfilter(lambda x: x != 'AND', tokens)
