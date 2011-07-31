@@ -32,3 +32,6 @@ def remove_nonletters(text, replace = ''):
 def normalize_text(text):
 	functions = [lambda x: remove_nonletters(x, ' '), lambda x: replace_white_spaces(x, ' '), lambda x: x.lower().strip()]
 	return sreduce(functions, text)
+
+def to_normal_lower(word):
+	return strip_accents(word.lower().strip())
