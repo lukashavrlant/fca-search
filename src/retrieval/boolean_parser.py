@@ -1,5 +1,5 @@
 from common.funcfun import lmap, lfilter
-from common.string import replace_white_spaces, replace_dict
+from common.string import replace_white_spaces, replace_dict, to_normal_lower
 from common.list import splitlist
 
 class Node:
@@ -60,7 +60,7 @@ class BooleanParser:
 			return True
 		
 		forbidden = ['', '()']
-		return node not in forbidden
+		return to_normal_lower(node) not in forbidden
 	
 	def _parse_pure_list(self, tokens):
 		tokens = lfilter(lambda x: x != 'AND', tokens)
