@@ -1,8 +1,11 @@
 import math
 
 def inverseDF(term, index):
-	arg = index.total_records / index.document_frequency(term)
-	return math.log(arg)
+	try:
+		arg = index.total_records / index.document_frequency(term)
+		return math.log(arg)
+	except ZeroDivisionError:
+		return 0
 
 def tf_idf(term, docID, index):
 	idf = inverseDF(term, index)
