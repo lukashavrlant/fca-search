@@ -2,12 +2,13 @@ from common.funcfun import lmap, lfilter
 from common.string import replace_white_spaces, replace_dict
 from common.list import splitlist
 from preprocess.index_builder import getstem
+
 class Node:
 	def __init__(self, type):
 		self.type = type
 		
 	def __repr__(self):
-		if len(self.children) == 1:
+		if self.type in BooleanParser.unary:
 			return self.type + '(' + repr(self.children[0]) + ')'
 		else:
 			return '(' + (' ' + self.type + ' ').join(map(repr, self.children)) + ')'
@@ -35,6 +36,31 @@ class BooleanParser:
 			terms.append(syntacticTree)
 			
 		return terms
+	
+	def simplify(self, node, stopwords = []):
+		if isinstance(node, Node):
+			simplified = lmap(lambda x: self.simplify(x, stopwords), node.children)
+			filtered = lfilter(self._not_empty_node, simplified)
+			if filtered:
+				if len(filtered) == 1 and node.type not in self.unary:
+					return filtered[0]
+				else:
+					node.children = filtered
+					return node
+			else:
+				return ''
+		else:
+			if node in stopwords:
+				return ''
+			else:
+				return node
+		
+	def _not_empty_node(self, node):
+		if isinstance(node, Node):
+			return True
+		
+		forbidden = ['', '()']
+		return node not in forbidden
 	
 	def _parse_pure_list(self, tokens):
 		tokens = lfilter(lambda x: x != 'AND', tokens)
