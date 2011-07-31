@@ -1,7 +1,6 @@
 from common.funcfun import lmap, lfilter
 from common.string import replace_white_spaces, replace_dict
 from common.list import splitlist
-from preprocess.index_builder import getstem
 
 class Node:
 	def __init__(self, type):
