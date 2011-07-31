@@ -1,4 +1,4 @@
-from html.parser import HTMLParser, HTMLParseError
+from html.parser import HTMLParser
 
 class HTMLRemover(HTMLParser):
 	"Remove HTML tags, comments, and useless content like scripts or styles"
