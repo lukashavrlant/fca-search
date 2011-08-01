@@ -21,3 +21,7 @@ class BooleanParserTest(unittest.TestCase):
 		ass(fun('OR OR (AND test NOT)'), "'test'")
 		ass(fun('((star AND wars) AND NOT trek) OR ((star AND trek) OR TOS)'), "((('star' AND 'wars') AND NOT('trek')) OR (('star' AND 'trek') OR 'TOS'))")
 		ass(fun(''), "''")
+		
+if __name__ == "__main__":
+	#import sys;sys.argv = ['', 'Test.testName']
+	unittest.main()

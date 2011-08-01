@@ -1,10 +1,10 @@
 import unittest
 from retrieval.index import Index
 from retrieval.boolean_parser import BooleanParser
+from other.constants import TEST_FOLDER
 
 class TestIndex(unittest.TestCase):
-	testFolder = '../../files/tests/'
-	databaseFolder = testFolder + 'database/'
+	databaseFolder = TEST_FOLDER + 'database/'
 	index = None
 	
 	def setUp(self):
@@ -42,5 +42,9 @@ class TestIndex(unittest.TestCase):
 		self.assertEqual(lfun('rovnice'), 118)
 		self.assertEqual(lfun('nonsense'), 0)
 		self.assertEqual(lfun('(průměry OR nesmysly) NOT derivace'), 8)
+		
+if __name__ == "__main__":
+	#import sys;sys.argv = ['', 'Test.testName']
+	unittest.main()
 	
 	

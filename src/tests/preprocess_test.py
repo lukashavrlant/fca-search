@@ -33,3 +33,7 @@ class TestWords(unittest.TestCase):
 		self.assertEquals(repr(result), desired)
 		
 		#savefile(repr(toindex(sites, urls, getStopWords(), 2)), TEST_FOLDER + 'results/index3.txt')
+		
+if __name__ == "__main__":
+	#import sys;sys.argv = ['', 'Test.testName']
+	unittest.main()

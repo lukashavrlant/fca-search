@@ -46,3 +46,7 @@ class TestList(unittest.TestCase):
 		self.assertEqual([[1, 2, 3], [4, 5, 6], [7, 8, 9]], splitlist([1,2,3,'x',4,5,6,'x',7,8,9], 'x'))
 		self.assertEqual([[1, 2, 3, 'x', 4, 5, 6, 'x', 7, 8, 9]], splitlist([1,2,3,'x',4,5,6,'x',7,8,9], 'xy'))
 		self.assertEqual([[], [], []], splitlist(['a','a'], 'a'))
+		
+if __name__ == "__main__":
+	#import sys;sys.argv = ['', 'Test.testName']
+	unittest.main()
