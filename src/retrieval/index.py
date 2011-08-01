@@ -8,11 +8,11 @@ from preprocess.index_builder import getstem
 from other.constants import INDEX_FOLDER_NAME, DOCUMENT_INFO_NAME, INFO_FOLDER_NAME
 
 class Index:
-	dtb = {}
-	keylen = 1
-	total_records = 0
 	
 	def __init__(self, directory):
+		self.dtb = {}
+		self.keylen = 1
+		self.total_records = 0
 		self.directory = directory
 		self.documents_info = self._get_translation()
 		self.total_records = len(self.documents_info)

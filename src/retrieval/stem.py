@@ -1,10 +1,4 @@
 class Stem:
-	stem = ''
-	name = ''
-	totalcount = 0
-	documents = {}
-	docids = [] 
-	
 	def __init__(self, line = False):
 		if line:
 			self.stem = line
@@ -12,6 +6,12 @@ class Stem:
 			self.totalcount = line[0][1]
 			self.documents = dict(line[1])
 			self.docids = self.documents.keys()
+		else:
+			self.stem = ''
+			self.name = ''
+			self.totalcount = 0
+			self.documents = {}
+			self.docids = [] 
 		
 		
 	def __repr__(self):

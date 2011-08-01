@@ -4,12 +4,8 @@ from retrieval.index import Index
 from preprocess.index_builder import getstem
 
 class SearchEngine:
-	parser = BooleanParser()
-	index = None
-	stopwords = []
-	lastQuery = None
-	
 	def __init__(self, index_folder, stopwords):
+		self.parser = BooleanParser()
 		self.index = Index(index_folder)
 		self.stopwords = stopwords
 	

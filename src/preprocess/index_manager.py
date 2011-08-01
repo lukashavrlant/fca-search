@@ -4,8 +4,10 @@ from urllib.error import HTTPError
 from other.constants import DOCUMENT_INFO_NAME, ALL_WORDS_NAME
 
 class IndexManager:
-	keylen = 1
 	
+	def __init__(self):
+		self.keylen = 1
+		
 	def build(self, urls, directory, stopwords):
 		"Builds an index in 'directory'"
 		
