@@ -1,6 +1,6 @@
 import unittest
 from preprocess.words import towords, remstopwords
-from common.io import readfiles, readfile, savefile
+from common.io import readfiles, readfile
 from common.funcfun import lmap
 from preprocess.index_builder import toindex
 from other.constants import TEST_FOLDER
