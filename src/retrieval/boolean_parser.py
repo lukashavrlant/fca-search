@@ -83,7 +83,7 @@ class BooleanParser:
 				try:
 					index = tokens.index(operator)
 					node = Node(operator)
-					node.children = [tokens[index+1]]
+					node.children = [tokens[index+1]] # NOT NOT bug
 					tokens[index:index+2] = [node]
 				except ValueError: # No more operator
 					break			
