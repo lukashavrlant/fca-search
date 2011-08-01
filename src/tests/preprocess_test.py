@@ -20,6 +20,6 @@ class TestWords(unittest.TestCase):
 	def test_toindex(self):
 		urls = ['binomicka-veta.html', 'prirozena-cisla.html', 'pythagorova-veta.html', 'rovnice.html', 'zaklady-statistiky.html']
 		sites = readfiles(lmap(lambda x: self.testFolder + 'sites/' + x, urls))
-		result = toindex(sites, urls, 1)
+		result = toindex(sites, urls, [], 1)
 		desired = readfile(self.testFolder + '/results/index1.txt')
 		self.assertEquals(repr(result), desired)

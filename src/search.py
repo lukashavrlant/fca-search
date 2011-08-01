@@ -1,6 +1,6 @@
 from retrieval.search_engine import SearchEngine
 from common.io import readfile
-from other.constants import SRC_FILE, STOPWORDS_NAME
+from other.constants import DATA_FOLDER, STOPWORDS_NAME
 
 ## functions 
 def getCommand(text):
@@ -16,7 +16,7 @@ def getQuery(text):
 
 
 ## main
-stopwords = readfile(SRC_FILE + STOPWORDS_NAME).split()
+stopwords = readfile(DATA_FOLDER + STOPWORDS_NAME).split()
 google = SearchEngine('../files/database/', stopwords)
 
 

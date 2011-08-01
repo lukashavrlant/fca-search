@@ -5,7 +5,7 @@ from operator import and_, or_
 from common.funcfun import lmap
 from retrieval.boolean_parser import Node
 from preprocess.index_builder import getstem
-from other.constants import INDEX_FOLDER, DOCUMENT_INFO_NAME, INFO_FOLDER
+from other.constants import INDEX_FOLDER_NAME, DOCUMENT_INFO_NAME, INFO_FOLDER_NAME
 
 class Index:
 	dtb = {}
@@ -72,7 +72,7 @@ class Index:
 		
 	def _load_record(self, prefix):
 		try:
-			record = Record(readfile(self.directory + INDEX_FOLDER + prefix + '.txt'))
+			record = Record(readfile(self.directory + INDEX_FOLDER_NAME + prefix + '.txt'))
 		except:
 			record = Record('')
 		
@@ -80,7 +80,7 @@ class Index:
 		return record
 	
 	def _get_translation(self):
-		return eval(readfile(self.directory + INFO_FOLDER + DOCUMENT_INFO_NAME))
+		return eval(readfile(self.directory + INFO_FOLDER_NAME + DOCUMENT_INFO_NAME))
 	
 	def _translate(self, docid):
 		return self.documents_info[docid]
