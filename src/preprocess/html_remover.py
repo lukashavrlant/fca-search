@@ -3,8 +3,6 @@ from html.parser import HTMLParser
 class HTMLRemover(HTMLParser):
 	"Remove HTML tags, comments, and useless content like scripts or styles"
 	
-	count = 0
-	
 	def __init__(self):
 		self.disabledElements = ['script', 'style']
 		HTMLParser.__init__(self)
