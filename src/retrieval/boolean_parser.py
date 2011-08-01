@@ -21,8 +21,7 @@ class BooleanParser:
 	binary = ['AND', 'OR']
 	
 	def parse(self, query, stopwords = []):
-		tokens = self._lexical(query)
-		tree = self._syntactic(tokens)
+		tree = self._pure_parse(query)
 		return self._simplify(tree, stopwords)
 	
 	def terms(self, syntacticTree):
@@ -36,6 +35,10 @@ class BooleanParser:
 			terms.append(syntacticTree)
 			
 		return terms
+	
+	def _pure_parse(self, query):
+		tokens = self._lexical(query)
+		return self._syntactic(tokens)
 	
 	def _simplify(self, node, stopwords = []):
 		if isinstance(node, Node):
