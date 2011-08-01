@@ -6,7 +6,7 @@ from other.constants import DOCUMENT_INFO_NAME, ALL_WORDS_NAME
 class IndexManager:
 	keylen = 1
 	
-	def build(self, urls, directory):
+	def build(self, urls, directory, stopwords):
 		"Builds an index in 'directory'"
 		
 		indexDir = directory + 'index/'
@@ -14,7 +14,7 @@ class IndexManager:
 		
 		try:
 			sites = downloads(urls)
-			indexInfo = toindex(sites, urls, self.keylen)
+			indexInfo = toindex(sites, urls, stopwords, self.keylen)
 			self._save_index(indexInfo['index'], indexDir)
 			self._save_data(self._get_site_info(indexInfo), infoDir, DOCUMENT_INFO_NAME)
 			self._save_data(indexInfo['allwords'], infoDir, ALL_WORDS_NAME)

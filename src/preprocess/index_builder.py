@@ -30,14 +30,14 @@ def group(database, keylen):
 			dic[key] = [record]
 	return dic
 
-def toindex(sites, urls, keylen):
+def toindex(sites, urls, stopwords, keylen):
 	htmlrem = HTMLRemover()
 	parsedSites = []
 	correctUrl = []
 	
 	for site, url in zip(sites, urls):
 		try:
-			parsedSites.append(get_words(normalize_text(htmlrem.compile(site)), []))
+			parsedSites.append(get_words(normalize_text(htmlrem.compile(site)), stopwords))
 			correctUrl.append(url)
 		except HTMLParseError:
 			print('Cannot parse ' + str(url))
