@@ -1,6 +1,5 @@
 from retrieval.search_engine import SearchEngine
-from common.io import readfile
-from other.constants import DATA_FOLDER, STOPWORDS_NAME
+from other.data import getStopWords
 
 ## functions 
 def getCommand(text):
@@ -16,8 +15,7 @@ def getQuery(text):
 
 
 ## main
-stopwords = readfile(DATA_FOLDER + STOPWORDS_NAME).split()
-google = SearchEngine('../files/database/', stopwords)
+google = SearchEngine('../files/database/', getStopWords())
 
 
 print('Welcome in FCA search!')

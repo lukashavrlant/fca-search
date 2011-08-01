@@ -3,7 +3,7 @@ from common.io import readfile
 
 _data = {}
 
-def stopwords():
+def getStopWords():
 	return _cache_result('stopwords', lambda:  readfile(DATA_FOLDER + STOPWORDS_NAME).split())
 	
 def _cache_result(key, getValue):

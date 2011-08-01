@@ -9,7 +9,7 @@ class SearchEngine:
 	stopwords = []
 	lastQuery = None
 	
-	def __init__(self, index_folder, stopwords = []):
+	def __init__(self, index_folder, stopwords):
 		self.index = Index(index_folder)
 		self.stopwords = stopwords
 	
