@@ -1,5 +1,3 @@
-import sys, os
-
 # folders
 ROOT_FOLDER = __file__.replace('src/other/constants.py', '')
 DATA_FOLDER = ROOT_FOLDER + 'files/data/'
