@@ -1,12 +1,12 @@
 import unittest
 from preprocess.words import towords, remstopwords
-from common.io import readfiles, readfile
+from common.io import readfiles, readfile, savefile
 from common.funcfun import lmap
 from preprocess.index_builder import toindex
+from other.constants import TEST_FOLDER
+from other.data import getStopWords
 
 class TestWords(unittest.TestCase):
-	testFolder = '../../files/tests/'
-	
 	def test_towords(self):
 		self.assertEquals(['Každému', 'svítání', 'předchází', 'hluboká', 'tma...'], towords('Každému svítání předchází hluboká tma...'))
 		self.assertEquals([''], towords(''))
@@ -19,7 +19,17 @@ class TestWords(unittest.TestCase):
 		
 	def test_toindex(self):
 		urls = ['binomicka-veta.html', 'prirozena-cisla.html', 'pythagorova-veta.html', 'rovnice.html', 'zaklady-statistiky.html']
-		sites = readfiles(lmap(lambda x: self.testFolder + 'sites/' + x, urls))
+		sites = readfiles(lmap(lambda x: TEST_FOLDER + 'sites/' + x, urls))
 		result = toindex(sites, urls, [], 1)
-		desired = readfile(self.testFolder + '/results/index1.txt')
+		desired = readfile(TEST_FOLDER + 'results/index1.txt')
 		self.assertEquals(repr(result), desired)
+		
+		result = toindex(sites, urls, getStopWords(), 1)
+		desired = readfile(TEST_FOLDER + 'results/index2.txt')
+		self.assertEquals(repr(result), desired)
+		
+		result = toindex(sites, urls, getStopWords(), 2)
+		desired = readfile(TEST_FOLDER + 'results/index3.txt')
+		self.assertEquals(repr(result), desired)
+		
+		#savefile(repr(toindex(sites, urls, getStopWords(), 2)), TEST_FOLDER + 'results/index3.txt')
