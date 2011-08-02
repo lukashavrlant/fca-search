@@ -1,5 +1,5 @@
 from common.io import downloads, savefile
-from preprocess.index_builder import toIndex, getKeywords
+from preprocess.index_builder import toIndex, getKeywords, getDocumentsInfo
 from urllib.error import HTTPError
 from other.constants import DOCUMENT_INFO_NAME, ALL_WORDS_NAME
 from retrieval.index import Index
@@ -35,7 +35,7 @@ class IndexManager:
 		self._saveData(indexInfo['allwords'], infoDir, ALL_WORDS_NAME)
 			
 	def _saveDocsInfo(self, indexInfo, directory, infoDir):
-		documentsInfo = self._getDocumentsInfo(indexInfo)
+		documentsInfo = getDocumentsInfo(indexInfo)
 		keywords = getKeywords(indexInfo['parsedDocs'], Index(directory, documentsInfo))	
 			
 		for docInfo, allKeywords in zip(documentsInfo, keywords):
@@ -51,10 +51,3 @@ class IndexManager:
 		
 	def _saveData(self, data, directory, name):
 		savefile(repr(data), directory + name)
-		
-	def _getDocumentsInfo(self, info):
-		arr = []
-		for url, wordscount, id in zip(info['urls'], info['wordscount'], range(len(info['urls']))):
-			dic = {'url':url, 'wordscount':wordscount, 'id':id}
-			arr.append(dic)
-		return arr

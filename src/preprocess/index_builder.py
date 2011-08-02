@@ -42,6 +42,13 @@ def getKeywords(documents, index):
 			foo = sorted(keyValues.items(), key=lambda x: x[1], reverse = True)
 			keywords.append(foo)
 		return keywords
+	
+def getDocumentsInfo(info):
+	arr = []
+	for url, wordscount, id in zip(info['urls'], info['wordscount'], range(len(info['urls']))):
+		dic = {'url':url, 'wordscount':wordscount, 'id':id}
+		arr.append(dic)
+	return arr
 
 def toIndex(documents, urls, stopwords, keylen):
 	htmlrem = HTMLRemover()
