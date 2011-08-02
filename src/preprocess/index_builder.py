@@ -33,8 +33,9 @@ def groupByKeylen(database, keylen):
 def getKeywords(documents, index):
 		keywords = []
 		for docID, content in enumerate(documents):
+			distContent = set(content)
 			keyValues = {}
-			for word in content:
+			for word in distContent:
 				stem = getstem(word)
 				keyValues[stem] = document_score([stem], docID, index)
 				

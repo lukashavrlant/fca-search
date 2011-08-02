@@ -17,9 +17,11 @@ class IndexManager:
 		indexDir = directory + 'index/'
 		infoDir = directory + 'info/'
 		
+		distUrls = list(set(urls))
+		
 		try:
-			sites = downloads(urls)
-			indexInfo = toIndex(sites, urls, stopwords, self.keylen)
+			sites = downloads(distUrls)
+			indexInfo = toIndex(sites, distUrls, stopwords, self.keylen)
 			self._createIndex(indexInfo, indexDir, infoDir)
 			self._saveDocsInfo(indexInfo, directory, infoDir)
 		except HTTPError as err:
