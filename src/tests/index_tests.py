@@ -11,16 +11,18 @@ class TestIndex(unittest.TestCase):
 		self.index = Index(self.databaseFolder)
 	
 	def test_get_stem_info(self):
-		desired_derivak = "{'count': 187, 'documents': {1: 2, 14: 2, 116: 1, 117: 3, 86: 12, 87: 4, 88: 4, 89: 5, 90: 5, 91: 45, 92: 35, 93: 18, 94: 9, 95: 42}, 'docids': dict_keys([1, 14, 116, 117, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95]), 'stem': 'derivak'}"
+		fun = lambda stem: repr(self.index.get_stem_info(stem))
+		desired_derivak = "{'count': 187, 'documents': {65: 45, 67: 9, 38: 4, 103: 12, 105: 5, 10: 35, 43: 2, 109: 2, 110: 5, 81: 4, 20: 1, 86: 3, 55: 42, 42: 18}, 'docids': dict_keys([65, 67, 38, 103, 105, 10, 43, 109, 110, 81, 20, 86, 55, 42]), 'stem': 'derivak'}"
 		desired_nonsense = "{'count': 0, 'documents': {}, 'docids': [], 'stem': ''}"
 		
-		self.assertEqual(repr(self.index.get_stem_info('nonsense')), desired_nonsense)
-		self.assertEqual(repr(self.index.get_stem_info('derivak')), desired_derivak)
+		self.assertEqual(fun('nonsense'), desired_nonsense)
+		self.assertEqual(fun('derivak'), desired_derivak)
 		
 	def test_term_frequency(self):
 		fun = self.index.term_frequency 
-		self.assertEqual(fun('derivak', 117), 3)
-		self.assertEqual(fun('nachazim', 76), 1)
+		
+		self.assertEqual(fun('derivak', 81), 4)
+		self.assertEqual(fun('nachazim', 73), 1)
 		self.assertEqual(fun('nonsense', 1), 0)
 		self.assertEqual(fun('nonsense', 100000), 0)
 		
@@ -35,11 +37,13 @@ class TestIndex(unittest.TestCase):
 		fun = lambda x: self.index.get_documents(parse(x))
 		lfun = lambda x: len(fun(x))
 		
-		desired_nesmysl = "[{'url': 'http://localhost/matweb/dukaz-sporem', 'wordscount': 1231, 'id': 105}, {'url': 'http://localhost/matweb/relace', 'wordscount': 1624, 'id': 98}, {'url': 'http://localhost/matweb/co-je-to-funkce', 'wordscount': 2597, 'id': 13}, {'url': 'http://localhost/matweb/goniometricke-rovnice', 'wordscount': 775, 'id': 46}]"
+		print(repr(fun('nesmysl')))
+		
+		desired_nesmysl = "[{'url': 'http://localhost/matweb/dukaz-sporem', 'keywords': ['prvocisl', 'tvrzen', 'prvocisel', 'spor', 'nezajimav', 'prvociseln', 'rozklad', 'posloupnost', 'zajimav', 'nejmens'], 'wordscount': 909, 'id': 64}, {'url': 'http://localhost/matweb/goniometricke-rovnice', 'keywords': ['sin', 'substituk', 'cos', 'kosin', 'goniometrick', 'spoctet', 'rovnic', 'jiz', 'graf', 'resil'], 'wordscount': 568, 'id': 80}, {'url': 'http://localhost/matweb/co-je-to-funkce', 'keywords': ['vstup', 'vystup', 'parametr', 'vrat', 'argument', 'autom', 'tabulk', 'hodnot', 'funkcn', 'sloupeck'], 'wordscount': 1788, 'id': 34}, {'url': 'http://localhost/matweb/relace', 'keywords': ['relak', 'honzik', 'sandr', 'josef', 'usporadan', 'reflexivn', 'dvojik', 'transitivn', 'symetrick', 'binarn'], 'wordscount': 1127, 'id': 93}]"
 		self.assertEqual(repr(fun('nesmysl')), desired_nesmysl)
 		self.assertEqual(lfun('rovnice průměr'), 6)
 		self.assertEqual(lfun('průměr NOT úhlopříčky'), 5)
-		self.assertEqual(lfun('rovnice'), 118)
+		self.assertEqual(lfun('rovnice'), 114)
 		self.assertEqual(lfun('nonsense'), 0)
 		self.assertEqual(lfun('(průměry OR nesmysly) NOT derivace'), 8)
 		
