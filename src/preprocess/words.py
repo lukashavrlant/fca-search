@@ -1,7 +1,7 @@
 from common.funcfun import sreduce, glmap
 from collections import Counter
 from common.czech_stemmer import cz_stem
-from common.string import strip_accents
+from common.string import strip_accents, normalize_text
 
 
 def get_words(text, stopwords = []):
@@ -20,3 +20,9 @@ def getcounter(words):
 
 def tostems(words):
 	return map(cz_stem, words)
+
+def getstem(word):
+	word = normalize_text(word)
+	stem = cz_stem(word)
+	stem = strip_accents(stem)
+	return stem

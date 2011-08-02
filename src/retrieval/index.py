@@ -4,8 +4,8 @@ from functools import reduce
 from operator import and_, or_
 from common.funcfun import lmap
 from retrieval.boolean_parser import Node
-from preprocess.index_builder import getstem
 from other.constants import INDEX_FOLDER_NAME, DOCUMENT_INFO_NAME, INFO_FOLDER_NAME
+from preprocess.words import getstem
 
 class Index:
 	

@@ -4,8 +4,7 @@ from functools import reduce
 from operator import add
 from preprocess.words import get_words
 from preprocess.html_remover import HTMLRemover
-from common.string import normalize_text, strip_accents
-from common.czech_stemmer import cz_stem
+from common.string import normalize_text
 from html.parser import HTMLParseError
 
 def getinfo(documents):
@@ -46,9 +45,3 @@ def toindex(sites, urls, stopwords, keylen):
 	index = group(sitesInfo['occurences'], keylen)
 	
 	return {'index': index, 'allwords':sitesInfo['allwords'], 'urls': correctUrl, 'wordscount':sitesInfo['wordscount']}
-
-def getstem(word):
-	word = normalize_text(word)
-	stem = cz_stem(word)
-	stem = strip_accents(stem)
-	return stem
