@@ -1,7 +1,7 @@
 from retrieval.boolean_parser import BooleanParser
 from retrieval.ranking import score
 from retrieval.index import Index
-from preprocess.index_builder import getstem
+from preprocess.words import getstem
 
 class SearchEngine:
 	def __init__(self, index_folder, stopwords):

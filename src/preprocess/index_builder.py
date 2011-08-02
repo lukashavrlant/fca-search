@@ -7,7 +7,7 @@ from preprocess.html_remover import HTMLRemover
 from common.string import normalize_text
 from html.parser import HTMLParseError
 
-def getinfo(documents):
+def getDocsStats(documents):
 	counters = list(enumerate(map(lambda x: Counter(x), documents)))
 	allwords = reduce(add, documents)
 	allwords_counter = Counter(allwords)
@@ -19,7 +19,7 @@ def getinfo(documents):
 def occurences(counters, word):
 	return lmap(lambda x: (x[0], x[1][word]), filter(lambda x: word in x[1], counters))
 
-def group(database, keylen):
+def groupByKeylen(database, keylen):
 	dic = {}
 	for record in database:
 		key = record[0][0][:keylen]
@@ -29,7 +29,9 @@ def group(database, keylen):
 			dic[key] = [record]
 	return dic
 
-def toindex(sites, urls, stopwords, keylen):
+
+
+def toIndex(sites, urls, stopwords, keylen):
 	htmlrem = HTMLRemover()
 	parsedSites = []
 	correctUrl = []
@@ -41,7 +43,7 @@ def toindex(sites, urls, stopwords, keylen):
 		except HTMLParseError:
 			print('Cannot parse ' + str(url))
 	
-	sitesInfo = getinfo(parsedSites)
-	index = group(sitesInfo['occurences'], keylen)
+	sitesStats = getDocsStats(parsedSites)
+	index = groupByKeylen(sitesStats['occurences'], keylen)
 	
-	return {'index': index, 'allwords':sitesInfo['allwords'], 'urls': correctUrl, 'wordscount':sitesInfo['wordscount']}
+	return {'index': index, 'allwords':sitesStats['allwords'], 'urls': correctUrl, 'wordscount':sitesStats['wordscount']}

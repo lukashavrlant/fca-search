@@ -1,5 +1,5 @@
 from common.io import downloads, savefile
-from preprocess.index_builder import toindex
+from preprocess.index_builder import toIndex
 from urllib.error import HTTPError
 from other.constants import DOCUMENT_INFO_NAME, ALL_WORDS_NAME
 
@@ -16,7 +16,7 @@ class IndexManager:
 		
 		try:
 			sites = downloads(urls)
-			indexInfo = toindex(sites, urls, stopwords, self.keylen)
+			indexInfo = toIndex(sites, urls, stopwords, self.keylen)
 			self._save_index(indexInfo['index'], indexDir)
 			self._save_data(self._get_site_info(indexInfo), infoDir, DOCUMENT_INFO_NAME)
 			self._save_data(indexInfo['allwords'], infoDir, ALL_WORDS_NAME)
