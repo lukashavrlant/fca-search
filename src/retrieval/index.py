@@ -9,12 +9,12 @@ from preprocess.words import getstem
 
 class Index:
 	
-	def __init__(self, directory):
+	def __init__(self, directory, documentsInfo = None):
 		self.dtb = {}
 		self.keylen = 1
 		self.total_records = 0
 		self.directory = directory
-		self.documents_info = self._get_translation()
+		self.documents_info = documentsInfo if documentsInfo else self._get_translation()
 		self.total_records = len(self.documents_info)
 		
 	def get_documents(self, parsedQuery):

@@ -29,21 +29,19 @@ def groupByKeylen(database, keylen):
 			dic[key] = [record]
 	return dic
 
-
-
-def toIndex(sites, urls, stopwords, keylen):
+def toIndex(documents, urls, stopwords, keylen):
 	htmlrem = HTMLRemover()
-	parsedSites = []
+	parsedDocs = []
 	correctUrl = []
 	
-	for site, url in zip(sites, urls):
+	for site, url in zip(documents, urls):
 		try:
-			parsedSites.append(get_words(normalize_text(htmlrem.compile(site)), stopwords))
+			parsedDocs.append(get_words(normalize_text(htmlrem.compile(site)), stopwords))
 			correctUrl.append(url)
 		except HTMLParseError:
 			print('Cannot parse ' + str(url))
 	
-	sitesStats = getDocsStats(parsedSites)
+	sitesStats = getDocsStats(parsedDocs)
 	index = groupByKeylen(sitesStats['occurences'], keylen)
 	
-	return {'index': index, 'allwords':sitesStats['allwords'], 'urls': correctUrl, 'wordscount':sitesStats['wordscount']}
+	return {'index': index, 'allwords':sitesStats['allwords'], 'urls': correctUrl, 'wordscount':sitesStats['wordscount'], 'parsedDocs':parsedDocs}
