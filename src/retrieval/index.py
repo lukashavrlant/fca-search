@@ -29,6 +29,9 @@ class Index:
 	
 	def document_frequency(self, term):
 		return len(self.get_stem_info(term).documents)
+	
+	def getKeywords(self, docID):
+		return self.documents_info[docID]['keywords']
 		
 	def _by_node(self, node):
 		if isinstance(node, Node):

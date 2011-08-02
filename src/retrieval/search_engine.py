@@ -2,6 +2,7 @@ from retrieval.boolean_parser import BooleanParser
 from retrieval.ranking import score
 from retrieval.index import Index
 from preprocess.words import getstem
+from common.funcfun import lmap
 
 class SearchEngine:
 	def __init__(self, index_folder, stopwords):
@@ -20,4 +21,4 @@ class SearchEngine:
 	def _parse_query(self, query):
 		self.lastQuery = self.parser.parse(query, self.stopwords)
 		terms = self.parser.terms(self.lastQuery)
-		return self.lastQuery, map(getstem, terms)
+		return self.lastQuery, lmap(getstem, terms)

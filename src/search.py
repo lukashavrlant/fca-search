@@ -33,6 +33,7 @@ while(True):
 		for item in result:
 			item['score'] = round(item['score'], 3)
 			item['url'] = item['url'].replace('http://', '')
+			item['keywords'] = item['keywords'][:3]
 			print(item)
 		print('Search query: ' + str(google.lastQuery))
 		print('Number results: ' + str(len(result)))
