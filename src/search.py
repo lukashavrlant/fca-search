@@ -33,9 +33,9 @@ def printSearch(query, nosco):
 try:
 	database = DATABASES_FOLDER + str(sys.argv[1]) + '/'
 except IndexError:
-	print('Too many arguments:')
+	print('Too few arguments:')
 	print('search.py [database folder]')
-	exit()
+	sys.exit()
 	
 nosco = None
 index = IndexManager()
