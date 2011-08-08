@@ -3,6 +3,7 @@ ROOT_FOLDER = __file__.replace('src/other/constants.py', '')
 FILES_FOLDER = ROOT_FOLDER + 'files/'
 DATA_FOLDER = FILES_FOLDER + 'data/'
 TEST_FOLDER = FILES_FOLDER + 'tests/'
+DATABASES_FOLDER = FILES_FOLDER + 'databases/'
 
 INDEX_FOLDER_NAME = 'index/'
 INFO_FOLDER_NAME = 'info/'
