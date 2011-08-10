@@ -25,7 +25,7 @@ class SearchEngine:
 		self.lastQuery = self.parser.parse(query, self.stopwords)
 		self.lastQuery = self._query_to_stems(self.lastQuery)
 		terms = self.parser.terms(self.lastQuery)
-		return self.lastQuery, lmap(getstem, terms)
+		return self.lastQuery, terms
 	
 	def _query_to_stems(self, query):
 		if isinstance(query, Node):
