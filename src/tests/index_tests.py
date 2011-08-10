@@ -37,6 +37,8 @@ class TestIndex(unittest.TestCase):
 		fun = lambda x: self.index.get_documents(parse(x))
 		lfun = lambda x: len(fun(x))
 		
+		print(fun('rovnice průměr'))
+		
 		desired_nesmysl = "[{'url': 'http://localhost/matweb/dukaz-sporem', 'keywords': ['prvocisl', 'tvrzen', 'prvocisel', 'spor', 'nezajimav', 'prvociseln', 'rozklad', 'posloupnost', 'zajimav', 'nejmens'], 'wordscount': 909, 'id': 64}, {'url': 'http://localhost/matweb/goniometricke-rovnice', 'keywords': ['sin', 'substituk', 'cos', 'kosin', 'goniometrick', 'spoctet', 'rovnic', 'jiz', 'graf', 'resil'], 'wordscount': 568, 'id': 80}, {'url': 'http://localhost/matweb/co-je-to-funkce', 'keywords': ['vstup', 'vystup', 'parametr', 'vrat', 'argument', 'autom', 'tabulk', 'hodnot', 'funkcn', 'sloupeck'], 'wordscount': 1788, 'id': 34}, {'url': 'http://localhost/matweb/relace', 'keywords': ['relak', 'honzik', 'sandr', 'josef', 'usporadan', 'reflexivn', 'dvojik', 'transitivn', 'symetrick', 'binarn'], 'wordscount': 1127, 'id': 93}]"
 		self.assertEqual(repr(fun('nesmysl')), desired_nesmysl)
 		self.assertEqual(lfun('rovnice průměr'), 6)

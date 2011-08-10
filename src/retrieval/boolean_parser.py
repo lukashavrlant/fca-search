@@ -1,6 +1,7 @@
 from common.funcfun import lmap, lfilter
 from common.string import replace_white_spaces, replace_dict, to_normal_lower
 from common.list import splitlist
+from preprocess.words import getstem
 
 class Node:
 	def __init__(self, type):
@@ -22,7 +23,8 @@ class BooleanParser:
 	
 	def parse(self, query, stopwords = []):
 		tree = self._pure_parse(query)
-		return self._simplify(tree, stopwords)
+		tree = self._simplify(tree, stopwords)
+		return self._query_to_stems(tree)
 	
 	def terms(self, syntacticTree):
 		terms = []
@@ -35,6 +37,16 @@ class BooleanParser:
 			terms.append(syntacticTree)
 			
 		return terms
+	
+	def _query_to_stems(self, query):
+		if isinstance(query, Node):
+			query.children = lmap(self._query_to_stems, query.children)
+			return query
+		else:
+			if query:
+				return getstem(query)
+			else:
+				return query
 	
 	def _pure_parse(self, query):
 		tokens = self._lexical(query)

@@ -1,8 +1,6 @@
-from retrieval.boolean_parser import BooleanParser, Node
+from retrieval.boolean_parser import BooleanParser
 from retrieval.ranking import score
 from retrieval.index import Index
-from preprocess.words import getstem
-from common.funcfun import lmap
 from common.string import remove_nonletters
 
 
@@ -23,16 +21,5 @@ class SearchEngine:
 		
 	def _parse_query(self, query):
 		self.lastQuery = self.parser.parse(query, self.stopwords)
-		self.lastQuery = self._query_to_stems(self.lastQuery)
 		terms = self.parser.terms(self.lastQuery)
 		return self.lastQuery, terms
-	
-	def _query_to_stems(self, query):
-		if isinstance(query, Node):
-			query.children = lmap(self._query_to_stems, query.children)
-			return query
-		else:
-			if query:
-				return getstem(query)
-			else:
-				return query
