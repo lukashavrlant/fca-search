@@ -13,7 +13,7 @@ class SearchEngine:
 		self.stopwords = stopwords
 	
 	def search(self, query):
-		normQuery = remove_nonletters(query, ' ')
+		normQuery = remove_nonletters(query, ' ', ['(', ')'])
 		parsedQuery, terms = self._parse_query(normQuery)
 		documents = self.index.get_documents(parsedQuery)
 		rankedResults = score(terms, documents, self.index)

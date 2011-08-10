@@ -26,8 +26,14 @@ def strip_accents(s):
 def replace_white_spaces(text, replace = ''):
 	return re.sub('\s+', replace, text)
 
-def remove_nonletters(text, replace = ''):
-	return sjoin(map(lambda x: isletter(x) or replace, text))
+def remove_nonletters(text, replace = '', keep = []):
+	return sjoin(map(lambda x: isletter(x) or keep_nonletters(x, keep) or replace, text))
+
+def keep_nonletters(x, keep):
+	if x in keep:
+		return x
+	else:
+		return False
 
 def normalize_text(text):
 	functions = [lambda x: remove_nonletters(x, ' '), lambda x: replace_white_spaces(x, ' '), lambda x: x.lower().strip()]
