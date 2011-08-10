@@ -1,11 +1,12 @@
 from retrieval.stem import Stem
+
 class Record:
 	def __init__(self, line):
 		if line:
 			self.record = eval(line)
 		else:
 			self.record = False
-		
+
 	def stem(self, stem):
 		if not self.record:
 			return Stem()
@@ -15,19 +16,19 @@ class Record:
 		bottom = 0
 		top = length - 1
 		
-		while(bottom <= top):
+		while(True):
+			if top < bottom:
+				return Stem()
 			middle = (bottom + top) // 2
 			currStem = self.get_stem_value(middle)
 			if currStem == stem:
 				return Stem(self.record[middle])
 			else:
-				if currStem > stem:
-					top = middle
+				if currStem < stem:
+					bottom = middle +1
 				else:
-					bottom = middle + 1
-			if bottom == top:
-				break
-					
+					top = middle - 1
+			
 		return Stem()
 				
 	
