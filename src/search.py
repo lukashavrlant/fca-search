@@ -18,14 +18,29 @@ def getQuery(text):
 	return str(text[spaceIndex + 1:])
 
 def printSearch(query, nosco):
-	result = nosco.search(query)
-	for item in result:
-		item['score'] = round(item['score'], 3)
-		item['url'] = item['url'].replace('http://', '')
-		item['keywords'] = item['keywords'][:3]
-		print(item)
+	result = list(nosco.search(query))
+	
+	if result:
+		maxURL = max(len(x['url']) for x in result) - len('http://localhost/matweb/') + len('matweb.cz/')
+		maxKeywords = max([len(repr(x['keywords'][:3])) for x in result])
+		maxPos = len(str(len(result)))
+		maxScore = max(len(str(round(x['score'], 3))) for x in result) + 1
+		
+		print(''.ljust(maxPos), 'URL'.ljust(maxURL), 'KEYWORDS'.ljust(maxKeywords), 'SCORE'.ljust(maxScore), 'WORDSCOUNT')
+		i = 1
+		for item in result:
+			score = str(round(item['score'], 3))
+			url = item['url'].replace('http://localhost/matweb/', 'matweb.cz/')
+			keywords = repr(item['keywords'][:3])
+			wordscount = item['wordscount']
+	
+			print(str(i).ljust(maxPos), url.ljust(maxURL), keywords.ljust(maxKeywords), score.ljust(maxScore), wordscount)
+			i += 1
+	
+	print()
 	print('Search query: ' + str(nosco.lastQuery))
 	print('Number results: ' + str(len(result)))
+	print()
 
 
 ## main
