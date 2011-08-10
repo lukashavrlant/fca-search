@@ -19,7 +19,7 @@ class BooleanParserTest(unittest.TestCase):
 		fun = lambda x: repr(self.parser.parse(x))
 		
 		ass(fun('OR OR (AND test NOT)'), "'test'")
-		ass(fun('((star AND wars) AND NOT trek) OR ((star AND trek) OR TOS)'), "((('star' AND 'wars') AND NOT('trek')) OR (('star' AND 'trek') OR 'TOS'))")
+		ass(fun('((star AND wars) AND NOT trek) OR ((star AND trek) OR TOS)'), "((('star' AND 'wars') AND NOT('trek')) OR (('star' AND 'trek') OR 'tos'))")
 		ass(fun(''), "''")
 		
 if __name__ == "__main__":
