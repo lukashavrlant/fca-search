@@ -3,6 +3,7 @@ from retrieval.ranking import score
 from retrieval.index import Index
 from preprocess.words import getstem
 from common.funcfun import lmap
+from common.string import normalize_text
 
 class SearchEngine:
 	def __init__(self, index_folder, stopwords):
@@ -11,7 +12,8 @@ class SearchEngine:
 		self.stopwords = stopwords
 	
 	def search(self, query):
-		parsedQuery, terms = self._parse_query(query)
+		normQuery = normalize_text(query)
+		parsedQuery, terms = self._parse_query(normQuery)
 		documents = self.index.get_documents(parsedQuery)
 		rankedResults = score(terms, documents, self.index)
 		sortedResults = sorted(rankedResults, key=lambda doc: doc['score'], reverse=True)
