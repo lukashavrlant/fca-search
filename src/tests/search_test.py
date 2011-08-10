@@ -17,6 +17,7 @@ class SearchTest(unittest.TestCase):
 		ass(fun('derivace'), read('search2'))
 		ass(fun('rovnice'), read('search3'))
 		ass(fun('nonsense'), read('search4'))
+		ass(fun('derivace+mnoziny'), read('search5'))
 		
 		
 
