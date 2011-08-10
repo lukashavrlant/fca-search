@@ -5,7 +5,6 @@ from operator import and_, or_
 from common.funcfun import lmap
 from retrieval.boolean_parser import Node
 from other.constants import INDEX_FOLDER_NAME, DOCUMENT_INFO_NAME, INFO_FOLDER_NAME
-from preprocess.words import getstem
 
 class Index:
 	
@@ -58,8 +57,7 @@ class Index:
 	def _by_words(self, words):
 		return lmap(self._translate, reduce(and_, map(self._by_word, words)))
 	
-	def _by_word(self, word):
-		stem = getstem(word) 
+	def _by_word(self, stem):
 		record = self._get_record(stem[:self.keylen])
 		
 		if record:
