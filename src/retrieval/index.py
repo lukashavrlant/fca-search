@@ -26,6 +26,9 @@ class Index:
 	def term_frequency(self, term, documentID):
 		return self.get_stem_info(term).documents.get(documentID, 0)
 	
+	def contains_term(self, term, documentID):
+		return self.term_frequency(term, documentID) > 0
+	
 	def document_frequency(self, term):
 		return len(self.get_stem_info(term).documents)
 	
