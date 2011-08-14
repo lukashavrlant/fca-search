@@ -44,4 +44,4 @@ class Context:
 		for i in range(self.height):
 			if self.table[i][attribute]:
 				objects.add(i)
-		return objects		
+		return objects	

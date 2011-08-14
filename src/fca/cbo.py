@@ -1,5 +1,14 @@
 from fca.concept import Concept
 
+
+def closeByOne(context):
+	alg = CbO(context)
+	extent = context.down([])
+	intent = context.up(extent)
+	concept = Concept(extent, intent)
+	alg.generate_from(concept, 0)
+	return alg.result
+
 class CbO():
 	def __init__(self, context):
 		self.context = context
