@@ -23,7 +23,7 @@ class Context:
 	
 	def lowerNeighbors(self, concept):
 		B = concept.intent
-		M = set(set(self.attributesIterator()) - B)
+		M = set(self.attributesIterator()) - B
 		neighbors = set()
 		for x in list(M):
 			A1 = self.down(B | {x})
