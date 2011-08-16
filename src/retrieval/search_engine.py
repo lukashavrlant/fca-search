@@ -21,5 +21,5 @@ class SearchEngine:
 		
 	def _parse_query(self, query):
 		self.lastQuery = self.parser.parse(query, self.stopwords)
-		terms = self.parser.terms(self.lastQuery)
-		return self.lastQuery, terms
+		self.lastTerms = self.parser.terms(self.lastQuery)
+		return self.lastQuery, self.lastTerms
