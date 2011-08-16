@@ -8,6 +8,15 @@ class Concept():
 	
 	def setIntent(self, intent):
 		self.intent = set(intent)
+		
+	def translate(self, context):
+		self.extentNames = context.ids2objects(self.extent)
+		self.intentNames = context.ids2attrs(self.intent)
+		return self
 
 	def __repr__(self):
-		return "(" + repr(self.extent) + ", " + repr(self.intent) + ")"
+		try:
+			return repr({'extent': self.extentNames, 'intent': self.intentNames})
+		except AttributeError:
+			return repr({'extent': self.extent, 'intent': self.intent})
+			

@@ -10,7 +10,7 @@ class Context:
 		
 	def upperNeighbors(self, concept):
 		A = concept.extent
-		M = set(self.objectsIterator()) - A
+		M = set(self._objectsIterator()) - A
 		neighbors = set()
 		for x in list(M):
 			B1 = self.up(A | {x})
@@ -23,7 +23,7 @@ class Context:
 	
 	def lowerNeighbors(self, concept):
 		B = concept.intent
-		M = set(self.attributesIterator()) - B
+		M = set(self._attributesIterator()) - B
 		neighbors = set()
 		for x in list(M):
 			A1 = self.down(B | {x})
@@ -74,8 +74,20 @@ class Context:
 				objects.add(i)
 		return objects
 	
-	def objectsIterator(self):
+	def attrs2ids(self, attrs):
+		return [self.attributes.index(x) for x in attrs]
+	
+	def ids2attrs(self, ids):
+		return [self.attributes[x] for x in ids]
+	
+	def objects2ids(self, objects):
+		return [self.objects.index(x) for x in self.objects]
+	
+	def ids2objects(self, ids):
+		return [self.objects[x] for x in ids]
+		
+	def _objectsIterator(self):
 		return range(self.height)
 	
-	def attributesIterator(self):
+	def _attributesIterator(self):
 		return range(self.width)

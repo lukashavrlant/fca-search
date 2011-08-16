@@ -5,11 +5,12 @@ from fca.context import Context
 
 ## Search result -> context
 def getContextFromSR(searchResult, index):
-	keywords = _selectColumn('keywords', searchResult)
-	keywords = list(set(reduce(add, keywords)))
+	documents = searchResult['documents']
+	keywords = [x['keywords'][:3] for x in documents]
+	keywords = list(set(searchResult['terms'] + reduce(add, keywords)))
 	
-	sites = _selectColumn('url', searchResult)
-	ids = _selectColumn('id', searchResult)
+	sites = _selectColumn('url', documents)
+	ids = _selectColumn('id', documents)
 	
 	table = _getTable(index, ids, keywords)
 	return Context(table, sites, keywords)

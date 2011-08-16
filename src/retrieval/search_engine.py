@@ -16,10 +16,10 @@ class SearchEngine:
 		documents = self.index.get_documents(parsedQuery)
 		rankedResults = score(terms, documents, self.index)
 		sortedResults = sorted(rankedResults, key=lambda doc: doc['score'], reverse=True)
-		return sortedResults
+		return {'documents':sortedResults, 'terms':terms, 'pureQuery':query, 'parsedQuery':parsedQuery}
 		
 		
 	def _parse_query(self, query):
-		self.lastQuery = self.parser.parse(query, self.stopwords)
-		self.lastTerms = self.parser.terms(self.lastQuery)
-		return self.lastQuery, self.lastTerms
+		pquery = self.parser.parse(query, self.stopwords)
+		terms = self.parser.terms(pquery)
+		return pquery, terms
