@@ -1,6 +1,5 @@
 from retrieval.boolean_parser import BooleanParser
 from retrieval.ranking import score
-from retrieval.index import Index
 from common.string import remove_nonletters
 
 
