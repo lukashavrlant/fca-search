@@ -6,6 +6,7 @@ from preprocess.index_manager import IndexManager
 import sys
 from common.io import readfile
 from other.constants import DATA_FOLDER, DATABASES_FOLDER
+from retrieval.index import Index
 
 ## functions 
 def getCommand(text):
@@ -55,8 +56,7 @@ except IndexError:
 	print('search.py [database folder]')
 	sys.exit()
 	
-nosco = SearchEngine(database, getStopWords())
-index = IndexManager()
+nosco = SearchEngine(Index(database), getStopWords())
 
 try:
 	printSearch(str(sys.argv[2]), nosco)

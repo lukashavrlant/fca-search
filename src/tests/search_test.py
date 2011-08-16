@@ -3,12 +3,13 @@ from retrieval.search_engine import SearchEngine
 from other.constants import TEST_FOLDER
 from other.data import getStopWords
 from common.io import readfile
+from retrieval.index import Index
 
 
 class SearchTest(unittest.TestCase):
 
 	def test_SearchEngine(self):
-		temp = SearchEngine(TEST_FOLDER + 'database/', getStopWords()).search
+		temp = SearchEngine(Index(TEST_FOLDER + 'database/'), getStopWords()).search
 		fun = lambda query: repr(temp(query)['documents'])
 		ass = self.assertEquals
 		read = lambda name: readfile(TEST_FOLDER + 'results/' + name + '.txt')

@@ -5,9 +5,9 @@ from common.string import remove_nonletters
 
 
 class SearchEngine:
-	def __init__(self, index_folder, stopwords):
+	def __init__(self, index, stopwords):
 		self.parser = BooleanParser()
-		self.index = Index(index_folder)
+		self.index = index
 		self.stopwords = stopwords
 	
 	def search(self, query):
