@@ -16,8 +16,8 @@ def savefile(content, path):
 def savefiles(contents, paths):
 	each(savefile, contents, paths)
 
-def readfile(path):
-	fileObj = codecs.open(path, "r", "utf-8")
+def readfile(path, charset = 'utf-8'):
+	fileObj = codecs.open(path, "r", charset)
 	u = fileObj.read() 
 	fileObj.close()
 	return u
