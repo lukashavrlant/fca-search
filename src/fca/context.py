@@ -58,7 +58,7 @@ class Context:
 		return self.table[object]
 
 	def get_attribute_line(self, attribute):
-		return list(map(lambda x: x[attribute], self.table))
+		return [x[attribute] for x in self.table]
 
 	def getIntent(self, object):
 		attrs = set()
