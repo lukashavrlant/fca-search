@@ -6,7 +6,8 @@ from fca.context import Context
 ## Search result -> context
 def getContextFromSR(searchResult, index):
 	documents = searchResult['documents']
-	keywords = [x['keywords'][:3] for x in documents]
+	keywords = [x['keywords'] for x in documents]
+	keywords = [[y[0] for y in x] for x in keywords]
 	keywords = list(set(searchResult['terms'] + reduce(add, keywords)))
 	
 	sites = _selectColumn('url', documents)

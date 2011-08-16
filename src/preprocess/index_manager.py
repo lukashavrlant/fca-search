@@ -3,7 +3,6 @@ from preprocess.index_builder import toIndex, getKeywords, getDocumentsInfo
 from urllib.error import HTTPError
 from other.constants import DOCUMENT_INFO_NAME, ALL_WORDS_NAME
 from retrieval.index import Index
-from common.funcfun import lmap
 import os
 
 class IndexManager:
@@ -11,6 +10,9 @@ class IndexManager:
 	def __init__(self):
 		self.keylen = 1
 		self.keywordsCount = 10
+		self.keyScoreLimit = 35
+		self.minKeywords = 3
+		self.dynamicKeywords = True
 		
 	def build(self, urls, folder, stopwords):
 		"Builds an index in 'folder'"
@@ -46,7 +48,13 @@ class IndexManager:
 		keywords = getKeywords(indexInfo['parsedDocs'], Index(folder, documentsInfo))	
 			
 		for docInfo, allKeywords in zip(documentsInfo, keywords):
-			topKeywords = lmap(lambda x: x[0], allKeywords)[:self.keywordsCount]
+			if self.dynamicKeywords:
+				topKeywords = [x for x in allKeywords if x[1] > self.keyScoreLimit]
+				if len(topKeywords) < self.minKeywords:
+					topKeywords = allKeywords[:self.minKeywords]
+			else:
+				topKeywords = allKeywords[:self.keywordsCount]
+				
 			docInfo['keywords'] = topKeywords
 		
 		self._saveData(documentsInfo, infoFolder, DOCUMENT_INFO_NAME)

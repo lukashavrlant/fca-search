@@ -2,10 +2,8 @@
 
 from retrieval.search_engine import SearchEngine
 from other.data import getStopWords
-from preprocess.index_manager import IndexManager
 import sys
-from common.io import readfile
-from other.constants import DATA_FOLDER, DATABASES_FOLDER
+from other.constants import DATABASES_FOLDER
 from retrieval.index import Index
 
 ## functions 
