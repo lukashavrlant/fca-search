@@ -9,7 +9,7 @@ class SearchTest(unittest.TestCase):
 
 	def test_SearchEngine(self):
 		temp = SearchEngine(TEST_FOLDER + 'database/', getStopWords()).search
-		fun = lambda query: repr(temp(query))
+		fun = lambda query: repr(temp(query)['documents'])
 		ass = self.assertEquals
 		read = lambda name: readfile(TEST_FOLDER + 'results/' + name + '.txt')
 		
