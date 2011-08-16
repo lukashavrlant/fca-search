@@ -1,4 +1,4 @@
-from common.io import downloads, savefile
+from common.io import download, savefile
 from preprocess.index_builder import toIndex, getKeywords, getDocumentsInfo
 from urllib.error import HTTPError
 from other.constants import DOCUMENT_INFO_NAME, ALL_WORDS_NAME
@@ -23,14 +23,22 @@ class IndexManager:
 		distUrls = list(set(urls))
 		
 		try:
-			sites = downloads(distUrls)
-			indexInfo = toIndex(sites, distUrls, stopwords, self.keylen)
+			#sites = downloads(distUrls)
+			sites = []
+			downloadedURL = []
+			
+			for url in distUrls:
+				try:
+					sites.append(download(url))
+					downloadedURL.append(url)
+				except HTTPError as err:
+						print('Cannot download {0}'.format(err.filename))
+						print("HTTP error: {0}".format(err))
+			
+			indexInfo = toIndex(sites, downloadedURL, stopwords, self.keylen)
 			self._createFolder([indexFolder, infoFolder])
 			self._createIndex(indexInfo, indexFolder, infoFolder)
 			self._saveDocsInfo(indexInfo, folder, infoFolder)
-		except HTTPError as err:
-			print("HTTP error: {0}".format(err))
-			print("Filename: " + err.filename)
 		except IOError as err:
 			print("I/O error: {0}".format(err))
 	
