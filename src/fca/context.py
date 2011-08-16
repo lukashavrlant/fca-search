@@ -81,10 +81,10 @@ class Context:
 		return [self.attributes[x] for x in ids]
 	
 	def objects2ids(self, objects):
-		return [self.objects.index(x) for x in self.objects]
+		return {self.objects.index(x) for x in self.objects}
 	
 	def ids2objects(self, ids):
-		return [self.objects[x] for x in ids]
+		return {self.objects[x] for x in ids}
 		
 	def _objectsIterator(self):
 		return range(self.height)
