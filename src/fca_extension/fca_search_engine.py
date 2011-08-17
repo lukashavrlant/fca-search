@@ -6,26 +6,16 @@ class FCASearchEngine:
 		self.index = index
 		
 	def search(self, query):
-		originResults = self.engine.search(query)
-		#modifResults = self._getUpperResults(originResults)
-		
-		originContext = getContextFromSR(originResults, self.index)
-		#modifContext = getContextFromSR(modifResults, self.index)
-		
+		originResults = self.engine.search(query)		
+		originContext = getContextFromSR(originResults, self.index)		
 		sites = {x['url'] for x in originResults['documents']}
-		originSitesID = originContext.objects2ids(sites)
-		#modifSitesID = modifContext.objects2ids(sites) 
-		
+		originSitesID = originContext.objects2ids(sites)		
 		originSearchConcept = self._getSearchConcept(originContext, originSitesID)
 		lowerN = originContext.lowerNeighbors(originSearchConcept)
 		lowerN = {x.translate(originContext) for x in lowerN}
 		terms = set(originResults['terms']) | originSearchConcept.translate(originContext).intentNames
 		specialization = [x.intentNames - terms for x in lowerN]
-		
-		#modifSearchConcept = self._getSearchConcept(modifContext, modifSitesID)
-		#upperN = modifContext.upperNeighbors(modifSearchConcept)
-		#upperN = {x.translate(modifContext) for x in upperN}
-		
+		specialization = [{self.index.stem2word(stem) for stem in sugg} for sugg in specialization]
 		return {'origin':originResults, 'lower':lowerN, 'specialization':specialization}
 	
 	def _getUpperResults(self, originResults):
