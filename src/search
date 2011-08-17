@@ -45,6 +45,7 @@ def printSearch(query, searchEngine):
 	print('Specialization:' + str(FCAresults['specialization']))
 	print('Search query: ' + str(results['parsedQuery']))
 	print('Number results: ' + str(len(documents)))
+	print('Time: ' +str(searchEngine.watcher))
 	print()
 
 

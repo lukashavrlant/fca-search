@@ -1,11 +1,13 @@
 from common.io import download, savefile
 from preprocess.index_builder import toIndex, getKeywords, getDocumentsInfo
 from urllib.error import HTTPError
-from other.constants import DOCUMENT_INFO_NAME, ALL_WORDS_NAME, STEMSDICT_NAME
+from other.constants import DOCUMENT_INFO_NAME, ALL_WORDS_NAME, STEMSDICT_NAME,\
+	KEYWORDSINDOCUMENTS_NAME
 from retrieval.index import Index
 import os
 from common.czech_stemmer import wordCounter, savedStems
 from common.string import strip_accents
+from other.stopwatch import Stopwatch
 
 class IndexManager:
 	
@@ -18,32 +20,57 @@ class IndexManager:
 		
 	def build(self, urls, folder, stopwords):
 		"Builds an index in 'folder'"
+		watcher = Stopwatch()
+		watcher.start()
+		self._build(urls, folder, stopwords)
+		watcher.elapsed('hotovo')
+		print(watcher)
 		
+			
+	def _build(self, urls, folder, stopwords):
 		indexFolder = folder + 'index/'
 		infoFolder = folder + 'info/'
 		
-		distUrls = list(set(urls))
+		sites, downloadedURL = self._downloadDocuments(urls)
 		
-		try:
-			#sites = downloads(distUrls)
-			sites = []
-			downloadedURL = []
-			
-			for url in distUrls:
-				try:
-					sites.append(download(url))
-					downloadedURL.append(url)
-				except HTTPError as err:
-						print('Cannot download {0}'.format(err.filename))
-						print("HTTP error: {0}".format(err))
-			
+		try:	
 			indexInfo = toIndex(sites, downloadedURL, stopwords, self.keylen)
 			self._createFolder([indexFolder, infoFolder])
 			self._createIndex(indexInfo, indexFolder, infoFolder)
 			self._saveDocsInfo(indexInfo, folder, infoFolder)
 			self._saveData(self._getStemDict(), infoFolder, STEMSDICT_NAME)
+			self._saveData(self._getKeywordsInfo(self.totalKeywords, indexInfo['parsedDocs']), infoFolder, KEYWORDSINDOCUMENTS_NAME)
 		except IOError as err:
 			print("I/O error: {0}".format(err))
+			
+	def _downloadDocuments(self, urls):
+		distUrls = list(set(urls))
+		
+		sites = []
+		downloadedURL = []
+		
+		for url in distUrls:
+			try:
+				sites.append(download(url))
+				downloadedURL.append(url)
+			except HTTPError as err:
+					print('Cannot download {0}'.format(err.filename))
+					print("HTTP error: {0}".format(err))
+		
+		return sites, downloadedURL
+			
+	def _getKeywordsInfo(self, keywords, documents):
+		documents = [set(x) for x in documents]
+		keywords = {x[0] for x in keywords}
+		keywordsInDocuments = []
+		for doc in documents:
+			keywordsInDocument = set()
+			for keyword in keywords:
+				if keyword in doc:
+					keywordsInDocument.add(keyword)
+			keywordsInDocuments.append(keywordsInDocument)
+			
+		return {'inDocuments':keywordsInDocuments, 'keywords':keywords}
 			
 	def _getStemDict(self):
 		stemsWords = {}
@@ -70,19 +97,22 @@ class IndexManager:
 			
 	def _saveDocsInfo(self, indexInfo, folder, infoFolder):
 		documentsInfo = getDocumentsInfo(indexInfo)
-		keywords = getKeywords(indexInfo['parsedDocs'], Index(folder, documentsInfo))	
+		keywords = getKeywords(indexInfo['parsedDocs'], Index(folder, documentsInfo))
+		totalKeywords = set()	
 			
-		for docInfo, allKeywords in zip(documentsInfo, keywords):
+		for docInfo, allDocKeywords in zip(documentsInfo, keywords):
 			if self.dynamicKeywords:
-				topKeywords = [x for x in allKeywords if x[1] > self.keyScoreLimit]
+				topKeywords = [x for x in allDocKeywords if x[1] > self.keyScoreLimit]
 				if len(topKeywords) < self.minKeywords:
-					topKeywords = allKeywords[:self.minKeywords]
+					topKeywords = allDocKeywords[:self.minKeywords]
 			else:
-				topKeywords = allKeywords[:self.keywordsCount]
+				topKeywords = allDocKeywords[:self.keywordsCount]
 				
 			docInfo['keywords'] = topKeywords
+			totalKeywords = totalKeywords.union(topKeywords)
 		
 		self._saveData(documentsInfo, infoFolder, DOCUMENT_INFO_NAME)
+		self.totalKeywords = totalKeywords
 		
 	
 	def _saveIndex(self, index, dir):

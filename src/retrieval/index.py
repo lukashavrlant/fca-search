@@ -4,7 +4,8 @@ from functools import reduce
 from operator import and_, or_
 from common.funcfun import lmap
 from retrieval.boolean_parser import Node
-from other.constants import INDEX_FOLDER_NAME, DOCUMENT_INFO_NAME, INFO_FOLDER_NAME, STEMSDICT_NAME
+from other.constants import INDEX_FOLDER_NAME, DOCUMENT_INFO_NAME, INFO_FOLDER_NAME, STEMSDICT_NAME,\
+	KEYWORDSINDOCUMENTS_NAME
 
 class Index:
 	
@@ -16,6 +17,8 @@ class Index:
 		self.documents_info = documentsInfo if documentsInfo else self._get_translation()
 		self.total_records = len(self.documents_info)
 		self.stemsDict = None
+		self.docKeywords = None
+		self.allKeywords = None
 		
 	def get_documents(self, parsedQuery):
 		documents = self._by_node(parsedQuery)
@@ -28,7 +31,16 @@ class Index:
 		return self.get_stem_info(term).documents.get(documentID, 0)
 	
 	def contains_term(self, term, documentID):
-		return self.term_frequency(term, documentID) > 0
+		#return self.term_frequency(term, documentID) > 0
+		if not self.docKeywords:
+			temp = eval(readfile(self.directory + INFO_FOLDER_NAME + KEYWORDSINDOCUMENTS_NAME))
+			self.docKeywords = temp['inDocuments']
+			self.allKeywords = temp['keywords']
+		
+		if term in self.allKeywords:
+			return term in self.docKeywords[documentID]
+		else:
+			return self.term_frequency(term, documentID) > 0
 	
 	def document_frequency(self, term):
 		return len(self.get_stem_info(term).documents)

@@ -17,4 +17,4 @@ class Stopwatch:
 		self.times.append((fromLast, name))
 		
 	def __str__(self):
-		return 'total: ' + str(round(self.total, 5)) + ' ' + str(self.times)
+		return 'total: ' + str(round(self.total, 5)) + ' ' + str(self.times[1:])
