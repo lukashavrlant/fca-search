@@ -4,7 +4,7 @@ from functools import reduce
 from operator import and_, or_
 from common.funcfun import lmap
 from retrieval.boolean_parser import Node
-from other.constants import INDEX_FOLDER_NAME, DOCUMENT_INFO_NAME, INFO_FOLDER_NAME
+from other.constants import INDEX_FOLDER_NAME, DOCUMENT_INFO_NAME, INFO_FOLDER_NAME, STEMSDICT_NAME
 
 class Index:
 	
@@ -15,6 +15,7 @@ class Index:
 		self.directory = directory
 		self.documents_info = documentsInfo if documentsInfo else self._get_translation()
 		self.total_records = len(self.documents_info)
+		self.stemsDict = None
 		
 	def get_documents(self, parsedQuery):
 		documents = self._by_node(parsedQuery)
@@ -34,6 +35,12 @@ class Index:
 	
 	def getKeywords(self, docID):
 		return self.documents_info[docID]['keywords']
+	
+	def stem2word(self, stem):
+		if not self.stemsDict:
+			self.stemsDict = eval(readfile(self.directory + INFO_FOLDER_NAME + STEMSDICT_NAME))
+			
+		return self.stemsDict.get(stem, stem)
 		
 	def _by_node(self, node):
 		if isinstance(node, Node):
