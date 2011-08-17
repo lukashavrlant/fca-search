@@ -12,26 +12,17 @@ from collections import Counter
 savedStems = {}
 wordCounter = Counter()
 
-def saveStems():
-	try:
-		stem = savedStems[word]
-	except Exception:
-		stem = fun(word, aggressive)
-		savedStems[word] = stem
-	wordCounter[word] += 1
-	return stem
-
 def createStem(word, save=False, aggressive=False):
-	if save:
-		try:
-			stem = savedStems[word]
-		except Exception:
-			stem = cz_stem(word, aggressive)
-			savedStems[word] = stem
-		wordCounter[word] += 1
-		return stem
-	else:
-		return cz_stem(word, aggressive)
+    if save:
+        try:
+            stem = savedStems[word]
+        except Exception:
+            stem = cz_stem(word, aggressive)
+            savedStems[word] = stem
+        wordCounter[word] += 1
+        return stem
+    else:
+        return cz_stem(word, aggressive)
 
 def cz_stem(word, aggressive=False):
     if not re.match("^\\w+$", word):
