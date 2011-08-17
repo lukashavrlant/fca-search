@@ -5,6 +5,7 @@ from other.data import getStopWords
 import sys
 from other.constants import DATABASES_FOLDER
 from retrieval.index import Index
+from fca_extension.fca_search_engine import FCASearchEngine
 
 ## functions 
 def getCommand(text):
@@ -18,8 +19,9 @@ def getQuery(text):
 	spaceIndex = text.find(' ')
 	return str(text[spaceIndex + 1:])
 
-def printSearch(query, nosco):
-	results = nosco.search(query)
+def printSearch(query, searchEngine):
+	FCAresults = searchEngine.search(query)
+	results = FCAresults['origin']
 	documents = results['documents']
 	
 	if documents:
@@ -40,6 +42,7 @@ def printSearch(query, nosco):
 			print(str(pos+1).ljust(maxPos), url.ljust(maxURL), keywords.ljust(maxKeywords), score.ljust(maxScore), wordscount)
 	
 	print()
+	print('Specialization:' + str(FCAresults['specialization']))
 	print('Search query: ' + str(results['parsedQuery']))
 	print('Number results: ' + str(len(documents)))
 	print()
@@ -54,9 +57,11 @@ except IndexError:
 	print('search.py [database folder]')
 	sys.exit()
 	
-nosco = SearchEngine(Index(database), getStopWords())
+index = Index(database)
+searchEngine = SearchEngine(index, getStopWords())
+fca = FCASearchEngine(searchEngine, index)
 
 try:
-	printSearch(str(sys.argv[2]), nosco)
+	printSearch(str(sys.argv[2]), fca)
 except Exception as e:
 	print(str(e))

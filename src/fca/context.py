@@ -75,13 +75,13 @@ class Context:
 		return objects
 	
 	def attrs2ids(self, attrs):
-		return [self.attributes.index(x) for x in attrs]
+		return {self.attributes.index(x) for x in attrs}
 	
 	def ids2attrs(self, ids):
-		return [self.attributes[x] for x in ids]
+		return {self.attributes[x] for x in ids}
 	
 	def objects2ids(self, objects):
-		return {self.objects.index(x) for x in self.objects}
+		return {self.objects.index(x) for x in objects}
 	
 	def ids2objects(self, ids):
 		return {self.objects[x] for x in ids}
