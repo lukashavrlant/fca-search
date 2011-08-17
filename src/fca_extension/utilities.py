@@ -8,7 +8,7 @@ def getContextFromSR(searchResult, index):
 	documents = searchResult['documents']
 	keywords = [x['keywords'] for x in documents]
 	keywords = [[y[0] for y in x] for x in keywords]
-	keywords = list(set(searchResult['terms'] + reduce(add, keywords)))
+	keywords = list(set(searchResult['terms'] + reduce(add, keywords, [])))
 	
 	sites = _selectColumn('url', documents)
 	ids = _selectColumn('id', documents)
