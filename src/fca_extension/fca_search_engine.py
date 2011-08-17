@@ -19,7 +19,7 @@ class FCASearchEngine:
 		originSearchConcept = self._getSearchConcept(originContext, originSitesID)
 		lowerN = originContext.lowerNeighbors(originSearchConcept)
 		lowerN = {x.translate(originContext) for x in lowerN}
-		terms = set(originResults['terms'])
+		terms = set(originResults['terms']) | originSearchConcept.translate(originContext).intentNames
 		specialization = [x.intentNames - terms for x in lowerN]
 		
 		#modifSearchConcept = self._getSearchConcept(modifContext, modifSitesID)
