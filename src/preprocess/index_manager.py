@@ -1,7 +1,7 @@
 from common.io import download, savefile
 from preprocess.index_builder import toIndex, getKeywords, getDocumentsInfo
 from urllib.error import HTTPError
-from other.constants import DOCUMENT_INFO_NAME, ALL_WORDS_NAME
+from other.constants import DOCUMENT_INFO_NAME, ALL_WORDS_NAME, STEMSDICT_NAME
 from retrieval.index import Index
 import os
 from common.czech_stemmer import wordCounter, savedStems
@@ -41,7 +41,7 @@ class IndexManager:
 			self._createFolder([indexFolder, infoFolder])
 			self._createIndex(indexInfo, indexFolder, infoFolder)
 			self._saveDocsInfo(indexInfo, folder, infoFolder)
-			self._saveData(self._getStemDict(), infoFolder, 'stems.txt')
+			self._saveData(self._getStemDict(), infoFolder, STEMSDICT_NAME)
 		except IOError as err:
 			print("I/O error: {0}".format(err))
 			
