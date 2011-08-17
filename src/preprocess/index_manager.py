@@ -4,6 +4,8 @@ from urllib.error import HTTPError
 from other.constants import DOCUMENT_INFO_NAME, ALL_WORDS_NAME
 from retrieval.index import Index
 import os
+from common.czech_stemmer import wordCounter, savedStems
+from common.string import strip_accents
 
 class IndexManager:
 	
@@ -39,8 +41,23 @@ class IndexManager:
 			self._createFolder([indexFolder, infoFolder])
 			self._createIndex(indexInfo, indexFolder, infoFolder)
 			self._saveDocsInfo(indexInfo, folder, infoFolder)
+			self._saveData(self._getStemDict(), infoFolder, 'stems.txt')
 		except IOError as err:
 			print("I/O error: {0}".format(err))
+			
+	def _getStemDict(self):
+		stemsWords = {}
+		
+		for word, stem in savedStems.items():
+			stem = strip_accents(stem)
+			temp = stemsWords.get(stem, [])
+			temp.append(word)
+			stemsWords[stem] = temp
+			
+		for stem, words in stemsWords.items():
+			stemsWords[stem] = max([(x, wordCounter[x]) for x in words], key=lambda x: x[1])[0]
+			
+		return stemsWords
 	
 	def _createFolder(self, folders):
 		for folder in folders:

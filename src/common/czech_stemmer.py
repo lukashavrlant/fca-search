@@ -7,7 +7,23 @@ Ported from the Java implementation available at:
 '''
 import re
 import sys
+from collections import Counter
 
+savedStems = {}
+wordCounter = Counter()
+
+def saveStems(fun):
+	def ret(word, aggressive=False):
+		try:
+			stem = savedStems[word]
+		except Exception:
+			stem = fun(word, aggressive)
+			savedStems[word] = stem
+		wordCounter[word] += 1
+		return stem
+	return ret
+
+@saveStems
 def cz_stem(word, aggressive=False):
     if not re.match("^\\w+$", word):
         return word
