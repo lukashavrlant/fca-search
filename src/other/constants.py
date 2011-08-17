@@ -1,5 +1,7 @@
+import os
+
 # folders
-ROOT_FOLDER = __file__.replace('src/other/constants.py', '')
+ROOT_FOLDER = os.path.realpath(__file__).replace('src/other/constants.py', '')
 FILES_FOLDER = ROOT_FOLDER + 'files/'
 DATA_FOLDER = FILES_FOLDER + 'data/'
 TEST_FOLDER = FILES_FOLDER + 'tests/'
