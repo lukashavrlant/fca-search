@@ -8,9 +8,11 @@ def download(site):
 def downloads(sites):
 	return list(map(download, sites))
 
-def savefile(content, path):
+def savefile(content, path, charset = 'utf-8'):
 	file = open(path, 'wb')
-	file.write(content.encode('utf-8'))
+	if charset:
+		content = content.encode(charset)
+	file.write(content)
 	file.close()
 	
 def savefiles(contents, paths):

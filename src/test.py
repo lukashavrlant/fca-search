@@ -1,15 +1,11 @@
-import getopt, sys
+import os
+from subprocess import Popen, PIPE
 
-def main():
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], 'a:b:c:d:')
-        print(opts)
-        print(args)
-    except getopt.GetoptError as err:
-        # print help information and exit:
-        print(err) # will print something like "option -a not recognized"
-        sys.exit(2)
-    
+cmd = '/Users/lukashavrlant/Python/fca-search/src/search '
+fun = lambda dtb, q: os.popen(cmd + '-d ' + dtb + ' -q "' + q + '"')
+stream = fun('matweb', 'derivace')
+#print(stream.read())
 
-if __name__ == "__main__":
-    main()
+
+print(Popen("/Users/lukashavrlant/Python/fca-search/src/search -d matweb -q derivace nt", stdout=PIPE, shell=True).stdout.read())
+#stream = os.popen("some_command with args")
