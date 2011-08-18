@@ -17,6 +17,7 @@ class IndexManager:
 		self.keyScoreLimit = 35
 		self.minKeywords = 3
 		self.dynamicKeywords = True
+		self.shutUp = True
 		
 	def build(self, urls, folder, stopwords):
 		"Builds an index in 'folder'"
@@ -26,6 +27,10 @@ class IndexManager:
 		watcher.elapsed('hotovo')
 		print(watcher)
 		
+	def _elapsed(self, status):
+		if not self.shutUp:
+			print(status)
+		
 			
 	def _build(self, urls, folder, stopwords):
 		indexFolder = folder + 'index/'
@@ -33,13 +38,18 @@ class IndexManager:
 		
 		sites, downloadedURL = self._downloadDocuments(urls)
 		
-		try:	
-			indexInfo = toIndex(sites, downloadedURL, stopwords, self.keylen)
+		try:
+			self._elapsed('Creating index...')
+			indexInfo = toIndex(sites, downloadedURL, stopwords, self.keylen, self._elapsed)
 			self._createFolder([indexFolder, infoFolder])
 			self._createIndex(indexInfo, indexFolder, infoFolder)
+			self._elapsed('Creating documents info and keywords...')
 			self._saveDocsInfo(indexInfo, folder, infoFolder)
-			self._saveData(self._getStemDict(), infoFolder, STEMSDICT_NAME)
+			self._elapsed('Creating stems dictionary...')
+			self._saveData(self._getStemDict(self.totalKeywords), infoFolder, STEMSDICT_NAME)
+			self._elapsed('Creating keywords in documents relation...')
 			self._saveData(self._getKeywordsInfo(self.totalKeywords, indexInfo['parsedDocs']), infoFolder, KEYWORDSINDOCUMENTS_NAME)
+			self._elapsed('Done!')
 		except IOError as err:
 			print("I/O error: {0}".format(err))
 			
@@ -51,12 +61,13 @@ class IndexManager:
 		
 		for url in distUrls:
 			try:
+				self._elapsed('Downloading: ' + url)
 				sites.append(download(url))
 				downloadedURL.append(url)
 			except HTTPError as err:
-					print('Cannot download {0}'.format(err.filename))
-					print("HTTP error: {0}".format(err))
-		
+				print('Cannot download {0}'.format(err.filename))
+				print("HTTP error: {0}".format(err))
+					
 		return sites, downloadedURL
 			
 	def _getKeywordsInfo(self, keywords, documents):
@@ -72,14 +83,16 @@ class IndexManager:
 			
 		return {'inDocuments':keywordsInDocuments, 'keywords':keywords}
 			
-	def _getStemDict(self):
+	def _getStemDict(self, keywords):
 		stemsWords = {}
+		keywords = {x[0] for x in keywords}
 		
 		for word, stem in savedStems.items():
 			stem = strip_accents(stem)
-			temp = stemsWords.get(stem, [])
-			temp.append(word)
-			stemsWords[stem] = temp
+			if stem in keywords:
+				temp = stemsWords.get(stem, [])
+				temp.append(word)
+				stemsWords[stem] = temp
 			
 		for stem, words in stemsWords.items():
 			stemsWords[stem] = max([(x, wordCounter[x]) for x in words], key=lambda x: x[1])[0]

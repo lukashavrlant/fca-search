@@ -68,6 +68,7 @@ while(True):
 	elif cmd == 'bi':
 		urlsFilename = getQuery(cmdstring)
 		urls = eval(readfile(DATA_FOLDER + urlsFilename + '.txt'))
+		index.shutUp = False
 		index.build(urls, database, getStopWords())
 		print('Done.')
 	else:
