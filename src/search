@@ -36,10 +36,11 @@ def printSearch(searchResults, stopwatch):
 	print('Specialization:' + str(searchResults['specialization']))
 	print('Search query: ' + str(results['parsedQuery']))
 	print('Number results: ' + str(len(documents)))
-	print('Time: ' +str(stopwatch))
+	if stopwatch:
+		print('Time: ' +str(stopwatch))
 	print()
 
-def search(databaseName, query):
+def search(databaseName, query, printTime):
 	stopwatch = Stopwatch()
 	stopwatch.start()
 	database = DATABASES_FOLDER + databaseName + '/'
@@ -49,7 +50,7 @@ def search(databaseName, query):
 	fca = FCASearchEngine(searchEngine, index)
 	fca.stopwatch = stopwatch
 	searchResults = fca.search(query)
-	printSearch(searchResults, stopwatch)
+	printSearch(searchResults, stopwatch if printTime else None)
 	
 def buildIndex(databaseName, sourceFileName):
 	database = DATABASES_FOLDER + databaseName + '/'
@@ -67,7 +68,7 @@ if __name__ == '__main__':
 		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:s:')
 		opts = dict(opts)
 		if '-q' in opts:
-			search(opts['-d'], opts['-q'])
+			search(opts['-d'], opts['-q'], 'nt' not in args)
 		elif '-b' in opts:
 			databaseName = opts['-b']
 			sourceFileName = opts.get('-s', opts['-b'])
