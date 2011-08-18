@@ -2,26 +2,17 @@
 
 from retrieval.search_engine import SearchEngine
 from other.data import getStopWords
-import sys
-from other.constants import DATABASES_FOLDER
+from other.constants import DATABASES_FOLDER, DATA_FOLDER
 from retrieval.index import Index
 from fca_extension.fca_search_engine import FCASearchEngine
+import getopt, sys
+from common.io import readfile
+from preprocess.index_manager import IndexManager
+from other.stopwatch import Stopwatch
 
 ## functions 
-def getCommand(text):
-	spaceIndex = text.find(' ')
-	if spaceIndex == -1:
-		return text
-	
-	return text[:spaceIndex]
-
-def getQuery(text):
-	spaceIndex = text.find(' ')
-	return str(text[spaceIndex + 1:])
-
-def printSearch(query, searchEngine):
-	FCAresults = searchEngine.search(query)
-	results = FCAresults['origin']
+def printSearch(searchResults, stopwatch):
+	results = searchResults['origin']
 	documents = results['documents']
 	
 	if documents:
@@ -42,27 +33,45 @@ def printSearch(query, searchEngine):
 			print(str(pos+1).ljust(maxPos), url.ljust(maxURL), keywords.ljust(maxKeywords), score.ljust(maxScore), wordscount)
 	
 	print()
-	print('Specialization:' + str(FCAresults['specialization']))
+	print('Specialization:' + str(searchResults['specialization']))
 	print('Search query: ' + str(results['parsedQuery']))
 	print('Number results: ' + str(len(documents)))
-	print('Time: ' +str(searchEngine.watcher))
+	print('Time: ' +str(stopwatch))
 	print()
 
-
+def search(databaseName, query):
+	stopwatch = Stopwatch()
+	stopwatch.start()
+	database = DATABASES_FOLDER + databaseName + '/'
+	index = Index(database)
+	searchEngine = SearchEngine(index, getStopWords())
+	stopwatch.elapsed('initialization')
+	fca = FCASearchEngine(searchEngine, index)
+	fca.stopwatch = stopwatch
+	searchResults = fca.search(query)
+	printSearch(searchResults, stopwatch)
+	
+def buildIndex(databaseName, sourceFileName):
+	database = DATABASES_FOLDER + databaseName + '/'
+	sourceFile = DATA_FOLDER + sourceFileName + '.txt'
+	links = eval(readfile(sourceFile))
+	indexManager = IndexManager()
+	indexManager.shutUp = False
+	indexManager.build(links, database, getStopWords())
+	
+	
 ## main
 
-try:
-	database = DATABASES_FOLDER + str(sys.argv[1]) + '/'
-except IndexError:
-	print('Too few arguments:')
-	print('search.py [database folder]')
-	sys.exit()
-	
-index = Index(database)
-searchEngine = SearchEngine(index, getStopWords())
-fca = FCASearchEngine(searchEngine, index)
-
-try:
-	printSearch(str(sys.argv[2]), fca)
-except Exception as e:
-	print(str(e))
+if __name__ == '__main__':
+	try:
+		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:s:')
+		opts = dict(opts)
+		if '-q' in opts:
+			search(opts['-d'], opts['-q'])
+		elif '-b' in opts:
+			databaseName = opts['-b']
+			sourceFileName = opts.get('-s', opts['-b'])
+			buildIndex(databaseName, sourceFileName)
+	except getopt.GetoptError as err:
+		print(err) 
+		sys.exit(2)

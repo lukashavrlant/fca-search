@@ -6,10 +6,10 @@ class FCASearchEngine:
 		self.engine = searchEngine
 		self.index = index
 		self.maxDocs = 50
+		self.stopwatch = None
 		
 	def search(self, query):
-		watcher = Stopwatch()
-		watcher.start()
+		watcher = self.stopwatch or Stopwatch()
 		originResults = self.engine.search(query)	
 		watcher.elapsed('searching')
 		
@@ -31,7 +31,6 @@ class FCASearchEngine:
 		specialization = [{self.index.stem2word(stem) for stem in sugg} for sugg in specialization]
 		watcher.elapsed('stem2words')
 		
-		self.watcher = watcher
 		return {'origin':originResults, 'lower':lowerN, 'specialization':specialization}
 	
 	def _getUpperResults(self, originResults):
