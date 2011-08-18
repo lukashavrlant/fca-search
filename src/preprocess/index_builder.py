@@ -1,5 +1,5 @@
 from collections import Counter
-from common.funcfun import lmap
+from common.funcfun import lmap, nothing
 from functools import reduce
 from operator import add
 from preprocess.words import get_words, getstem
@@ -49,7 +49,7 @@ def getDocumentsInfo(info):
 		arr.append(dic)
 	return arr
 
-def toIndex(documents, urls, stopwords, keylen, elapsed):
+def toIndex(documents, urls, stopwords, keylen, elapsed = nothing):
 	htmlrem = HTMLRemover()
 	parsedDocs = []
 	correctUrl = []
@@ -59,8 +59,9 @@ def toIndex(documents, urls, stopwords, keylen, elapsed):
 			elapsed('parsing: ' + url)
 			parsedDocs.append(get_words(normalize_text(htmlrem.compile(site)), stopwords))
 			correctUrl.append(url)
-		except Exception:
+		except Exception as err:
 			print('Cannot parse ' + str(url))
+			print(str(err))
 	
 	sitesStats = getDocsStats(parsedDocs)
 	index = groupByKeylen(sitesStats['occurences'], keylen)

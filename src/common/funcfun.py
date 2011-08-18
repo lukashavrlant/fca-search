@@ -19,3 +19,6 @@ def sreduce(functions, arg):
 	for fun in functions:
 		temp = fun(temp)
 	return temp
+
+def nothing(*args):
+	pass
