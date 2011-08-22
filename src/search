@@ -32,8 +32,11 @@ def printSearch(searchResults, stopwatch):
 	
 			print(str(pos+1).ljust(maxPos), url.ljust(maxURL), keywords.ljust(maxKeywords), score.ljust(maxScore), wordscount)
 	
+	spec = searchResults['specialization']
+	spec = [list(x) for x in spec]
+	spec = sorted(spec, key=lambda x: x[0])
 	print()
-	print('Specialization:' + str(searchResults['specialization']))
+	print('Specialization:' + str(spec))
 	print('Search query: ' + str(results['parsedQuery']))
 	print('Number results: ' + str(len(documents)))
 	if stopwatch:
