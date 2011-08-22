@@ -34,10 +34,7 @@ class Index:
 			sh = shelve.open(self.directory + INDEX_FOLDER_NAME + '/' + prefix)
 			try:
 				record = sh[stem]
-				stemObject = Stem()
-				stemObject.name = stem
-				stemObject.documents = dict(record)
-				stemObject.docids = stemObject.documents.keys()
+				stemObject = Stem(record, stem)
 				self.searchedStem[stem] = stemObject
 			except KeyError:
 				stemObject = Stem()
