@@ -1,4 +1,4 @@
-from common.io import download, savefile
+from common.io import download
 from preprocess.index_builder import toIndex, getKeywords, getDocumentsInfo
 from urllib.error import HTTPError
 from other.constants import DOCUMENT_INFO_NAME, STEMSDICT_NAME,	KEYWORDSINDOCUMENTS_NAME
@@ -30,7 +30,6 @@ class IndexManager:
 	def _elapsed(self, status):
 		if not self.shutUp:
 			print(status)
-		
 			
 	def _build(self, urls, folder, stopwords):
 		indexFolder = folder + 'index/'
@@ -114,7 +113,6 @@ class IndexManager:
 			
 	def _createIndex(self, indexInfo, indexFolder, infoFolder):
 		self._saveIndex(indexInfo['index'], indexFolder)
-		#self._saveData(indexInfo['allwords'], infoFolder, ALL_WORDS_NAME)
 			
 	def _getDocsInfo(self, indexInfo, folder, infoFolder):
 		documentsInfo = getDocumentsInfo(indexInfo)
@@ -132,7 +130,6 @@ class IndexManager:
 			docInfo['keywords'] = topKeywords
 			totalKeywords = totalKeywords.union(topKeywords)
 		
-		#self._saveData(documentsInfo, infoFolder, DOCUMENT_INFO_NAME)
 		self.totalKeywords = totalKeywords
 		return documentsInfo
 		
@@ -143,7 +140,3 @@ class IndexManager:
 			for steminfo in data:
 				dtb[steminfo[0][0]] = steminfo[1]
 			dtb.close()
-			
-		
-	def _saveData(self, data, folder, name):
-		savefile(repr(data), folder + name)
