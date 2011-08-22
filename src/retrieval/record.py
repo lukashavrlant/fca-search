@@ -3,7 +3,7 @@ from retrieval.stem import Stem
 class Record:
 	def __init__(self, line):
 		if line:
-			self.record = eval(line)
+			self.record = line
 		else:
 			self.record = False
 

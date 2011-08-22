@@ -19,8 +19,6 @@ def document_score(terms, docID, index):
 	return res
 
 def score(terms, documents, index):
-	score = {}
-	
 	for doc in documents:
 		doc['score'] = document_score(terms, doc['id'], index)
 		

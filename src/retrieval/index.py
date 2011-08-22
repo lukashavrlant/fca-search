@@ -1,39 +1,57 @@
-from common.io import readfile
-from retrieval.record import Record
 from functools import reduce
 from operator import and_, or_
 from common.funcfun import lmap
 from retrieval.boolean_parser import Node
+import shelve
 from other.constants import INDEX_FOLDER_NAME, DOCUMENT_INFO_NAME, INFO_FOLDER_NAME, STEMSDICT_NAME,\
 	KEYWORDSINDOCUMENTS_NAME
+from retrieval.stem import Stem
 
 class Index:
 	
 	def __init__(self, directory, documentsInfo = None):
-		self.dtb = {}
+		self.info = shelve.open(directory + INFO_FOLDER_NAME + 'info')
 		self.keylen = 1
-		self.total_records = 0
 		self.directory = directory
 		self.documents_info = documentsInfo if documentsInfo else self._get_translation()
 		self.total_records = len(self.documents_info)
 		self.stemsDict = None
 		self.docKeywords = None
 		self.allKeywords = None
+		self.searchedStem = {}
+		
 		
 	def get_documents(self, parsedQuery):
 		documents = self._by_node(parsedQuery)
 		return lmap(self._translate, documents)
 	
 	def get_stem_info(self, stem):
-		return self._get_record(stem[:self.keylen]).stem(stem)
+		stemObject = self.searchedStem.get(stem, False)
+		if stemObject:
+			return stemObject
+		else:
+			prefix = stem[:self.keylen]
+			sh = shelve.open(self.directory + INDEX_FOLDER_NAME + '/' + prefix)
+			try:
+				record = sh[stem]
+				stemObject = Stem()
+				stemObject.name = stem
+				stemObject.documents = dict(record)
+				stemObject.docids = stemObject.documents.keys()
+				self.searchedStem[stem] = stemObject
+			except KeyError:
+				stemObject = Stem()
+			return stemObject
 	
 	def term_frequency(self, term, documentID):
-		return self.get_stem_info(term).documents.get(documentID, 0)
+		stem = self.get_stem_info(term)
+		documents = stem.documents
+		freq = documents.get(documentID, 0)
+		return freq
 	
 	def contains_term(self, term, documentID):
-		#return self.term_frequency(term, documentID) > 0
 		if not self.docKeywords:
-			temp = eval(readfile(self.directory + INFO_FOLDER_NAME + KEYWORDSINDOCUMENTS_NAME))
+			temp = self.info[KEYWORDSINDOCUMENTS_NAME] 
 			self.docKeywords = temp['inDocuments']
 			self.allKeywords = temp['keywords']
 		
@@ -50,7 +68,7 @@ class Index:
 	
 	def stem2word(self, stem):
 		if not self.stemsDict:
-			self.stemsDict = eval(readfile(self.directory + INFO_FOLDER_NAME + STEMSDICT_NAME))
+			self.stemsDict = self.info[STEMSDICT_NAME] 
 			
 		return self.stemsDict.get(stem, stem)
 		
@@ -80,30 +98,11 @@ class Index:
 		return lmap(self._translate, reduce(and_, map(self._by_word, words)))
 	
 	def _by_word(self, stem):
-		record = self._get_record(stem[:self.keylen])
-		
-		if record:
-			documents = record.stem(stem)
-			if documents:
-				return set(documents.docids)
-
-		return set()
-		
-		
-	def _get_record(self, prefix):
-		return self.dtb.get(prefix) or self._load_record(prefix)
-		
-	def _load_record(self, prefix):
-		try:
-			record = Record(readfile(self.directory + INDEX_FOLDER_NAME + prefix + '.txt'))
-		except:
-			record = Record('')
-		
-		self.dtb[prefix] = record
-		return record
+		documents = self.get_stem_info(stem)
+		return documents.docids
 	
 	def _get_translation(self):
-		return eval(readfile(self.directory + INFO_FOLDER_NAME + DOCUMENT_INFO_NAME))
+		return self.info[DOCUMENT_INFO_NAME] 
 	
 	def _translate(self, docid):
 		return self.documents_info[docid]

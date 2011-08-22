@@ -12,8 +12,8 @@ INFO_FOLDER_NAME = 'info/'
 
 
 # files
-DOCUMENT_INFO_NAME = 'documents_info.txt'
+DOCUMENT_INFO_NAME = 'documents_info'
 ALL_WORDS_NAME = 'allwords.txt'
 STOPWORDS_NAME = 'stopwords.txt'
-STEMSDICT_NAME = 'stemsdict.txt'
-KEYWORDSINDOCUMENTS_NAME = 'keywordsInDocuments.txt'
+STEMSDICT_NAME = 'stemsdict'
+KEYWORDSINDOCUMENTS_NAME = 'keywordsInDocuments'

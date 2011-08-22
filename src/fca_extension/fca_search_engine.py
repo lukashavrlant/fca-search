@@ -9,7 +9,7 @@ class FCASearchEngine:
 		self.stopwatch = None
 		
 	def search(self, query):
-		watcher = self.stopwatch or Stopwatch()
+		watcher = self.stopwatch or Stopwatch().start()
 		originResults = self.engine.search(query)	
 		watcher.elapsed('searching')
 		

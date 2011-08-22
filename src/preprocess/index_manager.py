@@ -1,13 +1,13 @@
 from common.io import download, savefile
 from preprocess.index_builder import toIndex, getKeywords, getDocumentsInfo
 from urllib.error import HTTPError
-from other.constants import DOCUMENT_INFO_NAME, ALL_WORDS_NAME, STEMSDICT_NAME,\
-	KEYWORDSINDOCUMENTS_NAME
+from other.constants import DOCUMENT_INFO_NAME, STEMSDICT_NAME,	KEYWORDSINDOCUMENTS_NAME
 from retrieval.index import Index
 import os
 from common.czech_stemmer import wordCounter, savedStems
 from common.string import strip_accents
 from other.stopwatch import Stopwatch
+import shelve
 
 class IndexManager:
 	
@@ -24,7 +24,7 @@ class IndexManager:
 		watcher = Stopwatch()
 		watcher.start()
 		self._build(urls, folder, stopwords)
-		watcher.elapsed('hotovo')
+		watcher.elapsed('done')
 		print(watcher)
 		
 	def _elapsed(self, status):
@@ -39,16 +39,22 @@ class IndexManager:
 		sites, downloadedURL = self._downloadDocuments(urls)
 		
 		try:
+			infoDtb = shelve.open(infoFolder + 'info') 
 			self._elapsed('Creating index...')
 			indexInfo = toIndex(sites, downloadedURL, stopwords, self.keylen, self._elapsed)
 			self._createFolder([indexFolder, infoFolder])
 			self._createIndex(indexInfo, indexFolder, infoFolder)
+			
 			self._elapsed('Creating documents info and keywords...')
-			self._saveDocsInfo(indexInfo, folder, infoFolder)
+			infoDtb[DOCUMENT_INFO_NAME] = self._getDocsInfo(indexInfo, folder, infoFolder)
+			
 			self._elapsed('Creating stems dictionary...')
-			self._saveData(self._getStemDict(self.totalKeywords), infoFolder, STEMSDICT_NAME)
+			infoDtb[STEMSDICT_NAME] = self._getStemDict(self.totalKeywords)
+			
 			self._elapsed('Creating keywords in documents relation...')
-			self._saveData(self._getKeywordsInfo(self.totalKeywords, indexInfo['parsedDocs']), infoFolder, KEYWORDSINDOCUMENTS_NAME)
+			infoDtb[KEYWORDSINDOCUMENTS_NAME] = self._getKeywordsInfo(self.totalKeywords, indexInfo['parsedDocs'])
+			
+			infoDtb.close()
 			self._elapsed('Done!')
 		except IOError as err:
 			print("I/O error: {0}".format(err))
@@ -67,6 +73,8 @@ class IndexManager:
 			except HTTPError as err:
 				print('Cannot download {0}'.format(err.filename))
 				print("HTTP error: {0}".format(err))
+			except Exception as err:
+				print(err)
 					
 		return sites, downloadedURL
 			
@@ -106,9 +114,9 @@ class IndexManager:
 			
 	def _createIndex(self, indexInfo, indexFolder, infoFolder):
 		self._saveIndex(indexInfo['index'], indexFolder)
-		self._saveData(indexInfo['allwords'], infoFolder, ALL_WORDS_NAME)
+		#self._saveData(indexInfo['allwords'], infoFolder, ALL_WORDS_NAME)
 			
-	def _saveDocsInfo(self, indexInfo, folder, infoFolder):
+	def _getDocsInfo(self, indexInfo, folder, infoFolder):
 		documentsInfo = getDocumentsInfo(indexInfo)
 		keywords = getKeywords(indexInfo['parsedDocs'], Index(folder, documentsInfo))
 		totalKeywords = set()	
@@ -124,13 +132,18 @@ class IndexManager:
 			docInfo['keywords'] = topKeywords
 			totalKeywords = totalKeywords.union(topKeywords)
 		
-		self._saveData(documentsInfo, infoFolder, DOCUMENT_INFO_NAME)
+		#self._saveData(documentsInfo, infoFolder, DOCUMENT_INFO_NAME)
 		self.totalKeywords = totalKeywords
+		return documentsInfo
 		
 	
 	def _saveIndex(self, index, dir):
-		for k, v in index.items():
-			savefile(str(v), dir + k + '.txt')
+		for prefix, data in index.items():
+			dtb = shelve.open(dir + prefix)
+			for steminfo in data:
+				dtb[steminfo[0][0]] = steminfo[1]
+			dtb.close()
+			
 		
 	def _saveData(self, data, folder, name):
 		savefile(repr(data), folder + name)

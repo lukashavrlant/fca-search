@@ -8,6 +8,7 @@ class Stopwatch:
 		self.inception = time()
 		self.last = self.inception
 		self.times.append((0, 'start'))
+		return self
 		
 	def elapsed(self, name=''):
 		curTime = round(time(), 6)

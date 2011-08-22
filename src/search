@@ -9,6 +9,7 @@ import getopt, sys
 from common.io import readfile
 from preprocess.index_manager import IndexManager
 from other.stopwatch import Stopwatch
+from tests import *
 
 ## functions 
 def printSearch(searchResults, stopwatch):
