@@ -34,13 +34,23 @@ def printSearch(searchResults, stopwatch):
 	
 	spec = searchResults['specialization']
 	spec = [list(x) for x in spec]
-	spec = sorted(spec, key=lambda x: x[0])
+	spec = sorted(spec, key=lambda x: str(x))
+	
+	gen = searchResults['generalization']
+	gen = [list(x) for x in gen]
+	gen = sorted(gen, key=lambda x: str(x))
+	
+	sib = searchResults['siblings']
+	
 	print()
+	print('Generalization' + str(gen))
 	print('Specialization:' + str(spec))
+	print('Siblings:' + str(sib))
 	print('Search query: ' + str(results['parsedQuery']))
 	print('Number results: ' + str(len(documents)))
 	if stopwatch:
-		print('Time: ' +str(stopwatch))
+		stopwatch.elapsed('Done')
+		print('Time: ' +str(stopwatch.total))
 	print()
 
 def search(databaseName, query, printTime):
