@@ -60,7 +60,11 @@ class FCASearchEngine:
 #		print(modSearchConcept)
 #		print("height: {0}, width: {1}".format(modContext.height, modContext.width))
 		
-		savefile(context2slf(modContext), DATA_FOLDER + 'context.slf')
+		try:
+			savefile(context2slf(modContext), DATA_FOLDER + 'context.slf')
+		except Exception as err:
+			pass
+
 		return {'origin':originResults, 'specialization':modSpec, 'generalization':generalization, 'siblings':siblings}
 	
 	def _getUppers(self, concepts, context):

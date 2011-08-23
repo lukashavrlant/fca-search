@@ -10,7 +10,10 @@ from retrieval.stem import Stem
 class Index:
 	
 	def __init__(self, directory, documentsInfo = None):
-		self.info = shelve.open(directory + INFO_FOLDER_NAME + 'info')
+		try:
+			self.info = shelve.open(directory + INFO_FOLDER_NAME + 'info')
+		except Exception as err:
+			print(err)
 		self.keylen = 1
 		self.directory = directory
 		self.documents_info = documentsInfo if documentsInfo else self._get_translation()
@@ -31,13 +34,15 @@ class Index:
 			return stemObject
 		else:
 			prefix = stem[:self.keylen]
-			sh = shelve.open(self.directory + INDEX_FOLDER_NAME + '/' + prefix)
 			try:
+				sh = shelve.open(self.directory + INDEX_FOLDER_NAME + '/' + prefix)
 				record = sh[stem]
 				stemObject = Stem(record, stem)
 				self.searchedStem[stem] = stemObject
 			except KeyError:
 				stemObject = Stem()
+			except Exception as err:
+				print(err)
 			return stemObject
 	
 	def term_frequency(self, term, documentID):
