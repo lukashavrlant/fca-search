@@ -15,7 +15,7 @@ class Concept():
 		self.intentNames = context.ids2attrs(self.intent)
 		return self
 
-	def __repr__(self):
+	def __str__(self):
 		try:
 			return repr({'extent': self.extentNames, 'intent': self.intentNames})
 		except AttributeError:
