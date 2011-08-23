@@ -1,3 +1,4 @@
+
 class Concept():
 	def __init__(self, extent = set(), intent = set()):
 		self.setExtent(extent)
@@ -19,4 +20,12 @@ class Concept():
 			return repr({'extent': self.extentNames, 'intent': self.intentNames})
 		except AttributeError:
 			return repr({'extent': self.extent, 'intent': self.intent})
-			
+		
+	def __eq__(self, other):
+		return self.intent == other.intent and self.extent == other.extent
+	
+	def __ne__(self, other):
+		return not self.__eq__(other)
+	
+	def __hash__(self):
+		return hash(str(self.intent)) ^ hash(str(self.extent))
