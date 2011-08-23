@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/Library/Frameworks/Python.framework/Versions/3.2/bin/python3
 
 from retrieval.search_engine import SearchEngine
 from other.data import getStopWords
@@ -9,6 +9,7 @@ import getopt, sys
 from common.io import readfile
 from preprocess.index_manager import IndexManager
 from other.stopwatch import Stopwatch
+import json
 
 ## functions 
 def printSearch(searchResults, stopwatch):
@@ -41,6 +42,8 @@ def printSearch(searchResults, stopwatch):
 	gen = sorted(gen, key=lambda x: str(x))
 	
 	sib = searchResults['siblings']
+	sib = [list(x) for x in sib]
+	sib = sorted(sib, key=lambda x: str(x))
 	
 	print()
 	print('Generalization' + str(gen))
@@ -52,8 +55,28 @@ def printSearch(searchResults, stopwatch):
 		stopwatch.elapsed('Done')
 		print('Time: ' +str(stopwatch.total))
 	print()
+	
+def printJson(searchResults):
+	spec = searchResults['specialization']
+	spec = [list(x) for x in spec]
+	spec = sorted(spec, key=lambda x: str(x))
+	
+	gen = searchResults['generalization']
+	gen = [list(x) for x in gen]
+	gen = sorted(gen, key=lambda x: str(x))
+	
+	sib = searchResults['siblings']
+	sib = [list(x) for x in sib]
+	sib = sorted(sib, key=lambda x: str(x))
+	
+	results = searchResults['origin']
+	documents = results['documents']
+	fca = {'gen':gen, 'spec':spec, 'sib':sib}
+	data = {'documents':documents, 'fca': fca}
+	jsonData = json.dumps(data)
+	print(jsonData)
 
-def search(databaseName, query, printTime):
+def search(databaseName, query, printTime, format):
 	stopwatch = Stopwatch()
 	stopwatch.start()
 	database = DATABASES_FOLDER + databaseName + '/'
@@ -63,7 +86,10 @@ def search(databaseName, query, printTime):
 	fca = FCASearchEngine(searchEngine, index)
 	fca.stopwatch = stopwatch
 	searchResults = fca.search(query)
-	printSearch(searchResults, stopwatch if printTime else None)
+	if format == 'console':
+		printSearch(searchResults, stopwatch if printTime else None)
+	elif format == 'json':
+		printJson(searchResults)
 	
 def buildIndex(databaseName, sourceFileName):
 	database = DATABASES_FOLDER + databaseName + '/'
@@ -78,10 +104,11 @@ def buildIndex(databaseName, sourceFileName):
 
 if __name__ == '__main__':
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:s:')
+		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:s:f:')
 		opts = dict(opts)
 		if '-q' in opts:
-			search(opts['-d'], opts['-q'], 'nt' not in args)
+			format = opts.get('-f', 'console')
+			search(opts['-d'], opts['-q'], 'nt' not in args, format)
 		elif '-b' in opts:
 			databaseName = opts['-b']
 			sourceFileName = opts.get('-s', opts['-b'])
