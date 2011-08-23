@@ -1,14 +1,14 @@
 
 class Concept():
-	def __init__(self, extent = set(), intent = set()):
+	def __init__(self, extent = frozenset(), intent = frozenset()):
 		self.setExtent(extent)
 		self.setIntent(intent)
 		
 	def setExtent(self, extent):
-		self.extent = set(extent)
+		self.extent = frozenset(extent)
 	
 	def setIntent(self, intent):
-		self.intent = set(intent)
+		self.intent = frozenset(intent)
 		
 	def translate(self, context):
 		self.extentNames = context.ids2objects(self.extent)
