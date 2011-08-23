@@ -84,7 +84,8 @@ class Index:
 		return reduce(and_, map(self._by_node, children))
 	
 	def _by_or_node(self, children):
-		return reduce(or_, map(self._by_node, children))
+		temp = list(map(self._by_node, children))
+		return reduce(or_, temp)
 	
 	def _by_not_node(self, argument):
 		allDocuments = set(range(len(self.documents_info)))
