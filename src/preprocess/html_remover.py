@@ -4,6 +4,8 @@ class HTMLRemover(HTMLParser):
 	"Remove HTML tags, comments, and useless content like scripts or styles"
 	
 	def __init__(self):
+		self.title = 'No name'
+		self.elementName = ''
 		self.disabledElements = ['script', 'style']
 		HTMLParser.__init__(self)
 		
@@ -21,13 +23,12 @@ class HTMLRemover(HTMLParser):
 		HTMLParser.reset(self)
 	
 	def handle_data(self, data):
-		if self.printp:
+		if self.elementName not in self.disabledElements:
 			self.puredata.append(data)
 		
+		if self.elementName == 'title':
+			if data.strip():
+				self.title = data.strip()
+		
 	def handle_starttag(self, tag, attr):
-		if tag in self.disabledElements:
-			self.printp = False
-			
-	def handle_endtag(self, tag):
-		if tag in self.disabledElements:
-			self.printp = True
+		self.elementName = tag
