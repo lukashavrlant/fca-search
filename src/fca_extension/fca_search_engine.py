@@ -46,7 +46,8 @@ class FCASearchEngine:
 			right = self._getUppers(modLowerN, modContext)
 			siblings = (left & right) - {modSearchConcept}
 			
-		siblings = [con.translate(modContext).intentNames for con in siblings]
+		siblings = self._translateIntents(siblings, modContext)
+		siblings = self._intents2words(siblings)
 		
 		try:
 			savefile(context2slf(modContext), DATA_FOLDER + 'context.slf')
@@ -71,8 +72,15 @@ class FCASearchEngine:
 		lowerN = {x.translate(context) for x in lowerN}
 		suggTerms = set(terms) | searchConcept.translate(context).intentNames
 		specialization = [x.intentNames - suggTerms for x in lowerN]
-		specialization = [{self.index.stem2word(stem) for stem in sugg} for sugg in specialization]
+		specialization = self._intents2words(specialization)
 		return specialization
+	
+	def _translateIntents(self, concepts, context):
+		return [con.translate(context).intentNames for con in concepts]
+	
+	def _intents2words(self, concepts):
+		return [{self.index.stem2word(stem) for stem in concept} for concept in concepts]
+		
 	
 	def _getGeneralization(self, upperN, context, terms, searchConcept):
 		upperN = {x.translate(context) for x in upperN}
