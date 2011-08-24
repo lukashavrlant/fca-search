@@ -12,7 +12,7 @@ from other.stopwatch import Stopwatch
 import json
 
 ## functions 
-def printSearch(searchResults, stopwatch):
+def printSearch(searchResults):
 	results = searchResults['origin']
 	documents = results['documents']
 	
@@ -41,9 +41,6 @@ def printSearch(searchResults, stopwatch):
 	print('Siblings:' + str(sib))
 	print('Search query: ' + str(results['parsedQuery']))
 	print('Number results: ' + str(len(documents)))
-	if stopwatch:
-		stopwatch.elapsed('Done')
-		print('Time: ' +str(stopwatch.total))
 	print()
 	
 def printJson(searchResults):
@@ -71,18 +68,14 @@ def getFcaExt(searchResults):
 	
 	return gen, sib, spec
 
-def search(databaseName, query, printTime, format):
-	stopwatch = Stopwatch()
-	stopwatch.start()
+def search(databaseName, query, format):
 	database = DATABASES_FOLDER + databaseName + '/'
 	index = Index(database)
 	searchEngine = SearchEngine(index, getStopWords())
-	stopwatch.elapsed('initialization')
 	fca = FCASearchEngine(searchEngine, index)
-	fca.stopwatch = stopwatch
 	searchResults = fca.search(query)
 	if format == 'console':
-		printSearch(searchResults, stopwatch if printTime else None)
+		printSearch(searchResults)
 	elif format == 'json':
 		printJson(searchResults)
 	
@@ -98,12 +91,17 @@ def buildIndex(databaseName, sourceFileName):
 ## main
 
 if __name__ == '__main__':
+	stopwatch = Stopwatch().start()
+	
 	try:
 		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:s:f:')
 		opts = dict(opts)
 		if '-q' in opts:
 			format = opts.get('-f', 'console')
-			search(opts['-d'], opts['-q'], 'nt' not in args, format)
+			search(opts['-d'], opts['-q'], format)
+			if format == 'console':
+				stopwatch.elapsed('Done')
+				print(stopwatch)
 		elif '-b' in opts:
 			databaseName = opts['-b']
 			sourceFileName = opts.get('-s', opts['-b'])
