@@ -1,7 +1,6 @@
 from fca_extension.utilities import getContextFromSR, context2slf
 from fca.concept import Concept
-from other.stopwatch import Stopwatch
-from common.io import savefile
+from common.io import savefile, trySaveFile
 from other.constants import DATA_FOLDER
 class FCASearchEngine:
 	def __init__(self, searchEngine, index):
@@ -49,10 +48,7 @@ class FCASearchEngine:
 		siblings = self._translateIntents(siblings, modContext)
 		siblings = self._intents2words(siblings)
 		
-		try:
-			savefile(context2slf(modContext), DATA_FOLDER + 'context.slf')
-		except Exception:
-			pass
+		trySaveFile(context2slf(modContext), DATA_FOLDER + 'context.slf')
 
 		return {'origin':originResults, 'specialization':modSpec, 'generalization':generalization, 'siblings':siblings}
 	
