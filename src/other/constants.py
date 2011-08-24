@@ -17,3 +17,6 @@ ALL_WORDS_NAME = 'allwords.txt'
 STOPWORDS_NAME = 'stopwords.txt'
 STEMSDICT_NAME = 'stemsdict'
 KEYWORDSINDOCUMENTS_NAME = 'keywordsInDocuments'
+
+# other
+CHMOD_INDEX = 0o777
