@@ -41,7 +41,6 @@ class IndexManager:
 		try:
 			self._createFolder([indexFolder, infoFolder])
 			infoDtb = shelve.open(infoFolder + 'info') 
-			self._elapsed('Creating index...')
 			indexInfo = toIndex(sites, downloadedURL, stopwords, self.keylen, self._elapsed)
 			self._createIndex(indexInfo, indexFolder, infoFolder)
 			

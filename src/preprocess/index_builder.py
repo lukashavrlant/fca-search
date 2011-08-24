@@ -65,6 +65,7 @@ def toIndex(documents, urls, stopwords, keylen, elapsed = nothing):
 			print('Cannot parse ' + str(url))
 			print(str(err))
 	
+	elapsed('Collecting documents...')
 	sitesStats = getDocsStats(parsedDocs)
 	index = groupByKeylen(sitesStats['occurences'], keylen)
 	
