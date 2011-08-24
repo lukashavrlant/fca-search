@@ -38,10 +38,10 @@ class IndexManager:
 		sites, downloadedURL = self._downloadDocuments(urls)
 		
 		try:
+			self._createFolder([indexFolder, infoFolder])
 			infoDtb = shelve.open(infoFolder + 'info') 
 			self._elapsed('Creating index...')
 			indexInfo = toIndex(sites, downloadedURL, stopwords, self.keylen, self._elapsed)
-			self._createFolder([indexFolder, infoFolder])
 			self._createIndex(indexInfo, indexFolder, infoFolder)
 			
 			self._elapsed('Creating documents info and keywords...')
@@ -57,6 +57,7 @@ class IndexManager:
 			self._elapsed('Done!')
 		except IOError as err:
 			print("I/O error: {0}".format(err))
+			print("Filename: {0}".format(err.filename))
 			
 	def _downloadDocuments(self, urls):
 		distUrls = list(set(urls))
