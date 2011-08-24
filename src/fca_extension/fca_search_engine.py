@@ -48,21 +48,10 @@ class FCASearchEngine:
 			siblings = (left & right) - {modSearchConcept}
 			
 		siblings = [con.translate(modContext).intentNames for con in siblings]
-				
-#		print("Generalization")
-#		print(generalization)
-#		print("Spec")
-#		print(modSpec)
-#		print()
-#		print([x.translate(modContext).intentNames for x in left])
-#		print(right)
-#		print(left & right)
-#		print(modSearchConcept)
-#		print("height: {0}, width: {1}".format(modContext.height, modContext.width))
 		
 		try:
 			savefile(context2slf(modContext), DATA_FOLDER + 'context.slf')
-		except Exception as err:
+		except Exception:
 			pass
 
 		return {'origin':originResults, 'specialization':modSpec, 'generalization':generalization, 'siblings':siblings}
