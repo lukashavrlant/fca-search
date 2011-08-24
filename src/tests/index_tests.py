@@ -11,9 +11,9 @@ class TestIndex(unittest.TestCase):
 		self.index = Index(self.databaseFolder)
 	
 	def test_get_stem_info(self):
-		fun = lambda stem: repr(self.index.get_stem_info(stem))
-		desired_derivak = "{'documents': {65: 45, 67: 9, 38: 4, 103: 12, 105: 5, 10: 35, 43: 2, 109: 2, 110: 5, 81: 4, 20: 1, 86: 3, 55: 42, 42: 18}, 'docids': dict_keys([65, 67, 38, 103, 105, 10, 43, 109, 110, 81, 20, 86, 55, 42]), 'stem': 'derivak'}"
-		desired_nonsense = "{'documents': {}, 'docids': [], 'stem': ''}"
+		fun = lambda stem: str(self.index.get_stem_info(stem))
+		desired_derivak = "{'documents': {65: 45, 67: 9, 38: 4, 103: 12, 105: 5, 10: 35, 43: 2, 109: 2, 110: 5, 81: 4, 20: 1, 86: 3, 55: 42, 42: 18}, 'docids': {65, 67, 38, 103, 105, 10, 43, 109, 110, 81, 20, 86, 55, 42}, 'stem': 'derivak'}"
+		desired_nonsense = "{'documents': {}, 'docids': set(), 'stem': ''}"
 
 		self.assertEqual(fun('nonsense'), desired_nonsense)
 		self.assertEqual(fun('derivak'), desired_derivak)
