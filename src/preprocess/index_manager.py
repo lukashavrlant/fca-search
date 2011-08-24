@@ -1,7 +1,8 @@
 from common.io import download
 from preprocess.index_builder import toIndex, getKeywords, getDocumentsInfo
 from urllib.error import HTTPError
-from other.constants import DOCUMENT_INFO_NAME, STEMSDICT_NAME,	KEYWORDSINDOCUMENTS_NAME
+from other.constants import DOCUMENT_INFO_NAME, STEMSDICT_NAME,	KEYWORDSINDOCUMENTS_NAME,\
+	CHMOD_INDEX
 from retrieval.index import Index
 import os
 from common.czech_stemmer import wordCounter, savedStems
@@ -54,6 +55,7 @@ class IndexManager:
 			infoDtb[KEYWORDSINDOCUMENTS_NAME] = self._getKeywordsInfo(self.totalKeywords, indexInfo['parsedDocs'])
 			
 			infoDtb.close()
+			os.chmod(infoFolder + 'info.db', CHMOD_INDEX)
 			self._elapsed('Done!')
 		except IOError as err:
 			print("I/O error: {0}".format(err))
@@ -137,7 +139,9 @@ class IndexManager:
 	
 	def _saveIndex(self, index, dir):
 		for prefix, data in index.items():
-			dtb = shelve.open(dir + prefix)
+			path = dir + prefix
+			dtb = shelve.open(path)
 			for steminfo in data:
 				dtb[steminfo[0][0]] = steminfo[1]
 			dtb.close()
+			os.chmod(path + '.db', CHMOD_INDEX)
