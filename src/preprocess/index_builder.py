@@ -44,8 +44,8 @@ def getKeywords(documents, index):
 	
 def getDocumentsInfo(info):
 	arr = []
-	for url, wordscount, id in zip(info['urls'], info['wordscount'], range(len(info['urls']))):
-		dic = {'url':url, 'wordscount':wordscount, 'id':id}
+	for url, wordscount, id, title in zip(info['urls'], info['wordscount'], range(len(info['urls'])), info['titles']):
+		dic = {'url':url, 'wordscount':wordscount, 'id':id, 'title':title}
 		arr.append(dic)
 	return arr
 
@@ -53,11 +53,13 @@ def toIndex(documents, urls, stopwords, keylen, elapsed = nothing):
 	htmlrem = HTMLRemover()
 	parsedDocs = []
 	correctUrl = []
+	titles = []
 	
 	for site, url in zip(documents, urls):
 		try:
 			elapsed('parsing: ' + url)
 			parsedDocs.append(get_words(normalize_text(htmlrem.compile(site)), stopwords))
+			titles.append(htmlrem.title)
 			correctUrl.append(url)
 		except Exception as err:
 			print('Cannot parse ' + str(url))
@@ -66,4 +68,4 @@ def toIndex(documents, urls, stopwords, keylen, elapsed = nothing):
 	sitesStats = getDocsStats(parsedDocs)
 	index = groupByKeylen(sitesStats['occurences'], keylen)
 	
-	return {'index': index, 'allwords':sitesStats['allwords'], 'urls': correctUrl, 'wordscount':sitesStats['wordscount'], 'parsedDocs':parsedDocs}
+	return {'index': index, 'allwords':sitesStats['allwords'], 'urls': correctUrl, 'wordscount':sitesStats['wordscount'], 'parsedDocs':parsedDocs, 'titles':titles}
