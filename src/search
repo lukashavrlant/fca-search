@@ -79,10 +79,12 @@ def search(databaseName, query, format):
 	elif format == 'json':
 		printJson(searchResults)
 	
-def buildIndex(databaseName, sourceFileName):
+def buildIndex(databaseName, sourceFileName, max):
 	database = DATABASES_FOLDER + databaseName + '/'
 	sourceFile = DATA_FOLDER + sourceFileName + '.txt'
 	links = eval(readfile(sourceFile))
+	if max:
+		links = links[:int(max)]
 	indexManager = IndexManager()
 	indexManager.shutUp = False
 	indexManager.build(links, database, getStopWords())
@@ -94,7 +96,7 @@ if __name__ == '__main__':
 	stopwatch = Stopwatch().start()
 	
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:s:f:')
+		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:s:f:m:')
 		opts = dict(opts)
 		if '-q' in opts:
 			format = opts.get('-f', 'console')
@@ -105,7 +107,8 @@ if __name__ == '__main__':
 		elif '-b' in opts:
 			databaseName = opts['-b']
 			sourceFileName = opts.get('-s', opts['-b'])
-			buildIndex(databaseName, sourceFileName)
+			max = int(opts.get('-m', 0))
+			buildIndex(databaseName, sourceFileName, max)
 	except getopt.GetoptError as err:
 		print(err) 
 		sys.exit(2)
