@@ -11,7 +11,6 @@ class FCASearchEngine:
 		self.stopwatch = None
 		
 	def search(self, query):
-		watcher = self.stopwatch or Stopwatch().start()
 		originResults = self.engine.search(query)	
 		
 		terms = originResults['terms']
