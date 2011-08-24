@@ -12,7 +12,7 @@ class SearchTest(unittest.TestCase):
 	def testSearchCommand(self):
 		path = TEST_FOLDER + 'results/'
 		cmd = '/Users/lukashavrlant/Python/fca-search/src/search '
-		fun = lambda dtb, q: (Popen(cmd + '-d ' + dtb + ' -q "' + q + '" -f json nt', stdout=PIPE, shell=True).stdout.read())
+		fun = lambda dtb, q: (Popen(cmd + '-d ' + dtb + ' -q "' + q + '" -f json', stdout=PIPE, shell=True).stdout.read())
 		dfun = lambda dtb, q: fun(dtb, q).decode("utf-8")
 		save = lambda cont, name: savefile(cont, path + name + '.txt', False)
 		read = lambda name: readfile(path + name + '.txt')
