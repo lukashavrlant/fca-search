@@ -1,6 +1,6 @@
 from fca_extension.utilities import getContextFromSR, context2slf
 from fca.concept import Concept
-from common.io import savefile, trySaveFile
+from common.io import trySaveFile
 from other.constants import DATA_FOLDER
 class FCASearchEngine:
 	def __init__(self, searchEngine, index):
