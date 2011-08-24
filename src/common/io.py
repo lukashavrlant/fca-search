@@ -26,3 +26,10 @@ def readfile(path, charset = 'utf-8'):
 
 def readfiles(paths):
 	return lmap(readfile, paths)
+
+def trySaveFile(content, path, charset = 'utf-8'):
+	try:
+		savefile(content, path, charset)
+		return True
+	except:
+		return False
