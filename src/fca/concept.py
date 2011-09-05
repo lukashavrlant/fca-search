@@ -1,4 +1,3 @@
-
 class Concept():
 	def __init__(self, extent = frozenset(), intent = frozenset()):
 		self.setExtent(extent)
@@ -14,6 +13,15 @@ class Concept():
 		self.extentNames = context.ids2objects(self.extent)
 		self.intentNames = context.ids2attrs(self.intent)
 		return self
+	
+	def similarity(self, concept):
+		A = self.extent
+		B = self.intent
+		C = concept.extent
+		D = concept.intent
+		temp1 = len(A & C) / len(A | C)
+		temp2 = len(B & D) / len(B | D)
+		return (temp1 + temp2) / 2
 
 	def __str__(self):
 		try:

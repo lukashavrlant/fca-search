@@ -44,9 +44,12 @@ class FCASearchEngine:
 		if left:
 			right = self._getUppers(modLowerN, modContext)
 			siblings = (left & right) - {modSearchConcept}
-			
+					
+		siblings = sorted(siblings, key=lambda s:s.similarity(modSearchConcept), reverse=True)
 		siblings = self._translateIntents(siblings, modContext)
 		siblings = self._intents2words(siblings)
+		
+		
 		
 		trySaveFile(context2slf(modContext), DATA_FOLDER + 'context.slf')
 

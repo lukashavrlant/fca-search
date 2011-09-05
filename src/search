@@ -64,7 +64,7 @@ def getFcaExt(searchResults):
 	
 	sib = searchResults['siblings']
 	sib = [list(x) for x in sib]
-	sib = sorted(sib, key=lambda x: str(x))
+#	sib = sorted(sib, key=lambda x: str(x))
 	
 	return gen, sib, spec
 
