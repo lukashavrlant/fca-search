@@ -16,7 +16,7 @@ class IndexManager:
 		self.keylen = 1
 		self.keywordsCount = 10
 		self.keyScoreLimit = 35
-		self.minKeywords = 3
+		self.minKeywords = 1
 		self.dynamicKeywords = True
 		self.shutUp = True
 		
