@@ -31,12 +31,12 @@ def groupByKeylen(database, keylen):
 
 def getKeywords(documents, index):
 		keywords = []
-		for docID, content in enumerate(documents):
-			distContent = set(content)
+		for doc in documents:
+			distContent = set(doc['content'])
 			keyValues = {}
 			for word in distContent:
 				stem = getstem(word)
-				keyValues[stem] = round(document_score([stem], docID, index), 5)
+				keyValues[stem] = round(document_score([stem], doc['id'], index), 5)
 				
 			foo = sorted(keyValues.items(), key=lambda x: x[1], reverse = True)
 			keywords.append(foo)
@@ -49,24 +49,32 @@ def getDocumentsInfo(info):
 		arr.append(dic)
 	return arr
 
-def toIndex(documents, urls, stopwords, keylen, elapsed = nothing):
-	htmlrem = HTMLRemover()
-	parsedDocs = []
-	correctUrl = []
-	titles = []
+def toIndex(documents, stopwords, keylen, elapsed = nothing):
+	htmlrem = HTMLRemover()	
+	compiledDocuments = []
+	id = 0
 	
-	for site, url in zip(documents, urls):
+	for doc in documents:
 		try:
-			elapsed('parsing: ' + url)
-			parsedDocs.append(get_words(normalize_text(htmlrem.compile(site)), stopwords))
-			titles.append(htmlrem.title)
-			correctUrl.append(url)
+			elapsed('parsing: ' + doc['url'])
+			
+			if doc['type'] == 'html':
+				content = htmlrem.compile(doc['content'])
+				tempDoc = get_words(normalize_text(content), stopwords)
+				compiledDocuments.append({'content':tempDoc, 'title':htmlrem.title, 'url':doc['url'], 'id':id})
+				id += 1
+			else:
+				pass			
 		except Exception as err:
-			print('Cannot parse ' + str(url))
+			print('Cannot parse ' + str(doc['url']))
 			print(str(err))
 	
 	elapsed('Collecting documents...')
-	sitesStats = getDocsStats(parsedDocs)
+	sitesStats = getDocsStats([x['content'] for x in compiledDocuments])
+	
+	for doc, wordscount in zip(compiledDocuments, sitesStats['wordscount']):
+		doc['words'] = wordscount
+	
 	index = groupByKeylen(sitesStats['occurences'], keylen)
 	
-	return {'index': index, 'allwords':sitesStats['allwords'], 'urls': correctUrl, 'wordscount':sitesStats['wordscount'], 'parsedDocs':parsedDocs, 'titles':titles}
+	return {'index': index, 'allwords':sitesStats['allwords'], 'documents':compiledDocuments}

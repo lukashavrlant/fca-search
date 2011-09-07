@@ -42,12 +42,12 @@ class IndexManager:
 		indexFolder = folder + 'index/'
 		infoFolder = folder + 'info/'
 		
-		sites, downloadedURL = self._downloadDocuments(urls)
+		sites = self._downloadDocuments(urls)
 		
 		try:
 			self._createFolder([indexFolder, infoFolder])
 			infoDtb = shelve.open(infoFolder + 'info') 
-			indexInfo = toIndex(sites, downloadedURL, stopwords, self.keylen, self._elapsed)
+			indexInfo = toIndex(sites, stopwords, self.keylen, self._elapsed)
 			self._createIndex(indexInfo, indexFolder, infoFolder)
 			
 			self._elapsed('Creating documents info and keywords...')
@@ -57,7 +57,7 @@ class IndexManager:
 			infoDtb[STEMSDICT_NAME] = self._getStemDict(self.totalKeywords)
 			
 			self._elapsed('Creating keywords in documents relation...')
-			infoDtb[KEYWORDSINDOCUMENTS_NAME] = self._getKeywordsInfo(self.totalKeywords, indexInfo['parsedDocs'])
+			infoDtb[KEYWORDSINDOCUMENTS_NAME] = self._getKeywordsInfo(self.totalKeywords, [x['content'] for x in indexInfo['documents']])
 			
 			infoDtb.close()
 			os.chmod(infoFolder + 'info.db', CHMOD_INDEX)
@@ -69,21 +69,27 @@ class IndexManager:
 	def _downloadDocuments(self, urls):
 		distUrls = list(set(urls))
 		
-		sites = []
-		downloadedURL = []
+		documents = []
 		
 		for url in distUrls:
 			try:
 				self._elapsed('Downloading: ' + url)
-				sites.append(download(url))
-				downloadedURL.append(url)
+				extension = os.path.splitext(url)[1]
+				
+				if extension == 'pdf':
+					pass
+				elif extension == 'doc':
+					pass
+				else:
+					document = {'type':'html', 'content':download(url), 'url':url}
+					documents.append(document)
 			except HTTPError as err:
 				print('Cannot download {0}'.format(err.filename))
 				print("HTTP error: {0}".format(err))
 			except Exception as err:
 				print(err)
 					
-		return sites, downloadedURL
+		return documents
 			
 	def _getKeywordsInfo(self, keywords, documents):
 		documents = [set(x) for x in documents]
@@ -123,8 +129,8 @@ class IndexManager:
 		self._saveIndex(indexInfo['index'], indexFolder)
 			
 	def _getDocsInfo(self, indexInfo, folder, infoFolder):
-		documentsInfo = getDocumentsInfo(indexInfo)
-		keywords = getKeywords(indexInfo['parsedDocs'], Index(folder, documentsInfo))
+		documentsInfo = indexInfo['documents']
+		keywords = getKeywords(indexInfo['documents'], Index(folder, documentsInfo))
 		totalKeywords = set()	
 			
 		for docInfo, allDocKeywords in zip(documentsInfo, keywords):
