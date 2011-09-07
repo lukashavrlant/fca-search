@@ -73,7 +73,10 @@ class Index:
 			self.stemsDict = self.info[STEMSDICT_NAME] 
 			
 		return self.stemsDict.get(stem, stem)
-		
+	
+	def getLinks(self):
+		return [x['url'] for x in self.info[DOCUMENT_INFO_NAME]]
+	
 	def _by_node(self, node):
 		if isinstance(node, Node):
 			if node.type == 'AND':

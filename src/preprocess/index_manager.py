@@ -20,6 +20,12 @@ class IndexManager:
 		self.dynamicKeywords = True
 		self.shutUp = True
 		
+	def rebuild(self, newLinks, folder, stopwords):
+		index = Index(folder)
+		oldLinks = index.getLinks()
+		links = list(set(newLinks) | set(oldLinks))
+		self.build(links, folder, stopwords)
+		
 	def build(self, urls, folder, stopwords):
 		"Builds an index in 'folder'"
 		watcher = Stopwatch()
