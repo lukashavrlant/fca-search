@@ -1,5 +1,5 @@
 from common.io import download
-from preprocess.index_builder import toIndex, getKeywords, getDocumentsInfo
+from preprocess.index_builder import toIndex, getKeywords
 from urllib.error import HTTPError
 from other.constants import DOCUMENT_INFO_NAME, STEMSDICT_NAME,	KEYWORDSINDOCUMENTS_NAME,\
 	CHMOD_INDEX
@@ -130,7 +130,7 @@ class IndexManager:
 			
 	def _getDocsInfo(self, indexInfo, folder, infoFolder):
 		documentsInfo = indexInfo['documents']
-		keywords = getKeywords(indexInfo['documents'], Index(folder, documentsInfo))
+		keywords = getKeywords(documentsInfo, Index(folder, documentsInfo))
 		totalKeywords = set()	
 			
 		for docInfo, allDocKeywords in zip(documentsInfo, keywords):
