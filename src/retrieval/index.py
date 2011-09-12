@@ -111,4 +111,5 @@ class Index:
 		return self.info[DOCUMENT_INFO_NAME] 
 	
 	def _translate(self, docid):
-		return self.documents_info[docid]
+		tr = self.documents_info[docid]
+		return tr

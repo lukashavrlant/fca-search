@@ -29,7 +29,7 @@ def printSearch(searchResults):
 			score = str(round(item['score'], 3))
 			url = item['url'].replace('http://localhost/matweb/', 'matweb.cz/')
 			keywords = repr(item['keywords'][:3])
-			wordscount = item['wordscount']
+			wordscount = item['words']
 	
 			print(str(pos+1).ljust(maxPos), url.ljust(maxURL), keywords.ljust(maxKeywords), score.ljust(maxScore), wordscount)
 	

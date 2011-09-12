@@ -131,7 +131,7 @@ class IndexManager:
 	def _getDocsInfo(self, indexInfo, folder, infoFolder):
 		documentsInfo = indexInfo['documents']
 		keywords = getKeywords(documentsInfo, Index(folder, documentsInfo))
-		totalKeywords = set()	
+		totalKeywords = set()
 			
 		for docInfo, allDocKeywords in zip(documentsInfo, keywords):
 			if self.dynamicKeywords:
@@ -145,7 +145,16 @@ class IndexManager:
 			totalKeywords = totalKeywords.union(topKeywords)
 		
 		self.totalKeywords = totalKeywords
-		return documentsInfo
+		
+		temp = []
+		
+		for docInfo in documentsInfo:
+			d = {}
+			for key in ['title', 'url', 'keywords', 'words', 'id']:
+				d[key] = docInfo[key]
+			temp.append(d)
+		
+		return temp
 		
 	
 	def _saveIndex(self, index, dir):
