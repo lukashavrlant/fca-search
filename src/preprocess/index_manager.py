@@ -53,7 +53,7 @@ class IndexManager:
 			self._elapsed('Creating documents info and keywords...')
 			metadata, scoresTable = self._getDocsInfo(indexInfo, folder, infoFolder)
 			infoDtb[DOCUMENT_INFO_NAME] = metadata 
-			#infoDtb[SCORES_TABLE] = {'table':scoresTable, 'keywords':[x[0] for x in self.totalKeywords]}
+			infoDtb[SCORES_TABLE] = {'table':scoresTable, 'keywords':[x[0] for x in self.totalKeywords]}
 			
 			self._elapsed('Creating stems dictionary...')
 			infoDtb[STEMSDICT_NAME] = self._getStemDict(self.totalKeywords)
