@@ -2,7 +2,7 @@ from common.io import download
 from preprocess.index_builder import toIndex, getKeywords
 from urllib.error import HTTPError
 from other.constants import DOCUMENT_INFO_NAME, STEMSDICT_NAME,	KEYWORDSINDOCUMENTS_NAME,\
-	CHMOD_INDEX
+	CHMOD_INDEX, SCORES_TABLE
 from retrieval.index import Index
 import os
 from common.czech_stemmer import wordCounter, savedStems
@@ -51,7 +51,9 @@ class IndexManager:
 			self._createIndex(indexInfo, indexFolder, infoFolder)
 			
 			self._elapsed('Creating documents info and keywords...')
-			infoDtb[DOCUMENT_INFO_NAME] = self._getDocsInfo(indexInfo, folder, infoFolder)
+			metadata, scoresTable = self._getDocsInfo(indexInfo, folder, infoFolder)
+			infoDtb[DOCUMENT_INFO_NAME] = metadata 
+			#infoDtb[SCORES_TABLE] = {'table':scoresTable, 'keywords':[x[0] for x in self.totalKeywords]}
 			
 			self._elapsed('Creating stems dictionary...')
 			infoDtb[STEMSDICT_NAME] = self._getStemDict(self.totalKeywords)
@@ -130,10 +132,10 @@ class IndexManager:
 			
 	def _getDocsInfo(self, indexInfo, folder, infoFolder):
 		documentsInfo = indexInfo['documents']
-		keywords = getKeywords(documentsInfo, Index(folder, documentsInfo))
+		keywordsScore = getKeywords(documentsInfo, Index(folder, documentsInfo))
 		totalKeywords = set()
 			
-		for docInfo, allDocKeywords in zip(documentsInfo, keywords):
+		for docInfo, allDocKeywords in zip(documentsInfo, keywordsScore):
 			if self.dynamicKeywords:
 				topKeywords = [x for x in allDocKeywords if x[1] > self.keyScoreLimit]
 				if len(topKeywords) < self.minKeywords:
@@ -145,16 +147,32 @@ class IndexManager:
 			totalKeywords = totalKeywords.union(topKeywords)
 		
 		self.totalKeywords = totalKeywords
+		totalKeywordsName = [x[0] for x in totalKeywords]
 		
-		temp = []
+		scoresTable = self._getKeywordsScoreTable(keywordsScore, totalKeywordsName)
+		
+		newDocInfo = []
 		
 		for docInfo in documentsInfo:
 			d = {}
 			for key in ['title', 'url', 'keywords', 'words', 'id']:
 				d[key] = docInfo[key]
-			temp.append(d)
+			newDocInfo.append(d)
 		
-		return temp
+		return newDocInfo, scoresTable
+	
+	def _getKeywordsScoreTable(self, keywordsScore, allKeywords):
+		table =[]
+		
+		for docKeywords in keywordsScore:
+			scores = dict(docKeywords)
+			line = []
+			for keyword in allKeywords:
+				line.append(scores.get(keyword, 0))
+			table.append(line)
+			
+		return table
+					
 		
 	
 	def _saveIndex(self, index, dir):
