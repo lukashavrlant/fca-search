@@ -4,7 +4,7 @@ from common.funcfun import lmap
 from retrieval.boolean_parser import Node
 import shelve
 from other.constants import INDEX_FOLDER_NAME, DOCUMENT_INFO_NAME, INFO_FOLDER_NAME, STEMSDICT_NAME,\
-	KEYWORDSINDOCUMENTS_NAME
+	KEYWORDSINDOCUMENTS_NAME, SCORES_TABLE
 from retrieval.stem import Stem
 
 class Index:
@@ -76,6 +76,9 @@ class Index:
 	
 	def getLinks(self):
 		return [x['url'] for x in self.info[DOCUMENT_INFO_NAME]]
+	
+	def getKeywordsScore(self):
+		return self.info[SCORES_TABLE]
 	
 	def _by_node(self, node):
 		if isinstance(node, Node):

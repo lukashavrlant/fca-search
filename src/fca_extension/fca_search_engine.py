@@ -1,4 +1,5 @@
-from fca_extension.utilities import getContextFromSR, context2slf
+from fca_extension.utilities import getContextFromSR, context2slf,\
+	getFuzzyContext
 from fca.concept import Concept
 from common.io import trySaveFile
 from other.constants import DATA_FOLDER
@@ -31,6 +32,10 @@ class FCASearchEngine:
 		
 		modDoc, modTerms = self._getDocsAndTerms(modResult)
 		modContext = getContextFromSR(modDoc, modTerms, self.index.contains_term)
+		
+		fuzzyContext = getFuzzyContext(modDoc, modTerms, self.index.getKeywordsScore())
+		
+		
 		modAttrsID = modContext.attrs2ids(terms)
 		modSearchConcept = self._getSearchConceptByAttr(modContext, modAttrsID)
 		upperN = modContext.upperNeighbors(modSearchConcept)
