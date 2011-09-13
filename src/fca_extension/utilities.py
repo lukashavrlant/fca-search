@@ -16,31 +16,29 @@ def getContextFromSR(documents, terms, relation):
 	table = _getTable(relation, ids, keywords)
 	return Context(table, sites, keywords)
 
-def getFuzzyContext(documents, terms, relation):
+def getFuzzyContext(documents, terms, keywordsScoreTable):
 	keywords = [x['keywords'] for x in documents]
 	keywords = [[y[0] for y in x] for x in keywords]
-	keywords = list(set(reduce(add, keywords, [])))
+	keywords = sorted(list(set(reduce(add, keywords, []))))
 	
 	sites = _selectColumn('url', documents)
 	ids = _selectColumn('id', documents)
 	
-	table = getFuzzyTable(relation['table'], relation['keywords'], ids, keywords)
+	table = getFuzzyTable(keywordsScoreTable, ids, keywords)
+	
 	fContext = FuzzyContext(table, sites, keywords)
 	return fContext
 
-def getFuzzyTable(keywordsScoreTable, totalKeywords, objects, attributes):
-	keywordsIndices = {v:k for k,v in dict(enumerate(totalKeywords)).items()}
-	allowedIndices = {keywordsIndices[x] for x in attributes}
-	newTable = []
-	for obj in objects:
-		currRow = keywordsScoreTable[obj]
+def getFuzzyTable(keywordsScoreTable, objects, attributes):
+	table = []
+	
+	for keywordsLine in map(lambda x: keywordsScoreTable[x], objects):
 		line = []
-		for index, k in enumerate(currRow):
-			if index in allowedIndices:
-				line.append(k)
-		newTable.append(line)
-		
-	return newTable
+		for attr in attributes:
+			line.append(keywordsLine.get(attr, 0))
+		table.append(line)
+	
+	return table
 	
 	
 def _getTable(relation, ids, keywords):

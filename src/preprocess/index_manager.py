@@ -53,7 +53,7 @@ class IndexManager:
 			self._elapsed('Creating documents info and keywords...')
 			metadata, scoresTable = self._getDocsInfo(indexInfo, folder, infoFolder)
 			infoDtb[DOCUMENT_INFO_NAME] = metadata 
-			infoDtb[SCORES_TABLE] = {'table':scoresTable, 'keywords':[x[0] for x in self.totalKeywords]}
+			infoDtb[SCORES_TABLE] = scoresTable
 			
 			self._elapsed('Creating stems dictionary...')
 			infoDtb[STEMSDICT_NAME] = self._getStemDict(self.totalKeywords)
@@ -162,15 +162,12 @@ class IndexManager:
 		return newDocInfo, scoresTable
 	
 	def _getKeywordsScoreTable(self, keywordsScore, allKeywords):
-		table =[]
+		table = []
+		allKeywords = set(allKeywords)
 		
 		for docKeywords in keywordsScore:
-			scores = dict(docKeywords)
-			line = []
-			for keyword in allKeywords:
-				line.append(scores.get(keyword, 0))
-			table.append(line)
-			
+			table.append({k:v for k,v in docKeywords if k in allKeywords})
+
 		return table
 					
 		
