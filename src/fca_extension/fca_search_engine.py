@@ -33,7 +33,11 @@ class FCASearchEngine:
 		modDoc, modTerms = self._getDocsAndTerms(modResult)
 		modContext = getContextFromSR(modDoc, modTerms, self.index.contains_term)
 		
+		# test
 		fuzzyContext = getFuzzyContext(modDoc, modTerms, self.index.getKeywordsScore())
+		fuzzyContext.setRoundMethod(lambda x: round(x, 1))
+		fuzzyContext.normalize()
+		#print(fuzzyContext)
 		
 		
 		modAttrsID = modContext.attrs2ids(terms)
