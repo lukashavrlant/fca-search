@@ -1,6 +1,6 @@
 import unittest
 from preprocess.words import towords, remstopwords
-from common.io import readfiles, readfile
+from common.io import readfiles, readfile, savefile
 from common.funcfun import lmap
 from preprocess.index_builder import toIndex
 from other.constants import TEST_FOLDER
@@ -20,19 +20,26 @@ class TestWords(unittest.TestCase):
 	def test_toIndex(self):
 		urls = ['binomicka-veta.html', 'prirozena-cisla.html', 'pythagorova-veta.html', 'rovnice.html', 'zaklady-statistiky.html']
 		sites = readfiles(lmap(lambda x: TEST_FOLDER + 'sites/' + x, urls))
-		result = toIndex(sites, urls, [], 1)
+		sites = [{'type':'html', 'content':x, 'url':'url'} for x in sites]
+		
+#		savefile(repr(toIndex(sites, [], 1)), TEST_FOLDER + 'results/index1.txt')
+#		savefile(repr(toIndex(sites, getStopWords(), 1)), TEST_FOLDER + 'results/index2.txt')
+#		savefile(repr(toIndex(sites, getStopWords(), 2)), TEST_FOLDER + 'results/index3.txt')
+		
+		
+		result = toIndex(sites, [], 1)
 		desired = readfile(TEST_FOLDER + 'results/index1.txt')
 		self.assertEquals(repr(result), desired)
 		
-		result = toIndex(sites, urls, getStopWords(), 1)
+		result = toIndex(sites, getStopWords(), 1)
 		desired = readfile(TEST_FOLDER + 'results/index2.txt')
 		self.assertEquals(repr(result), desired)
 		
-		result = toIndex(sites, urls, getStopWords(), 2)
+		result = toIndex(sites, getStopWords(), 2)
 		desired = readfile(TEST_FOLDER + 'results/index3.txt')
 		self.assertEquals(repr(result), desired)
 		
-		#savefile(repr(toIndex(sites, urltoIndextopWords(), 2)), TEST_FOLDER + 'results/index3.txt')
+		
 		
 if __name__ == "__main__":
 	#import sys;sys.argv = ['', 'Test.testName']
