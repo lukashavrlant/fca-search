@@ -3,6 +3,7 @@ from fca_extension.utilities import getContextFromSR, context2slf,\
 from fca.concept import Concept
 from common.io import trySaveFile
 from other.constants import DATA_FOLDER
+from fuzzy.fca.fuzzy_concept import FuzzyConcept
 class FCASearchEngine:
 	def __init__(self, searchEngine, index):
 		self.engine = searchEngine
@@ -31,14 +32,7 @@ class FCASearchEngine:
 		modResult = self.engine.search(' OR '.join(terms))
 		
 		modDoc, modTerms = self._getDocsAndTerms(modResult)
-		modContext = getContextFromSR(modDoc, modTerms, self.index.contains_term)
-		
-		# test
-		fuzzyContext = getFuzzyContext(modDoc, modTerms, self.index.getKeywordsScore())
-		fuzzyContext.setRoundMethod(lambda x: round(x, 1))
-		fuzzyContext.normalize()
-		#print(fuzzyContext)
-		
+		modContext = getContextFromSR(modDoc, modTerms, self.index.contains_term)		
 		
 		modAttrsID = modContext.attrs2ids(terms)
 		modSearchConcept = self._getSearchConceptByAttr(modContext, modAttrsID)
@@ -61,8 +55,42 @@ class FCASearchEngine:
 		
 		
 		trySaveFile(context2slf(modContext), DATA_FOLDER + 'context.slf')
+		
+		#test only
+		self.fuzzySearch(query)
 
 		return {'origin':originResults, 'specialization':modSpec, 'generalization':generalization, 'siblings':siblings}
+	
+	def fuzzySearch(self, query):
+		originResults = self.engine.search(query)	
+		
+		terms = originResults['terms']
+
+		### Modify context
+		modResult = self.engine.search(' OR '.join(terms))
+		
+		modDoc, modTerms = self._getDocsAndTerms(modResult)
+		
+		# fuzzy context
+		fuzzyContext = getFuzzyContext(modDoc, modTerms, self.index.getKeywordsScore())
+		fuzzyContext.setRoundMethod(lambda x: round(x, 1))
+		fuzzyContext.normalize()
+		
+		searchConcept = self._getFuzzySearchConceptByAttr(modTerms, fuzzyContext)
+		
+		upperN = fuzzyContext.upperNeighbors(searchConcept)
+		print(upperN)
+#		generalization = self._getGeneralization(upperN, modContext, terms, modSearchConcept)
+#		
+#		modLowerN = modContext.lowerNeighbors(modSearchConcept)
+#		modSpec = self._getSpecialization(modLowerN, modContext, terms, modSearchConcept)
+		
+		
+		
+	def _getFuzzySearchConceptByAttr(self, attrs, fuzzyContext):
+		extent = fuzzyContext.down({attr:1 for attr in attrs})
+		intent = fuzzyContext.up(extent)
+		return FuzzyConcept(extent, intent)
 	
 	def _getUppers(self, concepts, context):
 		upperN = set()
