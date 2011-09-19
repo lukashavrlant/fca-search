@@ -42,6 +42,8 @@ class FuzzyContext(Context):
 				extent[objName] = minValue
 		
 		return extent
+	
+	
 		
 	def setRoundMethod(self, fun):
 		self.roundMethod = fun
