@@ -1,7 +1,7 @@
 from functools import reduce
 from operator import add
 from fca.context import Context
-from fca.fuzzy_context import FuzzyContext
+from fuzzy.fca.fuzzy_context import FuzzyContext
 
 
 ## Search result -> context
