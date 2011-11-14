@@ -1,5 +1,6 @@
+from fuzzy.FuzzySet import FuzzySet
 class FuzzyConcept:
-	def __init__(self, extent = {}, intent = {}):
+	def __init__(self, extent = FuzzySet(), intent = FuzzySet()):
 		self.extent = extent
 		self.intent = intent
 		

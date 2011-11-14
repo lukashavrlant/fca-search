@@ -1,5 +1,7 @@
 from fca.context import Context
 from fuzzy.structures.lukasiewicz import Lukasiewicz
+from fuzzy.FuzzySet import FuzzySet
+from sqlite3.test import dbapi
 
 class FuzzyContext(Context):
 	def __init__(self, table, objects, attributes):
@@ -12,34 +14,35 @@ class FuzzyContext(Context):
 		
 		
 	def up(self, A):
-		intent = {}
+		intent = FuzzySet()
 		
 		for attrName, attrIndex in self.attributes.items():
 			values = set()
 			for objName, objIndex in self.objects.items():
-				Ax = A.get(objName, 0)
+				pass
+				Ax = A.get(objName)
 				Ixy = self.table[objIndex][attrIndex]
 				res = self.structure.residuum(Ax, Ixy)
 				values.add(res)
 			minValue = min(values)
 			if(minValue > 0):
-				intent[attrName] = minValue
+				intent.add(attrName, minValue)
 		
 		return intent
 	
 	def down(self, B):
-		extent = {}
+		extent = FuzzySet()
 		
 		for objName, objIndex in self.objects.items():
 			values = set()
 			for attrName, attrIndex in self.attributes.items():
-				By = B.get(attrName, 0)
+				By = B.get(attrName)
 				Ixy = self.table[objIndex][attrIndex]
 				res = self.structure.residuum(By, Ixy)
 				values.add(res)
 			minValue = min(values)
 			if(minValue > 0):
-				extent[objName] = minValue
+				extent.add(objName, minValue)
 		
 		return extent
 	
@@ -47,14 +50,14 @@ class FuzzyContext(Context):
 	def lowerNeighbors(self, concept):
 		B = concept.extent
 		U = set()
-		Min = {y for y in self.objects if B.get(y, 0) < 1}
+		Min = {y for y in self.objects if B.get(y) < 1}
 		
 		for y in set(Min):
-			D = dict(B)
-			D[y] = D.get(y, 0) + 0.1
-			increased = {z for z in self.objects if (z != y) and (B.get(z, 0) < D.get(y, 0))}
+			D = B.copy()
+			D.add(y, D.get(y) + 0.1)
+			increased = {z for z in self.objects if (z != y) and (B.get(z) < D.get(y))}
 			if len(Min & increased) == 0:
-				U.add(frozenset(D))
+				U.add(D.copy())
 			else:
 				Min.remove(y)
 		return U

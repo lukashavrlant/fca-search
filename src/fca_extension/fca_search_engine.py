@@ -4,6 +4,7 @@ from fca.concept import Concept
 from common.io import trySaveFile
 from other.constants import DATA_FOLDER
 from fuzzy.fca.fuzzy_concept import FuzzyConcept
+from fuzzy.FuzzySet import FuzzySet
 class FCASearchEngine:
 	def __init__(self, searchEngine, index):
 		self.engine = searchEngine
@@ -64,11 +65,10 @@ class FCASearchEngine:
 		fuzzyContext.normalize()
 		
 		searchConcept = self._getFuzzySearchConceptByAttr(modTerms, fuzzyContext)
-		
 		#upperN = fuzzyContext.upperNeighbors(searchConcept)
 		#print(upperN)
 		lowerN = fuzzyContext.lowerNeighbors(searchConcept)
-		print(lowerN)
+		print("LowerN: " + str(lowerN))
 		
 #		generalization = self._getGeneralization(upperN, modContext, terms, modSearchConcept)
 #		
@@ -78,7 +78,7 @@ class FCASearchEngine:
 		
 		
 	def _getFuzzySearchConceptByAttr(self, attrs, fuzzyContext):
-		extent = fuzzyContext.down({attr:1 for attr in attrs})
+		extent = fuzzyContext.down(FuzzySet({attr:1 for attr in attrs}))
 		intent = fuzzyContext.up(extent)
 		return FuzzyConcept(extent, intent)
 	
