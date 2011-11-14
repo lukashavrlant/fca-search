@@ -13,20 +13,7 @@ class FCASearchEngine:
 		
 	def search(self, query):
 		originResults = self.engine.search(query)	
-		
-		terms = originResults['terms']
-#		documents, terms = self._getDocsAndTerms(originResults)
-#		
-#		terms = [x for x in terms if self.index.get_stem_info(x).name]
-#		
-#		originContext = getContextFromSR(documents, terms, self.index.contains_term)
-#				
-#		sites = {x['url'] for x in documents}
-#		originSitesID = originContext.objects2ids(sites)
-#		originSearchConcept = self._getSearchConcept(originContext, originSitesID)
-#		lowerN = originContext.lowerNeighbors(originSearchConcept)
-#		specialization = self._getSpecialization(lowerN, originContext, terms, originSearchConcept)
-		
+		terms = originResults['terms']		
 		
 		### Modify context
 		modResult = self.engine.search(' OR '.join(terms))
@@ -56,8 +43,8 @@ class FCASearchEngine:
 		
 		trySaveFile(context2slf(modContext), DATA_FOLDER + 'context.slf')
 		
-		#test only
-		self.fuzzySearch(query)
+#		test only
+#		self.fuzzySearch(query)
 
 		return {'origin':originResults, 'specialization':modSpec, 'generalization':generalization, 'siblings':siblings}
 	
@@ -78,8 +65,11 @@ class FCASearchEngine:
 		
 		searchConcept = self._getFuzzySearchConceptByAttr(modTerms, fuzzyContext)
 		
-		upperN = fuzzyContext.upperNeighbors(searchConcept)
-		print(upperN)
+		#upperN = fuzzyContext.upperNeighbors(searchConcept)
+		#print(upperN)
+		lowerN = fuzzyContext.lowerNeighbors(searchConcept)
+		print(lowerN)
+		
 #		generalization = self._getGeneralization(upperN, modContext, terms, modSearchConcept)
 #		
 #		modLowerN = modContext.lowerNeighbors(modSearchConcept)

@@ -44,6 +44,21 @@ class FuzzyContext(Context):
 		return extent
 	
 	
+	def lowerNeighbors(self, concept):
+		B = concept.extent
+		U = set()
+		Min = {y for y in self.objects if B.get(y, 0) < 1}
+		
+		for y in set(Min):
+			D = dict(B)
+			D[y] = D.get(y, 0) + 0.1
+			increased = {z for z in self.objects if (z != y) and (B.get(z, 0) < D.get(y, 0))}
+			if len(Min & increased) == 0:
+				U.add(frozenset(D))
+			else:
+				Min.remove(y)
+		return U
+	
 		
 	def setRoundMethod(self, fun):
 		self.roundMethod = fun
