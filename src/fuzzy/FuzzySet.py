@@ -1,5 +1,8 @@
 class FuzzySet:
-	def __init__(self, members = dict()):
+	def __init__(self, members = None):
+		if members == None:
+			members = dict()
+			
 		for v in members.values():
 			if not self._checkValue(v):
 				raise AttributeError('Values must be in interval [0, 1]')
@@ -31,6 +34,9 @@ class FuzzySet:
 	
 	def support(self):
 		return {x for x in self.keys() if self.get(x) > 0}
+	
+	def copy(self):
+		return FuzzySet(dict(self.members))
 	
 	def _binaryOp(self, fuzzySet, function):
 		newSet = FuzzySet(self.members)
