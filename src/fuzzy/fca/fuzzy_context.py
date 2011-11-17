@@ -122,7 +122,7 @@ class FuzzyContext(Context):
 		index = self.allValues.index(value)
 		return self.allValues[index + 1]
 	
-	def getTruthsNumber(self):
+	def getFalseNumber(self):
 		counter = 0
 		for line in self.table:
 			for val in line:

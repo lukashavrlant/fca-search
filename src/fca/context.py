@@ -88,6 +88,17 @@ class Context:
 	
 	def ids2objects(self, ids):
 		return {self.objects[x] for x in ids}
+	
+	def getFalseNumber(self):
+		counter = 0
+		for line in self.table:
+			for val in line:
+				if not val:
+					counter += 1
+		return counter
+	
+	def toNumbers(self):
+		return [[1 if y else 0 for y in x] for x in self.table]
 		
 	def _objectsIterator(self):
 		return range(self.height)
