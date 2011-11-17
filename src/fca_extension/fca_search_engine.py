@@ -5,6 +5,7 @@ from common.io import trySaveFile
 from other.constants import DATA_FOLDER
 from fuzzy.fca.fuzzy_concept import FuzzyConcept
 from fuzzy.FuzzySet import FuzzySet
+import math
 class FCASearchEngine:
 	def __init__(self, searchEngine, index):
 		self.engine = searchEngine
@@ -32,9 +33,13 @@ class FCASearchEngine:
 		
 		# debug
 		print("Crisp lower: {0}, Crisp upper: {1}".format(len(lowerN), len(upperN)))
+		print("Crisp context number: {0}".format(modContext.getFalseNumber()))
+#		print("Attributes: {0}".format(modContext.attributes))
+#		print("Crisp context:\n{0}".format(modContext.toNumbers()))
+		
 		siblings = set()
 		left = self._getLower(upperN, modContext)
-#		print("crisp lower:" + str(len(left)))
+		print("crisp left: " + str(len(left)))
 		if left:
 			right = self._getUppers(lowerN, modContext)
 			siblings = (left & right) - {modSearchConcept}
@@ -54,7 +59,6 @@ class FCASearchEngine:
 	
 	def fuzzySearch(self, query):
 		originResults = self.engine.search(query)	
-		
 		terms = originResults['terms']
 
 		### Modify context
@@ -63,10 +67,15 @@ class FCASearchEngine:
 		modDoc, modTerms = self._getDocsAndTerms(modResult)
 		
 		# fuzzy context
-		fuzzyContext = getFuzzyContext(modDoc, modTerms, self.index.getKeywordsScore())
-		#fuzzyContext.setRoundMethod(lambda x: round(x, 1))
-		fuzzyContext.setRoundMethod(lambda x: 0 if x == 0 else 1)
+		fuzzyContext = getFuzzyContext(modDoc, modTerms, self.index.getKeywordsScore(), self.index.term_frequency)
+#		fuzzyContext.setRoundMethod(lambda x: round(x, 1))
+#		fuzzyContext.setRoundMethod(lambda x: 0 if x == 0 else 1)
+#		fuzzyContext.setRoundMethod(lambda x: x)
+		fuzzyContext.setRoundMethod(lambda x: math.ceil(x*10) / 10)
 		fuzzyContext.normalize()
+		
+		print("Fuzzy context number: {0}".format(fuzzyContext.getFalseNumber()))
+#		print("Fuzzy context:\n{0}".format(fuzzyContext))
 		
 		searchConcept = self._getFuzzySearchConceptByAttr(modTerms, fuzzyContext)
 		
@@ -77,10 +86,10 @@ class FCASearchEngine:
 #		print("sconcept: " + str(searchConcept))
 #		print("------------")
 		lowerN = fuzzyContext.lowerNeighbors(searchConcept)
-#		left = self._getLower(upperN, fuzzyContext)
-#		print("fuzzy: " + str(len(left)))
-
+		left = self._getLower(upperN, fuzzyContext)
+		
 		print("Fuzzy lower: {0}, Fuzzy upper: {1}".format(len(lowerN), len(upperN)))
+		print("fuzzy left: " + str(len(left)))
 		
 
 		
@@ -105,7 +114,8 @@ class FCASearchEngine:
 	def _getLower(self, concepts, context):
 		lowerN = set()
 		for concept in concepts:
-			lowerN |= context.lowerNeighbors(concept)
+			res = context.lowerNeighbors(concept)
+			lowerN |= res
 		return lowerN
 	
 	def _getSpecialization(self, lowerN, context, terms, searchConcept):
