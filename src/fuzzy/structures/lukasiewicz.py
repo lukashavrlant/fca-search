@@ -1,6 +1,6 @@
 class Lukasiewicz:
 	def residuum(self, a, b):
-		return min(1-a+b, 1)
+		return round(min(1-a+b, 1), 1)
 	
 	def multiplication(self, a, b):
-		return max(a+b-1, 0)
+		return round(max(a+b-1, 0), 1)
