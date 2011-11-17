@@ -1,7 +1,7 @@
 from fca.context import Context
 from fuzzy.structures.lukasiewicz import Lukasiewicz
 from fuzzy.FuzzySet import FuzzySet
-from sqlite3.test import dbapi
+from fuzzy.fca.fuzzy_concept import FuzzyConcept
 
 class FuzzyContext(Context):
 	def __init__(self, table, objects, attributes):
@@ -19,7 +19,6 @@ class FuzzyContext(Context):
 		for attrName, attrIndex in self.attributes.items():
 			values = set()
 			for objName, objIndex in self.objects.items():
-				pass
 				Ax = A.get(objName)
 				Ixy = self.table[objIndex][attrIndex]
 				res = self.structure.residuum(Ax, Ixy)
@@ -48,16 +47,35 @@ class FuzzyContext(Context):
 	
 	
 	def lowerNeighbors(self, concept):
+		B = concept.intent
+		U = set()
+		Min = {y for y in self.attributes if B.get(y) < 1}
+		
+		for y in set(Min):
+			D = B.copy()
+			D.add(y, self.nextValue(D.get(y)))
+			ext = self.down(D)
+			D = self.up(ext)
+			increased = {z for z in self.attributes if z != y and (B.get(z) < D.get(z))}
+			if Min & increased == set():
+				U.add(FuzzyConcept(ext.copy(), D.copy()))
+			else:
+				Min.remove(y)
+		return U
+	
+	def upperNeighbors(self, concept):
 		B = concept.extent
 		U = set()
 		Min = {y for y in self.objects if B.get(y) < 1}
 		
 		for y in set(Min):
 			D = B.copy()
-			D.add(y, D.get(y) + 0.1)
-			increased = {z for z in self.objects if (z != y) and (B.get(z) < D.get(y))}
-			if len(Min & increased) == 0:
-				U.add(D.copy())
+			D.add(y, self.nextValue(D.get(y)))
+			intt = self.up(D)
+			D = self.down(intt)
+			increased = {z for z in self.objects if (z != y) and (B.get(z) < D.get(z))}
+			if Min & increased == set():
+				U.add(FuzzyConcept(D, intt))
 			else:
 				Min.remove(y)
 		return U
@@ -96,6 +114,20 @@ class FuzzyContext(Context):
 			table.append(newLine)
 		
 		self.table = table
+		self._computeNextValues()
+		
+	def nextValue(self, value):
+		index = self.allValues.index(value)
+		return self.allValues[index + 1]
+		
+	def _computeNextValues(self):
+		allValues = set()
+		
+		for line in self.table:
+			for value in line:
+				allValues.add(value)
+		
+		self.allValues = sorted(list(allValues))
 		
 	def _enumItems(self, items):
 		temp = enumerate(items)

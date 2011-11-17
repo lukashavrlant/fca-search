@@ -29,6 +29,9 @@ class Concept():
 		except AttributeError:
 			return repr({'extent': self.extent, 'intent': self.intent})
 		
+#	def __repr__(self):
+#		return self.__str__()
+		
 	def __eq__(self, other):
 		return self.intent == other.intent and self.extent == other.extent
 	

@@ -25,10 +25,12 @@ class Context:
 		B = concept.intent
 		M = set(self._attributesIterator()) - B
 		neighbors = set()
+		
 		for x in list(M):
 			A1 = self.down(B | {x})
 			B1 = self.up(A1)
-			if (M & ((B1 - B) - {x})) == set():
+			increased = ((B1 - B) - {x})
+			if (M & increased) == set():
 				neighbors.add(Concept(A1, B1))
 			else:
 				M = M - {x}

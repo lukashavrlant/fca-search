@@ -27,13 +27,16 @@ class FCASearchEngine:
 		upperN = modContext.upperNeighbors(modSearchConcept)
 		generalization = self._getGeneralization(upperN, modContext, terms, modSearchConcept)
 		
-		modLowerN = modContext.lowerNeighbors(modSearchConcept)
-		modSpec = self._getSpecialization(modLowerN, modContext, terms, modSearchConcept)
+		lowerN = modContext.lowerNeighbors(modSearchConcept)
+		modSpec = self._getSpecialization(lowerN, modContext, terms, modSearchConcept)
 		
+		# debug
+		print("Crisp lower: {0}, Crisp upper: {1}".format(len(lowerN), len(upperN)))
 		siblings = set()
 		left = self._getLower(upperN, modContext)
+#		print("crisp lower:" + str(len(left)))
 		if left:
-			right = self._getUppers(modLowerN, modContext)
+			right = self._getUppers(lowerN, modContext)
 			siblings = (left & right) - {modSearchConcept}
 					
 		siblings = sorted(siblings, key=lambda s:s.similarity(modSearchConcept), reverse=True)
@@ -45,7 +48,7 @@ class FCASearchEngine:
 		trySaveFile(context2slf(modContext), DATA_FOLDER + 'context.slf')
 		
 #		test only
-#		self.fuzzySearch(query)
+		self.fuzzySearch(query)
 
 		return {'origin':originResults, 'specialization':modSpec, 'generalization':generalization, 'siblings':siblings}
 	
@@ -61,14 +64,25 @@ class FCASearchEngine:
 		
 		# fuzzy context
 		fuzzyContext = getFuzzyContext(modDoc, modTerms, self.index.getKeywordsScore())
-		fuzzyContext.setRoundMethod(lambda x: round(x, 1))
+		#fuzzyContext.setRoundMethod(lambda x: round(x, 1))
+		fuzzyContext.setRoundMethod(lambda x: 0 if x == 0 else 1)
 		fuzzyContext.normalize()
 		
 		searchConcept = self._getFuzzySearchConceptByAttr(modTerms, fuzzyContext)
-		#upperN = fuzzyContext.upperNeighbors(searchConcept)
-		#print(upperN)
+		
+		upperN = fuzzyContext.upperNeighbors(searchConcept)
+#		print("fuzzy: " + str(len(upperN)))
+		
+	
+#		print("sconcept: " + str(searchConcept))
+#		print("------------")
 		lowerN = fuzzyContext.lowerNeighbors(searchConcept)
-		print("LowerN: " + str(lowerN))
+#		left = self._getLower(upperN, fuzzyContext)
+#		print("fuzzy: " + str(len(left)))
+
+		print("Fuzzy lower: {0}, Fuzzy upper: {1}".format(len(lowerN), len(upperN)))
+		
+
 		
 #		generalization = self._getGeneralization(upperN, modContext, terms, modSearchConcept)
 #		
