@@ -11,6 +11,7 @@ class Context:
 	def upperNeighbors(self, concept):
 		A = concept.extent
 		M = set(self._objectsIterator()) - A
+		
 		neighbors = set()
 		for x in list(M):
 			B1 = self.up(A | {x})
@@ -56,16 +57,16 @@ class Context:
 	def downup(self, attributes):
 		return self.up(self.down(attributes))
 
-	def get_object_line(self, object):
-		return self.table[object]
+	def get_object_line(self, objectID):
+		return self.table[objectID]
 
 	def get_attribute_line(self, attribute):
 		return [x[attribute] for x in self.table]
 
-	def getIntent(self, object):
+	def getIntent(self, objectID):
 		attrs = set()
 		for i in range(self.width):
-			if self.table[object][i]:
+			if self.table[objectID][i]:
 				attrs.add(i)
 		return attrs
 
