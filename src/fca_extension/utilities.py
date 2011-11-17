@@ -8,7 +8,7 @@ from fuzzy.fca.fuzzy_context import FuzzyContext
 def getContextFromSR(documents, terms, relation):
 	keywords = [x['keywords'] for x in documents]
 	keywords = [[y[0] for y in x] for x in keywords]
-	keywords = list(set(terms + reduce(add, keywords, [])))
+	keywords = sorted(list(set(terms + reduce(add, keywords, []))))
 	
 	sites = _selectColumn('url', documents)
 	ids = _selectColumn('id', documents)
@@ -19,7 +19,7 @@ def getContextFromSR(documents, terms, relation):
 def getFuzzyContext(documents, terms, keywordsScoreTable):
 	keywords = [x['keywords'] for x in documents]
 	keywords = [[y[0] for y in x] for x in keywords]
-	keywords = sorted(list(set(reduce(add, keywords, []))))
+	keywords = sorted(list(set(terms + reduce(add, keywords, []))))
 	
 	sites = _selectColumn('url', documents)
 	ids = _selectColumn('id', documents)
