@@ -16,26 +16,29 @@ def getContextFromSR(documents, terms, relation):
 	table = _getTable(relation, ids, keywords)
 	return Context(table, sites, keywords)
 
-def getFuzzyContext(documents, terms, keywordsScoreTable):
+def getFuzzyContext(documents, terms, keywordsScoreTable, termFrequency):
 	keywords = [x['keywords'] for x in documents]
 	keywords = [[y[0] for y in x] for x in keywords]
 	keywords = sorted(list(set(terms + reduce(add, keywords, []))))
-	
 	sites = _selectColumn('url', documents)
 	ids = _selectColumn('id', documents)
 	
-	table = getFuzzyTable(keywordsScoreTable, ids, keywords)
+	table = getFuzzyTable(keywordsScoreTable, ids, keywords, termFrequency, terms)
 	
 	fContext = FuzzyContext(table, sites, keywords)
 	return fContext
 
-def getFuzzyTable(keywordsScoreTable, objects, attributes):
+def getFuzzyTable(keywordsScoreTable, objects, attributes, termFrequency, terms):
 	table = []
 	
-	for keywordsLine in map(lambda x: keywordsScoreTable[x], objects):
-		line = []
-		for attr in attributes:
-			line.append(keywordsLine.get(attr, 0))
+	for keywordsLine, objID in zip(map(lambda x: keywordsScoreTable[x], objects), objects):
+		line = []	
+		
+		for attr in attributes:	
+			if attr in terms:
+				line.append(termFrequency(attr, objID))
+			else:		
+				line.append(keywordsLine.get(attr, 0))
 		table.append(line)
 	
 	return table
