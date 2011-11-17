@@ -68,6 +68,8 @@ class FuzzyContext(Context):
 		U = set()
 		Min = {y for y in self.objects if B.get(y) < 1}
 		
+#		print(Min)
+		
 		for y in set(Min):
 			D = B.copy()
 			D.add(y, self.nextValue(D.get(y)))
@@ -119,6 +121,15 @@ class FuzzyContext(Context):
 	def nextValue(self, value):
 		index = self.allValues.index(value)
 		return self.allValues[index + 1]
+	
+	def getTruthsNumber(self):
+		counter = 0
+		for line in self.table:
+			for val in line:
+				if val == 0:
+					counter += 1
+		return counter
+		
 		
 	def _computeNextValues(self):
 		allValues = set()
