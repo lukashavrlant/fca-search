@@ -55,3 +55,12 @@ class FuzzySet:
 	
 	def __repr__(self):
 		return "FuzzySet(" + repr(self.members) + ")"
+	
+	def __eq__(self, other):
+		return self.members == other.members
+	
+	def __ne__(self, other):
+		return not self.__eq__(other)
+	
+	def __hash__(self):
+		return hash(str(self.members))
