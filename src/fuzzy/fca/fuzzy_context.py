@@ -116,7 +116,6 @@ class FuzzyContext(Context):
 			table.append(newLine)
 		
 		self.table = table
-		self._computeNextValues()
 		
 	def nextValue(self, value):
 		index = self.allValues.index(value)
@@ -129,15 +128,6 @@ class FuzzyContext(Context):
 				if val == 0:
 					counter += 1
 		return counter
-		
-		
-	def _computeNextValues(self):
-#		allValues = set()
-#		
-#		for line in self.table:
-#			for value in line:
-#				allValues.add(value)
-		self.allValues = [x/10 for x in range(0, 11)] # sorted(list(allValues))
 		
 	def _enumItems(self, items):
 		temp = enumerate(items)

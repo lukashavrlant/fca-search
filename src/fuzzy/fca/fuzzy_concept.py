@@ -14,7 +14,8 @@ class FuzzyConcept:
 		return str({'intent':self.intent, 'extent':self.extent})
 	
 	def __hash__(self):
-		return hash(str(self.intent)) ^ hash(str(self.extent))
+#		return hash(frozenset(self.intent.items())) #^ hash(str(self.extent))
+		return hash(self.intent) ^ hash(self.extent)
 	
 	def __repr__(self):
 		return self.__str__()

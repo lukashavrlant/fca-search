@@ -63,4 +63,4 @@ class FuzzySet:
 		return not self.__eq__(other)
 	
 	def __hash__(self):
-		return hash(str(self.members))
+		return hash(frozenset(self.members.items()))

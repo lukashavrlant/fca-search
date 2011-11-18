@@ -39,4 +39,4 @@ class Concept():
 		return not self.__eq__(other)
 	
 	def __hash__(self):
-		return hash(str(self.intent)) ^ hash(str(self.extent))
+		return hash(frozenset(self.intent))
