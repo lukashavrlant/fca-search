@@ -24,7 +24,7 @@ class SearchTest(unittest.TestCase):
 		filenames = ['derivace', 'nesmysl', 'spocetne', 'input']
 		
 		for d, q, f in zip(dtbs, queries, filenames):
-			#save(fun(d, q), f)
+#			save(fun(d, q), f)
 			ass(dfun(d, q), read(f))
 		
 		
