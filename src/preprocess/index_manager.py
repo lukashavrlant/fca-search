@@ -52,6 +52,7 @@ class IndexManager:
 			
 			self._elapsed('Creating documents info and keywords...')
 			metadata, scoresTable = self._getDocsInfo(indexInfo, folder, infoFolder)
+			
 			infoDtb[DOCUMENT_INFO_NAME] = metadata 
 			infoDtb[SCORES_TABLE] = scoresTable
 			

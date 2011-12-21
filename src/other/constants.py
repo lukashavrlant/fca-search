@@ -22,3 +22,10 @@ SCORES_TABLE = 'scoresTable'
 
 # other
 CHMOD_INDEX = 0o777
+
+def printConstants():
+	print("ROOT_FOLDER: " + ROOT_FOLDER)
+	print("FILES_FOLDER: " + FILES_FOLDER)
+	print("DATABASES_FOLDER: " + DATABASES_FOLDER)
+	print("DATA_FOLDER: " + DATA_FOLDER)
+	
