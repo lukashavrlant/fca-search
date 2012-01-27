@@ -50,9 +50,9 @@ class FCASearchEngine:
 #			print("-------------")
 #			print(modSearchConcept)
 
-			print("------------------")
-			print("Crisp siblings: {0}".format(len(siblings)))
-			print("Crisp left: {0}, crisp right: {1}".format(len(left), len(right)))
+#			print("------------------")
+#			print("Crisp siblings: {0}".format(len(siblings)))
+#			print("Crisp left: {0}, crisp right: {1}".format(len(left), len(right)))
 		siblings = sorted(siblings, key=lambda s:s.similarity(modSearchConcept), reverse=True)
 		siblings = self._translateIntents(siblings, modContext)
 		siblings = self._intents2words(siblings)
@@ -62,7 +62,7 @@ class FCASearchEngine:
 		trySaveFile(context2slf(modContext), DATA_FOLDER + 'context.slf')
 		
 #		test only
-		self.fuzzySearch(query, modContext.ids2attrs(modSearchConcept.intent))
+#		self.fuzzySearch(query, modContext.ids2attrs(modSearchConcept.intent))
 
 		return {'origin':originResults, 'specialization':modSpec, 'generalization':generalization, 'siblings':siblings}
 	
@@ -78,9 +78,11 @@ class FCASearchEngine:
 		# fuzzy context
 		fuzzyContext = getFuzzyContext(modDoc, modTerms, self.index.getKeywordsScore(), self.index.term_frequency)
 
+#		fuzzyContext.setRoundMethod(lambda x: 0 if x == 0 else 1)
+#		fuzzyContext.allValues = [0, 1]
 
-		fuzzyContext.setRoundMethod(lambda x: 0 if x == 0 else 1)
-		fuzzyContext.allValues = [0, 1]
+		fuzzyContext.setRoundMethod(lambda x: 0 if x == 0 else (1 if x > 0.7 else 0.5))
+		fuzzyContext.allValues = [0, 0.5, 1]
 
 #		fuzzyContext.setRoundMethod(lambda x: math.ceil(x*10) / 10)
 #		fuzzyContext.allValues = [x/10 for x in range(0, 11)]
@@ -90,9 +92,15 @@ class FCASearchEngine:
 		
 		searchConcept = self._getFuzzySearchConceptByAttr(modTerms, fuzzyContext)
 		
+		print("Search concept:")
+		print(searchConcept)
+		
 		upperN = fuzzyContext.upperNeighbors(searchConcept)
 		lowerN = fuzzyContext.lowerNeighbors(searchConcept)
 		left = self._getLower(upperN, fuzzyContext)
+		
+		print(fuzzyContext)
+		specialization = self._getFuzzySpecialization(lowerN, fuzzyContext, terms, searchConcept)
 		
 #		print("Fuzzy context number: {0}".format(fuzzyContext.getFalseNumber()))
 #		print("Fuzzy lower: {0}, Fuzzy upper: {1}".format(len(lowerN), len(upperN)))
@@ -108,9 +116,9 @@ class FCASearchEngine:
 #			print("-----------")
 #			print(searchConcept)
 #			print(len(siblings.remove(searchConcept)))
-			print("Fuzzy left: {0}, fuzzy right: {1}".format(len(left), len(right)))
-			print("Fuzzy siblings: {0}".format(len(siblings)))
-			print("------------------")
+#			print("Fuzzy left: {0}, fuzzy right: {1}".format(len(left), len(right)))
+#			print("Fuzzy siblings: {0}".format(len(siblings)))
+#			print("------------------")
 #		print("searchConcept: {0}".format(frozenset(debug) == frozenset(searchConcept.intent.keys())))
 #		print(frozenset(debug))
 #		print(frozenset(searchConcept.intent.keys()))
@@ -119,6 +127,10 @@ class FCASearchEngine:
 #		
 #		modLowerN = modContext.lowerNeighbors(modSearchConcept)
 #		modSpec = self._getSpecialization(modLowerN, modContext, terms, modSearchConcept)
+
+	def _getFuzzySpecialization(self, lower, context, terms, searchConcept):
+		lowerN = [list(x.intent.support()) for x in lower]
+		print(lowerN)
 		
 	def remLocalhost(self, url):
 		return url.replace("http://localhost/matweb/", "")
