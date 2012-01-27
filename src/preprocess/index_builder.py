@@ -54,7 +54,13 @@ def toIndex(documents, stopwords, keylen, elapsed = nothing):
 			if doc['type'] == 'html':
 				content = htmlrem.compile(doc['content'])
 				tempDoc = get_words(normalize_text(content), stopwords)
-				compiledDocuments.append({'content':tempDoc, 'title':htmlrem.title, 'url':doc['url'], 'id':id})
+				compiledDocuments.append({
+					'content':tempDoc, 
+					'title':htmlrem.title, 
+					'url':doc['url'], 
+					'id':id, 
+					'description':htmlrem.description
+					})
 				id += 1
 			else:
 				pass			

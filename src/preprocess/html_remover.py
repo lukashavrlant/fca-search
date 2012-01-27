@@ -7,6 +7,7 @@ class HTMLRemover(HTMLParser):
 		self.title = 'No name'
 		self.elementName = ''
 		self.disabledElements = ['script', 'style']
+		self.description = ''
 		HTMLParser.__init__(self)
 		
 	def compile(self, html):
@@ -29,6 +30,13 @@ class HTMLRemover(HTMLParser):
 		if self.elementName == 'title':
 			if data.strip():
 				self.title = data.strip()
+				
 		
 	def handle_starttag(self, tag, attr):
 		self.elementName = tag
+		
+		if tag == 'meta':
+			attributes = dict(attr)
+			name = attributes.get('name', '')
+			if name == "description":
+				self.description = attributes.get('content', '')
