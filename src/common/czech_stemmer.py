@@ -173,10 +173,10 @@ def _palatalise(word):
         return word[:-3] + "sk"
     return word[:-1]
 
-if __name__ == '__main__':
-    if len(sys.argv) != 2 or sys.argv[1] not in ("light", "aggressive"):
-        sys.exit("usage: {} light|aggressive".format(sys.argv[0]))
-    aggressive = sys.argv[1] == "aggressive"
-    for line in sys.stdin:
-        print(*[cz_stem(word, aggressive=aggressive)
-                for word in line.split()])
+#if __name__ == '__main__':
+#    if len(sys.argv) != 2 or sys.argv[1] not in ("light", "aggressive"):
+#        sys.exit("usage: {} light|aggressive".format(sys.argv[0]))
+#    aggressive = sys.argv[1] == "aggressive"
+#    for line in sys.stdin:
+#        print(*[cz_stem(word, aggressive=aggressive)
+#                for word in line.split()])

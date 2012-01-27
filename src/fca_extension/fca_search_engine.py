@@ -18,10 +18,11 @@ class FCASearchEngine:
 		terms = originResults['terms']		
 		
 		### Modify context
-		modResult = self.engine.search(' OR '.join(terms))
+		modResult = self.engine.nostemSearch(' OR '.join(terms))
 		
 		modDoc, modTerms = self._getDocsAndTerms(modResult)
 		modContext = getContextFromSR(modDoc, modTerms, self.index.contains_term)		
+		
 		
 		modAttrsID = modContext.attrs2ids(terms)
 		modSearchConcept = self._getSearchConceptByAttr(modContext, modAttrsID)

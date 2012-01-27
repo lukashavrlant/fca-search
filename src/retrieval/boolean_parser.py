@@ -21,6 +21,9 @@ class BooleanParser:
 	unary = ['NOT']
 	binary = ['AND', 'OR']
 	
+	def __init__(self, stem = True):
+		self.stem = stem
+	
 	def parse(self, query, stopwords = []):
 		tree = self._pure_parse(query)
 		tree = self._simplify(tree, stopwords)
@@ -43,7 +46,7 @@ class BooleanParser:
 			query.children = lmap(self._query_to_stems, query.children)
 			return query
 		else:
-			if query:
+			if query and self.stem:
 				return getstem(query)
 			else:
 				return query
