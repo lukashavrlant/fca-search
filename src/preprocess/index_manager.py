@@ -156,7 +156,7 @@ class IndexManager:
 		
 		for docInfo in documentsInfo:
 			d = {}
-			for key in ['title', 'url', 'keywords', 'words', 'id']:
+			for key in ['title', 'url', 'keywords', 'words', 'id', 'description']:
 				d[key] = docInfo[key]
 			newDocInfo.append(d)
 		
