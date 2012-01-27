@@ -9,6 +9,7 @@ from common.czech_stemmer import wordCounter, savedStems
 from common.string import strip_accents
 from other.stopwatch import Stopwatch
 import shelve
+import shutil
 
 class IndexManager:
 	
@@ -28,11 +29,18 @@ class IndexManager:
 		
 	def build(self, urls, folder, stopwords):
 		"Builds an index in 'folder'"
+		self.deleteFolder(folder)
 		watcher = Stopwatch()
 		watcher.start()
 		self._build(urls, folder, stopwords)
 		watcher.elapsed('done')
 		print(watcher)
+		
+	def deleteFolder(self, path):
+		try:
+			shutil.rmtree(path)
+		except:
+			pass
 		
 	def _elapsed(self, status):
 		if not self.shutUp:
