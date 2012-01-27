@@ -7,7 +7,6 @@ class HTMLRemover(HTMLParser):
 		self.title = 'No name'
 		self.elementName = ''
 		self.disabledElements = ['script', 'style']
-		self.description = ''
 		HTMLParser.__init__(self)
 		
 	def compile(self, html):
@@ -19,6 +18,7 @@ class HTMLRemover(HTMLParser):
 		return ' '.join(self.puredata)
 		
 	def reset(self):
+		self.description = ''
 		self.puredata = []
 		self.printp = True
 		HTMLParser.reset(self)
