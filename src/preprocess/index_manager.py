@@ -10,6 +10,9 @@ from common.string import strip_accents
 from other.stopwatch import Stopwatch
 import shelve
 import shutil
+import xml.etree.ElementTree as etree
+import glob
+from xml.etree.ElementTree import XML
 
 class IndexManager:
 	
@@ -90,8 +93,11 @@ class IndexManager:
 				if extension == '.pdf':
 					document = {'type':'txt', 'content':self.handlePDF(url), 'url':url}
 					documents.append(document)
-				elif extension == '.doc':
-					pass
+					self.cleanTemp()
+				elif extension == '.odt':
+					document = {'type':'txt', 'content':self.handleODT(url), 'url':url}
+					documents.append(document)
+					self.cleanTemp()
 				else:
 					document = {'type':'html', 'content':download(url), 'url':url}
 					documents.append(document)
@@ -113,6 +119,30 @@ class IndexManager:
 		os.remove(pdfdest)
 		os.remove(txtdest)
 		return txt
+	
+	def handleODT(self, url):
+		tempfile = TEMP_FOLDER + "temp."
+		odtdest = tempfile + "odt"
+		downloadFile(url, odtdest)
+		os.system('unzip  -q -d ' + TEMP_FOLDER + ' ' + odtdest)
+		tree = etree.parse(TEMP_FOLDER + "content.xml")
+		root = tree.getroot() 
+		text = self.getTextFromXML(root)
+		return text
+	
+	def cleanTemp(self):
+		files = glob.glob(TEMP_FOLDER + "*")
+		for path in files:
+			if os.path.isdir(path):
+				shutil.rmtree(path)
+			else:
+				os.remove(path)
+		
+	def getTextFromXML(self, xml):
+		text = [xml.text] if xml.text else []
+		for el in list(xml):
+			text.append(self.getTextFromXML(el))
+		return " ".join(text)
 			
 	def _getKeywordsInfo(self, keywords, documents):
 		documents = [set(x) for x in documents]
