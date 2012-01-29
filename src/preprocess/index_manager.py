@@ -1,8 +1,8 @@
-from common.io import download
+from common.io import download, downloadFile, readfile
 from preprocess.index_builder import toIndex, getKeywords
 from urllib.error import HTTPError
 from other.constants import DOCUMENT_INFO_NAME, STEMSDICT_NAME,	KEYWORDSINDOCUMENTS_NAME,\
-	CHMOD_INDEX, SCORES_TABLE
+	CHMOD_INDEX, SCORES_TABLE, TEMP_FOLDER, PDFTOTEXT
 from retrieval.index import Index
 import os
 from common.czech_stemmer import wordCounter, savedStems
@@ -86,10 +86,11 @@ class IndexManager:
 			try:
 				self._elapsed('Downloading: ' + url)
 				extension = os.path.splitext(url)[1]
-				
-				if extension == 'pdf':
-					pass
-				elif extension == 'doc':
+
+				if extension == '.pdf':
+					document = {'type':'txt', 'content':self.handlePDF(url), 'url':url}
+					documents.append(document)
+				elif extension == '.doc':
 					pass
 				else:
 					document = {'type':'html', 'content':download(url), 'url':url}
@@ -101,6 +102,14 @@ class IndexManager:
 				print(err)
 					
 		return documents
+	
+	def handlePDF(self, url, enc = "UTF-8"):
+		tempfile = TEMP_FOLDER + "temp."
+		pdfdest = tempfile + "pdf"
+		txtdest = tempfile + "txt"
+		downloadFile(url, pdfdest)
+		os.system(PDFTOTEXT + "-enc " + enc + " " + pdfdest + " " + txtdest)
+		return readfile(txtdest)
 			
 	def _getKeywordsInfo(self, keywords, documents):
 		documents = [set(x) for x in documents]

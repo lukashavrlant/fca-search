@@ -1,4 +1,4 @@
-from urllib.request import urlopen
+from urllib.request import urlopen, urlretrieve
 from common.funcfun import each, lmap
 import codecs
 
@@ -33,3 +33,6 @@ def trySaveFile(content, path, charset = 'utf-8'):
 		return True
 	except:
 		return False
+	
+def downloadFile(url, destination):
+	urlretrieve(url, destination)

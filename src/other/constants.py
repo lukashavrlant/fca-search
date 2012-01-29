@@ -6,6 +6,8 @@ FILES_FOLDER = ROOT_FOLDER + 'files/'
 DATA_FOLDER = FILES_FOLDER + 'data/'
 TEST_FOLDER = FILES_FOLDER + 'tests/'
 DATABASES_FOLDER = FILES_FOLDER + 'databases/'
+TEMP_FOLDER = FILES_FOLDER + 'temp/'
+BIN_FOLDER = ROOT_FOLDER + 'bin/'
 
 INDEX_FOLDER_NAME = 'index/'
 INFO_FOLDER_NAME = 'info/'
@@ -18,6 +20,9 @@ STOPWORDS_NAME = 'stopwords.txt'
 STEMSDICT_NAME = 'stemsdict'
 KEYWORDSINDOCUMENTS_NAME = 'keywordsInDocuments'
 SCORES_TABLE = 'scoresTable'
+
+# bins
+PDFTOTEXT = BIN_FOLDER + 'pdftotext '
 
 
 # other
