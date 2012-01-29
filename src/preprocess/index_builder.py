@@ -6,6 +6,7 @@ from preprocess.words import get_words, getstem
 from preprocess.html_remover import HTMLRemover
 from common.string import normalize_text
 from retrieval.ranking import document_score
+import os
 
 def getDocsStats(documents):
 	counters = list(enumerate(map(lambda x: Counter(x), documents)))
@@ -60,6 +61,17 @@ def toIndex(documents, stopwords, keylen, elapsed = nothing):
 					'url':doc['url'], 
 					'id':id, 
 					'description':htmlrem.description
+					})
+				id += 1
+			elif doc['type'] == 'txt':
+				content = doc['content']
+				tempDoc = get_words(normalize_text(content), stopwords)
+				compiledDocuments.append({
+					'content':tempDoc, 
+					'title':os.path.basename(doc['url']),
+					'url':doc['url'], 
+					'id':id, 
+					'description':''
 					})
 				id += 1
 			else:
