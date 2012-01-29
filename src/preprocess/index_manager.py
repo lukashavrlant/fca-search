@@ -109,7 +109,10 @@ class IndexManager:
 		txtdest = tempfile + "txt"
 		downloadFile(url, pdfdest)
 		os.system(PDFTOTEXT + "-enc " + enc + " " + pdfdest + " " + txtdest)
-		return readfile(txtdest)
+		txt = readfile(txtdest)
+		os.remove(pdfdest)
+		os.remove(txtdest)
+		return txt
 			
 	def _getKeywordsInfo(self, keywords, documents):
 		documents = [set(x) for x in documents]
