@@ -1,8 +1,8 @@
-from common.io import download, downloadFile, readfile
+from common.io import download
 from preprocess.index_builder import toIndex, getKeywords
 from urllib.error import HTTPError
 from other.constants import DOCUMENT_INFO_NAME, STEMSDICT_NAME,	KEYWORDSINDOCUMENTS_NAME,\
-	CHMOD_INDEX, SCORES_TABLE, TEMP_FOLDER, PDFTOTEXT
+	CHMOD_INDEX, SCORES_TABLE
 from retrieval.index import Index
 import os
 from common.czech_stemmer import wordCounter, savedStems
@@ -10,9 +10,7 @@ from common.string import strip_accents
 from other.stopwatch import Stopwatch
 import shelve
 import shutil
-import xml.etree.ElementTree as etree
-import glob
-from xml.etree.ElementTree import XML
+from preprocess.file_handlers import FileHandlers
 
 class IndexManager:
 	
@@ -82,8 +80,8 @@ class IndexManager:
 			
 	def _downloadDocuments(self, urls):
 		distUrls = list(set(urls))
-		
 		documents = []
+		handle = FileHandlers()
 		
 		for url in distUrls:
 			try:
@@ -91,58 +89,22 @@ class IndexManager:
 				extension = os.path.splitext(url)[1]
 
 				if extension == '.pdf':
-					document = {'type':'txt', 'content':self.handlePDF(url), 'url':url}
-					documents.append(document)
-					self.cleanTemp()
+					document = {'type':'txt', 'content':handle.PDF(url), 'url':url}
 				elif extension == '.odt':
-					document = {'type':'txt', 'content':self.handleODT(url), 'url':url}
-					documents.append(document)
-					self.cleanTemp()
+					document = {'type':'txt', 'content':handle.ODT(url), 'url':url}
 				else:
 					document = {'type':'html', 'content':download(url), 'url':url}
-					documents.append(document)
+					
+				documents.append(document)
 			except HTTPError as err:
 				print('Cannot download {0}'.format(err.filename))
 				print("HTTP error: {0}".format(err))
 			except Exception as err:
 				print(err)
+				
+			handle.cleanTempIfNes(extension)
 					
 		return documents
-	
-	def handlePDF(self, url, enc = "UTF-8"):
-		tempfile = TEMP_FOLDER + "temp."
-		pdfdest = tempfile + "pdf"
-		txtdest = tempfile + "txt"
-		downloadFile(url, pdfdest)
-		os.system(PDFTOTEXT + "-enc " + enc + " " + pdfdest + " " + txtdest)
-		txt = readfile(txtdest)
-		os.remove(pdfdest)
-		os.remove(txtdest)
-		return txt
-	
-	def handleODT(self, url):
-		tempfile = TEMP_FOLDER + "temp."
-		odtdest = tempfile + "odt"
-		downloadFile(url, odtdest)
-		os.system('unzip  -q -d ' + TEMP_FOLDER + ' ' + odtdest)
-		tree = etree.parse(TEMP_FOLDER + "content.xml")
-		root = tree.getroot() 
-		text = self.getTextFromXML(root)
-		return text
-	
-	def cleanTemp(self):
-		files = glob.glob(TEMP_FOLDER + "*")
-		for path in files:
-			if os.path.isdir(path):
-				shutil.rmtree(path)
-			else:
-				os.remove(path)
-		
-	def getTextFromXML(self, xml):
-		text = [xml.text] if xml.text else []
-		for el in list(xml):
-			text.append(self.getTextFromXML(el))
-		return " ".join(text)
 			
 	def _getKeywordsInfo(self, keywords, documents):
 		documents = [set(x) for x in documents]
@@ -223,9 +185,9 @@ class IndexManager:
 					
 		
 	
-	def _saveIndex(self, index, dir):
+	def _saveIndex(self, index, directory):
 		for prefix, data in index.items():
-			path = dir + prefix
+			path = directory + prefix
 			dtb = shelve.open(path)
 			for steminfo in data:
 				dtb[steminfo[0][0]] = steminfo[1]
