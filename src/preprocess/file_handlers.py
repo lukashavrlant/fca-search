@@ -1,9 +1,10 @@
 from other.constants import TEMP_FOLDER, PDFTOTEXT
-from common.io import downloadFile, readfile
+from common.io import downloadFile, readfile, savefile
 import xml.etree.ElementTree as etree
 import os
 from glob import glob
 import shutil
+from common.string import normalizePDF
 
 
 class FileHandlers: 
@@ -14,8 +15,7 @@ class FileHandlers:
 		downloadFile(url, pdfdest)
 		os.system(PDFTOTEXT + "-enc " + enc + " " + pdfdest + " " + txtdest)
 		txt = readfile(txtdest)
-		os.remove(pdfdest)
-		os.remove(txtdest)
+		txt = normalizePDF(txt)
 		return txt
 	
 	def ODT(self, url):
