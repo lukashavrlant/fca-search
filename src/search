@@ -55,8 +55,8 @@ def printJson(searchResults):
 	
 def getFcaExt(searchResults):
 	spec = searchResults['specialization']
-	spec = [list(x) for x in spec]
-	spec = sorted(spec, key=lambda x: str(x))
+#	spec = [list(x) for x in spec]
+#	spec = sorted(spec, key=lambda x: str(x))
 	
 	gen = searchResults['generalization']
 	gen = [list(x) for x in gen]

@@ -58,8 +58,6 @@ class FCASearchEngine:
 		siblings = self._translateIntents(siblings, modContext)
 		siblings = self._intents2words(siblings)
 		
-		
-		
 		trySaveFile(context2slf(modContext), DATA_FOLDER + 'context.slf')
 		
 #		test only
@@ -154,11 +152,14 @@ class FCASearchEngine:
 		return lowerN
 	
 	def _getSpecialization(self, lowerN, context, terms, searchConcept):
-		lowerN = {x.translate(context) for x in lowerN}
+		lowerN = {x.translate(context) for x in lowerN}		
 		suggTerms = set(terms) | searchConcept.translate(context).intentNames
 		specialization = [x.intentNames - suggTerms for x in lowerN]
 		specialization = self._intents2words(specialization)
-		return specialization
+		rankedSpec = [{'words':list(x[0]), 'length':len(x[1].extent)} for x in zip(specialization, lowerN)]
+		rankedSpec = sorted(rankedSpec, key=lambda s: s['length'], reverse=True)
+		
+		return rankedSpec
 	
 	def _translateIntents(self, concepts, context):
 		return [con.translate(context).intentNames for con in concepts]
