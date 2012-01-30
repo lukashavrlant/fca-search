@@ -41,3 +41,37 @@ def normalize_text(text):
 
 def to_normal_lower(word):
 	return strip_accents(word.lower().strip())
+
+def normalizePDF(text):
+	remove = [' ˇ´ ',
+			' ˚ ', 
+			' ´', 
+			' ˚', 
+			' ˇ ', 
+			' ˇ']
+	
+	for rem in remove:
+		text = text.replace(rem, '')
+	text = text.replace('ı', 'i')
+	text = text.replace('t’', 't')
+	
+	return text
+			
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
