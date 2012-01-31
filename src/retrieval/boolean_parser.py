@@ -4,8 +4,8 @@ from common.list import splitlist
 from preprocess.words import getstem
 
 class Node:
-	def __init__(self, type):
-		self.type = type
+	def __init__(self, nodeType):
+		self.type = nodeType
 		
 	def __repr__(self):
 		if self.type in BooleanParser.unary:

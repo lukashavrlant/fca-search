@@ -9,7 +9,7 @@ class HTMLRemover(HTMLParser):
 		self.disabledElements = ['script', 'style']
 		HTMLParser.__init__(self)
 		
-	def compile(self, html):
+	def getText(self, html):
 		self.reset()
 		self.feed(html)
 		return self.get_data()	

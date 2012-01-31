@@ -46,23 +46,23 @@ def getKeywords(documents, index):
 def toIndex(documents, stopwords, keylen, elapsed = nothing):
 	htmlrem = HTMLRemover()	
 	compiledDocuments = []
-	id = 0
+	docID = 0
 	
 	for doc in documents:
 		try:
 			elapsed('parsing: ' + doc['url'])
 			
 			if doc['type'] == 'html':
-				content = htmlrem.compile(doc['content'])
+				content = htmlrem.getText(doc['content'])
 				tempDoc = get_words(normalize_text(content), stopwords)
 				compiledDocuments.append({
 					'content':tempDoc, 
 					'title':htmlrem.title, 
 					'url':doc['url'], 
-					'id':id, 
+					'id':docID, 
 					'description':htmlrem.description
 					})
-				id += 1
+				docID += 1
 			elif doc['type'] == 'txt':
 				content = doc['content']
 				tempDoc = get_words(normalize_text(content), stopwords)
@@ -70,10 +70,10 @@ def toIndex(documents, stopwords, keylen, elapsed = nothing):
 					'content':tempDoc, 
 					'title':os.path.basename(doc['url']),
 					'url':doc['url'], 
-					'id':id, 
+					'id':docID, 
 					'description':''
 					})
-				id += 1
+				docID += 1
 			else:
 				pass			
 		except Exception as err:
