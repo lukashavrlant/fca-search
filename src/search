@@ -17,18 +17,16 @@ def printSearch(searchResults):
 	documents = results['documents']
 	
 	if documents:
-		maxURL = max(len(x['url']) for x in documents)
-		if 'matweb' in documents[0]['url']:
-			maxURL = maxURL - len('http://localhost/matweb/') + len('matweb.cz/')
-		maxKeywords = max([len(repr(x['keywords'][:3])) for x in documents])
+		maxURL = max(len(x['url']) for x in documents) - len('http://')
+		maxKeywords = max([len(repr([(x[0], round(x[1])) for x in y['keywords'][:3]])) for y in documents])
 		maxPos = len(str(len(documents)))
 		maxScore = max(len(str(round(x['score'], 3))) for x in documents) + 1
 		
-		print(''.ljust(maxPos), 'URL'.ljust(maxURL), 'KEYWORDS'.ljust(maxKeywords), 'SCORE'.ljust(maxScore), 'WORDSCOUNT')
+		print(''.ljust(maxPos), 'URL'.ljust(maxURL), 'KEYWORDS'.ljust(maxKeywords), 'SCORE'.ljust(maxScore), 'WORDS')
 		for pos, item in enumerate(documents):
 			score = str(round(item['score'], 3))
-			url = item['url'].replace('http://localhost/matweb/', 'matweb.cz/')
-			keywords = repr(item['keywords'][:3])
+			url = item['url'].replace('http://', '')
+			keywords = repr([(x[0], round(x[1])) for x in item['keywords'][:3]])
 			wordscount = item['words']
 	
 			print(str(pos+1).ljust(maxPos), url.ljust(maxURL), keywords.ljust(maxKeywords), score.ljust(maxScore), wordscount)
@@ -120,7 +118,6 @@ if __name__ == '__main__':
 			databaseName = opts['-a']
 			linksSourcePath = opts.get('-p')
 			links = readfile(linksSourcePath).splitlines()
-			print(links)
 			rebuildIndex(databaseName, links)
 	except getopt.GetoptError as err:
 		print(err) 
