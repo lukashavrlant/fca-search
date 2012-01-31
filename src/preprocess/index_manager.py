@@ -2,7 +2,7 @@ from common.io import download
 from preprocess.index_builder import toIndex, getKeywords
 from urllib.error import HTTPError
 from other.constants import DOCUMENT_INFO_NAME, STEMSDICT_NAME,	KEYWORDSINDOCUMENTS_NAME,\
-	CHMOD_INDEX, SCORES_TABLE
+	CHMOD_INDEX, SCORES_TABLE, TEMP_FOLDER
 from retrieval.index import Index
 import os
 from common.czech_stemmer import wordCounter, savedStems
@@ -51,10 +51,9 @@ class IndexManager:
 		indexFolder = folder + 'index/'
 		infoFolder = folder + 'info/'
 		
-		sites = self._downloadDocuments(urls)
-		
 		try:
-			self._createFolder([indexFolder, infoFolder])
+			self._createFolder([indexFolder, infoFolder, TEMP_FOLDER])
+			sites = self._downloadDocuments(urls)
 			infoDtb = shelve.open(infoFolder + 'info') 
 			indexInfo = toIndex(sites, stopwords, self.keylen, self._elapsed)
 			self._createIndex(indexInfo, indexFolder, infoFolder)

@@ -1,5 +1,5 @@
 from other.constants import TEMP_FOLDER, PDFTOTEXT
-from common.io import downloadFile, readfile, savefile
+from common.io import downloadFile, readfile
 import xml.etree.ElementTree as etree
 import os
 from glob import glob
