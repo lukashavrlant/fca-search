@@ -26,7 +26,7 @@ PDFTOTEXT = BIN_FOLDER + 'pdftotext '
 
 
 # other
-CHMOD_INDEX = 0o764
+CHMOD_INDEX = 0o766
 
 def printConstants():
 	print("ROOT_FOLDER: " + ROOT_FOLDER)
