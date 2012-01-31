@@ -95,19 +95,27 @@ if __name__ == '__main__':
 	try:
 		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:p:f:m:r:a:')
 		opts = dict(opts)
+		
+		# search in database
 		if '-q' in opts:
 			outFormat = opts.get('-f', 'console')
 			search(opts['-d'], opts['-q'], outFormat)
 			if outFormat == 'console':
 				stopwatch.elapsed('Done')
 				print(stopwatch)
+				
+		# build index
 		elif '-b' in opts:
 			databaseName = opts['-b']
 			linksSourcePath = opts.get('-p', DATA_FOLDER + opts['-b'] + '.txt')
 			maxLinksToDownload = int(opts.get('-m', 0))
 			buildIndex(databaseName, linksSourcePath, maxLinksToDownload)
+		
+		# refresh index
 		elif '-r' in opts:
 			rebuildIndex(opts['-r'])
+			
+		# add links to index
 		elif '-a' in opts:
 			databaseName = opts['-a']
 			linksSourcePath = opts.get('-p')
