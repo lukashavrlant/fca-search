@@ -54,16 +54,22 @@ class FCASearchEngine:
 #			print("------------------")
 #			print("Crisp siblings: {0}".format(len(siblings)))
 #			print("Crisp left: {0}, crisp right: {1}".format(len(left), len(right)))
-		siblings = sorted(siblings, key=lambda s:s.similarity(modSearchConcept), reverse=True)
-		siblings = self._translateIntents(siblings, modContext)
-		siblings = self._intents2words(siblings)
+		#siblings = sorted(siblings, key=lambda s:s.similarity(modSearchConcept), reverse=True)
 		
-		trySaveFile(context2slf(modContext), DATA_FOLDER + 'context.slf')
+		for sibl in siblings:
+			sim = str(sibl.similarity(modSearchConcept))
+#			print("podobnost: " + sim)
+			
+		rankedSibl = [{'rank': round(x.similarity(modSearchConcept), 3), 'words':x} for x in siblings]
+		rankedSibl = sorted(rankedSibl, key=lambda x: x['rank'], reverse = True)
+		self._translateIntents(rankedSibl, modContext)
+		
+#		trySaveFile(context2slf(modContext), DATA_FOLDER + 'context.slf')
 		
 #		test only
 #		self.fuzzySearch(query, modContext.ids2attrs(modSearchConcept.intent))
 
-		return {'origin':originResults, 'specialization':modSpec, 'generalization':generalization, 'siblings':siblings}
+		return {'origin':originResults, 'specialization':modSpec, 'generalization':generalization, 'siblings':rankedSibl}
 	
 	def fuzzySearch(self, query, debug = None):
 		originResults = self.engine.search(query)	
@@ -156,13 +162,17 @@ class FCASearchEngine:
 		suggTerms = set(terms) | searchConcept.translate(context).intentNames
 		specialization = [x.intentNames - suggTerms for x in lowerN]
 		specialization = self._intents2words(specialization)
-		rankedSpec = [{'words':list(x[0]), 'length':len(x[1].extent)} for x in zip(specialization, lowerN)]
-		rankedSpec = sorted(rankedSpec, key=lambda s: s['length'], reverse=True)
+		rankedSpec = [{'words':list(x[0]), 'rank':len(x[1].extent)} for x in zip(specialization, lowerN)]
+		rankedSpec = sorted(rankedSpec, key=lambda s: s['rank'], reverse=True)
 		
 		return rankedSpec
 	
 	def _translateIntents(self, concepts, context):
-		return [con.translate(context).intentNames for con in concepts]
+		for con in concepts:
+			stems = con['words'].translate(context).intentNames
+			con['words'] = [self.index.stem2word(stem) for stem in stems]
+		
+		#return [con.translate(context).intentNames for con in concepts]
 	
 	def _intents2words(self, concepts):
 		return [{self.index.stem2word(stem) for stem in concept} for concept in concepts]
