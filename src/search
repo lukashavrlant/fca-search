@@ -71,15 +71,20 @@ def search(databaseName, query, outFormat):
 	elif outFormat == 'json':
 		printJson(searchResults)
 	
-def buildIndex(databaseName, sourceFileName, maxLinksToDownload):
+def buildIndex(databaseName, linksSourcePath, maxLinksToDownload):
 	database = DATABASES_FOLDER + databaseName + '/'
-	sourceFile = DATA_FOLDER + sourceFileName + '.txt'
-	links = eval(readfile(sourceFile))
+	links = readfile(linksSourcePath).splitlines()
 	if maxLinksToDownload:
 		links = links[:int(maxLinksToDownload)]
 	indexManager = IndexManager()
 	indexManager.shutUp = False
 	indexManager.build(links, database, getStopWords())
+	
+def rebuildIndex(databaseName, newLinks = []):
+	database = DATABASES_FOLDER + databaseName + '/'
+	indexManager = IndexManager()
+	indexManager.shutUp = False
+	indexManager.rebuild(newLinks, database, getStopWords())
 	
 	
 ## main
@@ -88,19 +93,27 @@ if __name__ == '__main__':
 	stopwatch = Stopwatch().start()
 	
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:s:f:m:')
+		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:p:f:m:r:a:')
 		opts = dict(opts)
 		if '-q' in opts:
-			format = opts.get('-f', 'console')
-			search(opts['-d'], opts['-q'], format)
-			if format == 'console':
+			outFormat = opts.get('-f', 'console')
+			search(opts['-d'], opts['-q'], outFormat)
+			if outFormat == 'console':
 				stopwatch.elapsed('Done')
 				print(stopwatch)
 		elif '-b' in opts:
 			databaseName = opts['-b']
-			sourceFileName = opts.get('-s', opts['-b'])
-			max = int(opts.get('-m', 0))
-			buildIndex(databaseName, sourceFileName, max)
+			linksSourcePath = opts.get('-p', DATA_FOLDER + opts['-b'] + '.txt')
+			maxLinksToDownload = int(opts.get('-m', 0))
+			buildIndex(databaseName, linksSourcePath, maxLinksToDownload)
+		elif '-r' in opts:
+			rebuildIndex(opts['-r'])
+		elif '-a' in opts:
+			databaseName = opts['-a']
+			linksSourcePath = opts.get('-p')
+			links = readfile(linksSourcePath).splitlines()
+			print(links)
+			rebuildIndex(databaseName, links)
 	except getopt.GetoptError as err:
 		print(err) 
 		sys.exit(2)
