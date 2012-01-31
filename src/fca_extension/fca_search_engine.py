@@ -32,33 +32,11 @@ class FCASearchEngine:
 		lowerN = modContext.lowerNeighbors(modSearchConcept)
 		modSpec = self._getSpecialization(lowerN, modContext, terms, modSearchConcept)
 		
-		# debug
-#		print("Crisp lower: {0}, Crisp upper: {1}".format(len(lowerN), len(upperN)))
-#		print("Crisp context number: {0}".format(modContext.getFalseNumber()))
-#		print("Attributes: {0}".format(modContext.attributes))
-#		print("Crisp context:\n{0}".format(modContext.toNumbers()))
-		
 		siblings = set()
 		left = self._getLower(upperN, modContext)
-#		print("crisp left: " + str(len(left)))
 		if left:
 			right = self._getUppers(lowerN, modContext)
-#			print("Crisp right: {0}".format(len(right)))
-#			debug = {frozenset({self.remLocalhost(modContext.attributes[x]) for x in r.intent}) for r in right}
-#			debug = {frozenset({self.remLocalhost(modContext.attributes[x]) for x in r.intent}) for r in left}
 			siblings = (left & right) - {modSearchConcept}
-#			print([str(x.translate(modContext)) for x in siblings])
-#			print("-------------")
-#			print(modSearchConcept)
-
-#			print("------------------")
-#			print("Crisp siblings: {0}".format(len(siblings)))
-#			print("Crisp left: {0}, crisp right: {1}".format(len(left), len(right)))
-		#siblings = sorted(siblings, key=lambda s:s.similarity(modSearchConcept), reverse=True)
-		
-		for sibl in siblings:
-			sim = str(sibl.similarity(modSearchConcept))
-#			print("podobnost: " + sim)
 			
 		rankedSibl = [{'rank': round(x.similarity(modSearchConcept), 3), 'words':x} for x in siblings]
 		rankedSibl = sorted(rankedSibl, key=lambda x: x['rank'], reverse = True)
@@ -181,9 +159,19 @@ class FCASearchEngine:
 	def _getGeneralization(self, upperN, context, terms, searchConcept):
 		upperN = {x.translate(context) for x in upperN}
 		modSuggTerms = set(terms) | searchConcept.translate(context).intentNames
+		
+		rankedUpper = [{'rank':len(x.extent), 'words':x} for x in upperN]
+		rankedUpper = sorted(rankedUpper, key=lambda x: x['rank'], reverse = True)
+		
+		for item in rankedUpper:
+			intent = item['words'].intentNames
+			stems = (modSuggTerms - intent) & set(terms)
+			item['words'] = [self.index.stem2word(stem) for stem in stems]		
+		
+		
 		generalization = [(modSuggTerms - x.intentNames) & set(terms)  for x in upperN]
 		generalization = [{self.index.stem2word(stem) for stem in sugg} for sugg in generalization]
-		return generalization
+		return rankedUpper
 	
 	def _getDocsAndTerms(self, searchRes):
 		return searchRes['documents'][:self.maxDocs], searchRes['terms']
