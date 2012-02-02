@@ -40,6 +40,7 @@ class IndexManager:
 		self.keywordsCount = getter('keywordsCount', 10)
 		self.keyScoreLimit = getter('keyScoreLimit', 35)
 		self.minKeywords = getter('minKeywords', 1)
+		self.maxKeywords = getter('maxKeywords', 10)
 		self.dynamicKeywords = settings.getBool(namespace, 'dynamicKeywords', True)
 		
 	def deleteFolder(self, path):
@@ -154,7 +155,7 @@ class IndexManager:
 			
 		for docInfo, allDocKeywords in zip(documentsInfo, keywordsScore):
 			if self.dynamicKeywords:
-				topKeywords = [x for x in allDocKeywords if x[1] > self.keyScoreLimit]
+				topKeywords = [x for x in allDocKeywords if x[1] > self.keyScoreLimit][:self.maxKeywords]
 				if len(topKeywords) < self.minKeywords:
 					topKeywords = allDocKeywords[:self.minKeywords]
 			else:
