@@ -5,8 +5,8 @@ from fuzzy.fca.fuzzy_context import FuzzyContext
 
 
 ## Search result -> context
-def getContextFromSR(documents, terms, relation):
-	keywords = [x['keywords'] for x in documents]
+def getContextFromSR(documents, terms, relation, maxKeywords):
+	keywords = [x['keywords'][:maxKeywords] for x in documents]
 	keywords = [[y[0] for y in x] for x in keywords]
 	keywords = sorted(list(set(terms + reduce(add, keywords, []))))
 	

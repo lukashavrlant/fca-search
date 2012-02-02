@@ -17,8 +17,9 @@ class FCASearchEngine:
 	def applySettings(self, settings):
 		getter = settings.intGetter('fca')
 		self.maxDocs = getter('maxDocumentsInContext', 50)
+		self.maxKeywords = getter('maxKeywordsPerDocument', 6)
 		
-		
+
 	def search(self, query):
 		originResults = self.engine.search(query)	
 		terms = originResults['terms']		
@@ -26,7 +27,7 @@ class FCASearchEngine:
 		### Modify context
 		modResult = self.engine.nostemSearch(' OR '.join(terms))
 		modDoc, modTerms = self._getDocsAndTerms(modResult)
-		modContext = getContextFromSR(modDoc, modTerms, self.index.contains_term)		
+		modContext = getContextFromSR(modDoc, modTerms, self.index.contains_term, self.maxKeywords)		
 		modAttrsID = modContext.attrs2ids(terms)
 		modSearchConcept = self._getSearchConceptByAttr(modContext, modAttrsID)
 
