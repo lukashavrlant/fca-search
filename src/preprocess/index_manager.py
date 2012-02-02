@@ -15,11 +15,12 @@ from preprocess.file_handlers import FileHandlers
 class IndexManager:
 	
 	def __init__(self, settings):
+		self.settings = settings
 		self.applySettings(settings)
 		self.shutUp = True
 		
 	def rebuild(self, newLinks, folder, stopwords):
-		index = Index(folder)
+		index = Index(folder, self.settings)
 		oldLinks = index.getLinks()
 		links = list(set(newLinks) | set(oldLinks))
 		self.build(links, folder, stopwords)
@@ -150,7 +151,7 @@ class IndexManager:
 			
 	def _getDocsInfo(self, indexInfo, folder, infoFolder):
 		documentsInfo = indexInfo['documents']
-		keywordsScore = getKeywords(documentsInfo, Index(folder, documentsInfo))
+		keywordsScore = getKeywords(documentsInfo, Index(folder, self.settings, documentsInfo))
 		totalKeywords = set()
 			
 		for docInfo, allDocKeywords in zip(documentsInfo, keywordsScore):

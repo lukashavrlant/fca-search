@@ -61,7 +61,8 @@ def getFcaExt(searchResults):
 
 def search(databaseName, query, outFormat):
 	database = DATABASES_FOLDER + databaseName + '/'
-	index = Index(database)
+	settings = Settings(database + SETTINGS_FILE)
+	index = Index(database, settings)
 	searchEngine = SearchEngine(index, getStopWords())
 	fca = FCASearchEngine(searchEngine, index)
 	searchResults = fca.search(query)
@@ -82,7 +83,8 @@ def buildIndex(databaseName, linksSourcePath, maxLinksToDownload):
 	
 def rebuildIndex(databaseName, newLinks = []):
 	database = DATABASES_FOLDER + databaseName + '/'
-	indexManager = IndexManager()
+	settings = Settings(database + SETTINGS_FILE)
+	indexManager = IndexManager(settings)
 	indexManager.shutUp = False
 	indexManager.rebuild(newLinks, database, getStopWords())
 	

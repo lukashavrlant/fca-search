@@ -9,12 +9,14 @@ from retrieval.stem import Stem
 
 class Index:
 	
-	def __init__(self, directory, documentsInfo = None):
+	def __init__(self, directory, settings, documentsInfo = None):
+		self.applySettings(settings)
+		
 		try:
 			self.info = shelve.open(directory + INFO_FOLDER_NAME + 'info')
 		except Exception as err:
 			print(err)
-		self.keylen = 1
+
 		self.directory = directory
 		self.documents_info = documentsInfo if documentsInfo else self._get_translation()
 		self.total_records = len(self.documents_info)
@@ -23,6 +25,8 @@ class Index:
 		self.allKeywords = None
 		self.searchedStem = {}
 		
+	def applySettings(self, settings):
+		self.keylen = settings.getInt('index', 'keylen')
 		
 	def get_documents(self, parsedQuery):
 		documents = self._by_node(parsedQuery)
