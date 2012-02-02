@@ -20,6 +20,7 @@ STOPWORDS_NAME = 'stopwords.txt'
 STEMSDICT_NAME = 'stemsdict'
 KEYWORDSINDOCUMENTS_NAME = 'keywordsInDocuments'
 SCORES_TABLE = 'scoresTable'
+SETTINGS_FILE = 'settings.json'
 
 # bins
 PDFTOTEXT = BIN_FOLDER + 'pdftotext '

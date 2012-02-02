@@ -14,12 +14,8 @@ from preprocess.file_handlers import FileHandlers
 
 class IndexManager:
 	
-	def __init__(self):
-		self.keylen = 1
-		self.keywordsCount = 10
-		self.keyScoreLimit = 35
-		self.minKeywords = 1
-		self.dynamicKeywords = True
+	def __init__(self, settings):
+		self.applySettings(settings)
 		self.shutUp = True
 		
 	def rebuild(self, newLinks, folder, stopwords):
@@ -36,6 +32,15 @@ class IndexManager:
 		self._build(urls, folder, stopwords)
 		watcher.elapsed('done')
 		print(watcher)
+
+	def applySettings(self, settings):
+		namespace = 'index'
+		getter = settings.intGetter(namespace)
+		self.keylen = getter('keylen', 1)
+		self.keywordsCount = getter('keywordsCount', 10)
+		self.keyScoreLimit = getter('keyScoreLimit', 35)
+		self.minKeywords = getter('minKeywords', 1)
+		self.dynamicKeywords = settings.getBool(namespace, 'dynamicKeywords', True)
 		
 	def deleteFolder(self, path):
 		try:

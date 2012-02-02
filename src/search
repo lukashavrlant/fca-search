@@ -2,13 +2,14 @@
 
 from retrieval.search_engine import SearchEngine
 from other.data import getStopWords
-from other.constants import DATABASES_FOLDER, DATA_FOLDER
+from other.constants import DATABASES_FOLDER, DATA_FOLDER, SETTINGS_FILE
 from retrieval.index import Index
 from fca_extension.fca_search_engine import FCASearchEngine
 import getopt, sys
 from common.io import readfile
 from preprocess.index_manager import IndexManager
 from other.stopwatch import Stopwatch
+from other.settings import Settings
 import json
 
 ## functions 
@@ -70,11 +71,12 @@ def search(databaseName, query, outFormat):
 		printJson(searchResults)
 	
 def buildIndex(databaseName, linksSourcePath, maxLinksToDownload):
+	settings = Settings(DATA_FOLDER + SETTINGS_FILE)
 	database = DATABASES_FOLDER + databaseName + '/'
 	links = readfile(linksSourcePath).splitlines()
 	if maxLinksToDownload:
 		links = links[:int(maxLinksToDownload)]
-	indexManager = IndexManager()
+	indexManager = IndexManager(settings)
 	indexManager.shutUp = False
 	indexManager.build(links, database, getStopWords())
 	
