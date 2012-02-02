@@ -41,7 +41,7 @@ class FCASearchEngine:
 				'siblings':self.getSiblings(upperN, lowerN, modContext, modSearchConcept)}
 
 	def getLowerUpper(self, context, searchConcept):
-		return context.upperNeighbors(searchConcept), context.lowerNeighbors(searchConcept)
+		return context.lowerNeighbors(searchConcept), context.upperNeighbors(searchConcept)
 
 	def getSiblings(self, upperN, lowerN, modContext, modSearchConcept):
 		siblings = set()
