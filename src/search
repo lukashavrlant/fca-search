@@ -64,7 +64,7 @@ def search(databaseName, query, outFormat):
 	settings = Settings(database + SETTINGS_FILE)
 	index = Index(database, settings)
 	searchEngine = SearchEngine(index, getStopWords())
-	fca = FCASearchEngine(searchEngine, index)
+	fca = FCASearchEngine(searchEngine, index, settings)
 	searchResults = fca.search(query)
 	if outFormat == 'console':
 		printSearch(searchResults)

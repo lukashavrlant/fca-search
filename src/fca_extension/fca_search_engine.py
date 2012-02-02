@@ -7,11 +7,17 @@ from fuzzy.fca.fuzzy_concept import FuzzyConcept
 from fuzzy.FuzzySet import FuzzySet
 import math
 class FCASearchEngine:
-	def __init__(self, searchEngine, index):
+	def __init__(self, searchEngine, index, settings):
 		self.engine = searchEngine
 		self.index = index
-		self.maxDocs = 50
+		self.settings = settings
+		self.applySettings(settings)
 		self.stopwatch = None
+
+	def applySettings(self, settings):
+		getter = settings.intGetter('fca')
+		self.maxDocs = getter('maxDocumentsInContext', 50)
+		
 		
 	def search(self, query):
 		originResults = self.engine.search(query)	
@@ -123,8 +129,6 @@ class FCASearchEngine:
 		for con in concepts:
 			stems = con['words'].translate(context).intentNames
 			con['words'] = [self.index.stem2word(stem) for stem in stems]
-		
-		#return [con.translate(context).intentNames for con in concepts]
 	
 	def _intents2words(self, concepts):
 		return [{self.index.stem2word(stem) for stem in concept} for concept in concepts]
