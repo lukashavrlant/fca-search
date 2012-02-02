@@ -19,19 +19,24 @@ class FCASearchEngine:
 		
 		### Modify context
 		modResult = self.engine.nostemSearch(' OR '.join(terms))
-		
 		modDoc, modTerms = self._getDocsAndTerms(modResult)
 		modContext = getContextFromSR(modDoc, modTerms, self.index.contains_term)		
-		
-		
 		modAttrsID = modContext.attrs2ids(terms)
 		modSearchConcept = self._getSearchConceptByAttr(modContext, modAttrsID)
-		upperN = modContext.upperNeighbors(modSearchConcept)
-		generalization = self._getGeneralization(upperN, modContext, terms, modSearchConcept)
+
+		lowerN, upperN = self.getLowerUpper(modContext, modSearchConcept)
 		
-		lowerN = modContext.lowerNeighbors(modSearchConcept)
-		modSpec = self._getSpecialization(lowerN, modContext, terms, modSearchConcept)
-		
+#		self.fuzzySearch(query, modContext.ids2attrs(modSearchConcept.intent))
+
+		return {'origin':originResults, 
+				'specialization':self._getSpecialization(lowerN, modContext, terms, modSearchConcept), 
+				'generalization':self._getGeneralization(upperN, modContext, terms, modSearchConcept), 
+				'siblings':self.getSiblings(upperN, lowerN, modContext, modSearchConcept)}
+
+	def getLowerUpper(self, context, searchConcept):
+		return context.upperNeighbors(searchConcept), context.lowerNeighbors(searchConcept)
+
+	def getSiblings(self, upperN, lowerN, modContext, modSearchConcept):
 		siblings = set()
 		left = self._getLower(upperN, modContext)
 		if left:
@@ -41,13 +46,7 @@ class FCASearchEngine:
 		rankedSibl = [{'rank': round(x.similarity(modSearchConcept), 3), 'words':x} for x in siblings]
 		rankedSibl = sorted(rankedSibl, key=lambda x: x['rank'], reverse = True)
 		self._translateIntents(rankedSibl, modContext)
-		
-#		trySaveFile(context2slf(modContext), DATA_FOLDER + 'context.slf')
-		
-#		test only
-#		self.fuzzySearch(query, modContext.ids2attrs(modSearchConcept.intent))
-
-		return {'origin':originResults, 'specialization':modSpec, 'generalization':generalization, 'siblings':rankedSibl}
+		return rankedSibl
 	
 	def fuzzySearch(self, query, debug = None):
 		originResults = self.engine.search(query)	
@@ -61,18 +60,11 @@ class FCASearchEngine:
 		# fuzzy context
 		fuzzyContext = getFuzzyContext(modDoc, modTerms, self.index.getKeywordsScore(), self.index.term_frequency)
 
-#		fuzzyContext.setRoundMethod(lambda x: 0 if x == 0 else 1)
-#		fuzzyContext.allValues = [0, 1]
-
 		fuzzyContext.setRoundMethod(lambda x: 0 if x == 0 else (1 if x > 0.7 else 0.5))
 		fuzzyContext.allValues = [0, 0.5, 1]
 
-#		fuzzyContext.setRoundMethod(lambda x: math.ceil(x*10) / 10)
-#		fuzzyContext.allValues = [x/10 for x in range(0, 11)]
 		fuzzyContext.normalize()
-		
-		
-		
+
 		searchConcept = self._getFuzzySearchConceptByAttr(modTerms, fuzzyContext)
 		
 		print("Search concept:")
@@ -85,31 +77,13 @@ class FCASearchEngine:
 		print(fuzzyContext)
 		specialization = self._getFuzzySpecialization(lowerN, fuzzyContext, terms, searchConcept)
 		
-#		print("Fuzzy context number: {0}".format(fuzzyContext.getFalseNumber()))
-#		print("Fuzzy lower: {0}, Fuzzy upper: {1}".format(len(lowerN), len(upperN)))
-#		print("Fuzzy left: " + str(len(left)))
-		
 		if left:
 			right = self._getUppers(lowerN, fuzzyContext)	
-#			testDebug = {frozenset({self.remLocalhost(x) for x in r.intent.keys()}) for r in right}
-#			testDebug = {frozenset({self.remLocalhost(x) for x in r.intent.keys()}) for r in left}
-			
 			siblings = (left & right) - {searchConcept}
-#			print(siblings)
-#			print("-----------")
-#			print(searchConcept)
-#			print(len(siblings.remove(searchConcept)))
-#			print("Fuzzy left: {0}, fuzzy right: {1}".format(len(left), len(right)))
-#			print("Fuzzy siblings: {0}".format(len(siblings)))
-#			print("------------------")
-#		print("searchConcept: {0}".format(frozenset(debug) == frozenset(searchConcept.intent.keys())))
-#		print(frozenset(debug))
-#		print(frozenset(searchConcept.intent.keys()))
 		
-#		generalization = self._getGeneralization(upperN, modContext, terms, modSearchConcept)
-#		
-#		modLowerN = modContext.lowerNeighbors(modSearchConcept)
-#		modSpec = self._getSpecialization(modLowerN, modContext, terms, modSearchConcept)
+		generalization = self._getGeneralization(upperN, modContext, terms, modSearchConcept)		
+		modLowerN = modContext.lowerNeighbors(modSearchConcept)
+		modSpec = self._getSpecialization(modLowerN, modContext, terms, modSearchConcept)
 
 	def _getFuzzySpecialization(self, lower, context, terms, searchConcept):
 		lowerN = [list(x.intent.support()) for x in lower]
