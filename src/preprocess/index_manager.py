@@ -2,7 +2,7 @@ from common.io import download
 from preprocess.index_builder import toIndex, getKeywords
 from urllib.error import HTTPError
 from other.constants import DOCUMENT_INFO_NAME, STEMSDICT_NAME,	KEYWORDSINDOCUMENTS_NAME,\
-	CHMOD_INDEX, SCORES_TABLE, TEMP_FOLDER
+	CHMOD_INDEX, SCORES_TABLE, TEMP_FOLDER, SETTINGS_FILE
 from retrieval.index import Index
 import os
 from common.czech_stemmer import wordCounter, savedStems
@@ -79,6 +79,8 @@ class IndexManager:
 			
 			infoDtb.close()
 			os.chmod(infoFolder + 'info.db', CHMOD_INDEX)
+
+			self.settings.save(folder + SETTINGS_FILE)
 			self._elapsed('Done!')
 		except IOError as err:
 			print("I/O error: {0}".format(err))

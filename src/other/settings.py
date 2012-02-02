@@ -1,4 +1,4 @@
-from common.io import readfile
+from common.io import readfile, savefile
 import json
 
 class Settings():
@@ -7,8 +7,11 @@ class Settings():
 		self.loadSettings(path)
 	
 	def loadSettings(self, path):
-		text = readfile(path)
-		self.settings = json.loads(text)
+		self.text = readfile(path)
+		self.settings = json.loads(self.text)
+
+	def save(self, path):
+		savefile(self.text, path)
 
 	def get(self, first, second = None):
 		firstValue = self.settings[first]
