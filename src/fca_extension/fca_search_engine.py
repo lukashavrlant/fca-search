@@ -36,8 +36,8 @@ class FCASearchEngine:
 #		self.fuzzySearch(query, modContext.ids2attrs(modSearchConcept.intent))
 
 		return {'origin':originResults, 
-				'specialization':self._getSpecialization(lowerN, modContext, terms, modSearchConcept), 
-				'generalization':self._getGeneralization(upperN, modContext, terms, modSearchConcept), 
+				'specialization':self.getSpecialization(lowerN, modContext, terms, modSearchConcept), 
+				'generalization':self.getGeneralization(upperN, modContext, terms, modSearchConcept), 
 				'siblings':self.getSiblings(upperN, lowerN, modContext, modSearchConcept)}
 
 	def getLowerUpper(self, context, searchConcept):
@@ -116,7 +116,7 @@ class FCASearchEngine:
 			lowerN |= context.lowerNeighbors(concept)
 		return lowerN
 	
-	def _getSpecialization(self, lowerN, context, terms, searchConcept):
+	def getSpecialization(self, lowerN, context, terms, searchConcept):
 		lowerN = {x.translate(context) for x in lowerN}		
 		suggTerms = set(terms) | searchConcept.translate(context).intentNames
 		specialization = [x.intentNames - suggTerms for x in lowerN]
@@ -135,7 +135,7 @@ class FCASearchEngine:
 		return [{self.index.stem2word(stem) for stem in concept} for concept in concepts]
 		
 	
-	def _getGeneralization(self, upperN, context, terms, searchConcept):
+	def getGeneralization(self, upperN, context, terms, searchConcept):
 		upperN = {x.translate(context) for x in upperN}
 		modSuggTerms = set(terms) | searchConcept.translate(context).intentNames
 		
