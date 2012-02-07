@@ -45,12 +45,12 @@ def printSearch(searchResults, stopwatch):
 
 	
 def printJson(searchResults, stopwatch):
-	gen, sib, spec = getFcaExt(searchResults)
+	gen, sib, spec, meta = getFcaExt(searchResults)
 	
 	results = searchResults['origin']
 	documents = results['documents']
 	fca = {'gen':gen, 'spec':spec, 'sib':sib}
-	meta = {'time' : stopwatch.total}
+	meta['time'] = stopwatch.total
 	data = {'documents':documents, 'fca': fca, 'meta' : meta}
 	jsonData = json.dumps(data)
 	print(jsonData)
@@ -59,8 +59,9 @@ def getFcaExt(searchResults):
 	spec = searchResults['specialization']
 	gen = searchResults['generalization']
 	sib = searchResults['siblings']
+	meta = searchResults['meta']
 	
-	return gen, sib, spec
+	return gen, sib, spec, meta
 
 def search(databaseName, query, outFormat, stopwatch):
 	database = DATABASES_FOLDER + databaseName + '/'

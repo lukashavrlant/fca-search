@@ -31,6 +31,8 @@ class FCASearchEngine:
 		modAttrsID = modContext.attrs2ids(terms)
 		modSearchConcept = self._getSearchConceptByAttr(modContext, modAttrsID)
 
+		metaInfo = {'objects' : modContext.height, 'attributes' : modContext.width}
+
 		lowerN, upperN = self.getLowerUpper(modContext, modSearchConcept)
 		
 #		self.fuzzySearch(query, modContext.ids2attrs(modSearchConcept.intent))
@@ -38,7 +40,8 @@ class FCASearchEngine:
 		return {'origin':originResults, 
 				'specialization':self.getSpecialization(lowerN, modContext, terms, modSearchConcept), 
 				'generalization':self.getGeneralization(upperN, modContext, terms, modSearchConcept), 
-				'siblings':self.getSiblings(upperN, lowerN, modContext, modSearchConcept)}
+				'siblings':self.getSiblings(upperN, lowerN, modContext, modSearchConcept),
+				'meta' : metaInfo}
 
 	def getLowerUpper(self, context, searchConcept):
 		return context.lowerNeighbors(searchConcept), context.upperNeighbors(searchConcept)
