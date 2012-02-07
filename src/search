@@ -50,7 +50,8 @@ def printJson(searchResults, stopwatch):
 	results = searchResults['origin']
 	documents = results['documents']
 	fca = {'gen':gen, 'spec':spec, 'sib':sib}
-	data = {'documents':documents, 'fca': fca, 'time' : stopwatch.total}
+	meta = {'time' : stopwatch.total}
+	data = {'documents':documents, 'fca': fca, 'meta' : meta}
 	jsonData = json.dumps(data)
 	print(jsonData)
 	
