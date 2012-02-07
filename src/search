@@ -13,7 +13,7 @@ from other.settings import Settings
 import json
 
 ## functions 
-def printSearch(searchResults):
+def printSearch(searchResults, stopwatch):
 	results = searchResults['origin']
 	documents = results['documents']
 	
@@ -41,14 +41,16 @@ def printSearch(searchResults):
 	print('Search query: ' + str(results['parsedQuery']))
 	print('Number results: ' + str(len(documents)))
 	print()
+	print(stopwatch)
+
 	
-def printJson(searchResults):
+def printJson(searchResults, stopwatch):
 	gen, sib, spec = getFcaExt(searchResults)
 	
 	results = searchResults['origin']
 	documents = results['documents']
 	fca = {'gen':gen, 'spec':spec, 'sib':sib}
-	data = {'documents':documents, 'fca': fca}
+	data = {'documents':documents, 'fca': fca, 'time' : stopwatch.total}
 	jsonData = json.dumps(data)
 	print(jsonData)
 	
@@ -59,17 +61,18 @@ def getFcaExt(searchResults):
 	
 	return gen, sib, spec
 
-def search(databaseName, query, outFormat):
+def search(databaseName, query, outFormat, stopwatch):
 	database = DATABASES_FOLDER + databaseName + '/'
 	settings = Settings(database + SETTINGS_FILE)
 	index = Index(database, settings)
 	searchEngine = SearchEngine(index, getStopWords())
 	fca = FCASearchEngine(searchEngine, index, settings)
 	searchResults = fca.search(query)
+	stopwatch.elapsed('Done')
 	if outFormat == 'console':
-		printSearch(searchResults)
+		printSearch(searchResults, stopwatch)
 	elif outFormat == 'json':
-		printJson(searchResults)
+		printJson(searchResults, stopwatch)
 	
 def buildIndex(databaseName, linksSourcePath, maxLinksToDownload):
 	settings = Settings(DATA_FOLDER + SETTINGS_FILE)
@@ -101,10 +104,7 @@ if __name__ == '__main__':
 		# search in database
 		if '-q' in opts:
 			outFormat = opts.get('-f', 'console')
-			search(opts['-d'], opts['-q'], outFormat)
-			if outFormat == 'console':
-				stopwatch.elapsed('Done')
-				print(stopwatch)
+			search(opts['-d'], opts['-q'], outFormat, stopwatch)
 				
 		# build index
 		elif '-b' in opts:
