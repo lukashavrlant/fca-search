@@ -32,7 +32,8 @@ def printSearch(searchResults, stopwatch):
 	
 			print(str(pos+1).ljust(maxPos), url.ljust(maxURL), keywords.ljust(maxKeywords), score.ljust(maxScore), wordscount)
 	
-	gen, sib, spec = getFcaExt(searchResults)
+	gen, sib, spec, meta = getFcaExt(searchResults)
+	meta['time'] = str(round(stopwatch.total, 4))
 	
 	print()
 	print('Generalization' + str(gen))
@@ -41,7 +42,7 @@ def printSearch(searchResults, stopwatch):
 	print('Search query: ' + str(results['parsedQuery']))
 	print('Number results: ' + str(len(documents)))
 	print()
-	print(stopwatch)
+	print(meta)
 
 	
 def printJson(searchResults, stopwatch):

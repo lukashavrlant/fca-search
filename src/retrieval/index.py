@@ -72,11 +72,12 @@ class Index:
 	def getKeywords(self, docID):
 		return self.documents_info[docID]['keywords']
 	
-	def stem2word(self, stem):
+	def stem2word(self, stem, queryStems = {}):
 		if not self.stemsDict:
 			self.stemsDict = self.info[STEMSDICT_NAME] 
+
+		return self.stemsDict.get(stem, queryStems.get(stem, stem))
 			
-		return self.stemsDict.get(stem, stem)
 	
 	def getLinks(self):
 		return [x['url'] for x in self.info[DOCUMENT_INFO_NAME]]

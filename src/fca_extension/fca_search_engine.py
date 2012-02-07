@@ -5,6 +5,7 @@ from common.io import trySaveFile
 from other.constants import DATA_FOLDER
 from fuzzy.fca.fuzzy_concept import FuzzyConcept
 from fuzzy.FuzzySet import FuzzySet
+from common.czech_stemmer import createStem
 import math
 class FCASearchEngine:
 	def __init__(self, searchEngine, index, settings):
@@ -22,7 +23,10 @@ class FCASearchEngine:
 
 	def search(self, query):
 		originResults = self.engine.search(query)	
-		terms = originResults['terms']		
+		terms = originResults['terms']
+		wordsTerms = originResults['wordsTerms']
+		
+		queryStems = {createStem(x):x for x in wordsTerms}
 		
 		### Modify context
 		modResult = self.engine.nostemSearch(' OR '.join(terms))
@@ -31,22 +35,20 @@ class FCASearchEngine:
 		modAttrsID = modContext.attrs2ids(terms)
 		modSearchConcept = self._getSearchConceptByAttr(modContext, modAttrsID)
 
-		metaInfo = {'objects' : modContext.height, 'attributes' : modContext.width}
-
 		lowerN, upperN = self.getLowerUpper(modContext, modSearchConcept)
-		
+		# print(modTerms)
 #		self.fuzzySearch(query, modContext.ids2attrs(modSearchConcept.intent))
 
 		return {'origin':originResults, 
 				'specialization':self.getSpecialization(lowerN, modContext, terms, modSearchConcept), 
 				'generalization':self.getGeneralization(upperN, modContext, terms, modSearchConcept), 
-				'siblings':self.getSiblings(upperN, lowerN, modContext, modSearchConcept),
-				'meta' : metaInfo}
+				'siblings':self.getSiblings(upperN, lowerN, modContext, modSearchConcept, queryStems),
+				'meta' : {'objects' : modContext.height, 'attributes' : modContext.width}}
 
 	def getLowerUpper(self, context, searchConcept):
 		return context.lowerNeighbors(searchConcept), context.upperNeighbors(searchConcept)
 
-	def getSiblings(self, upperN, lowerN, modContext, modSearchConcept):
+	def getSiblings(self, upperN, lowerN, modContext, modSearchConcept, queryStems):
 		siblings = set()
 		left = self._getLower(upperN, modContext)
 		if left:
@@ -55,7 +57,7 @@ class FCASearchEngine:
 			
 		rankedSibl = [{'rank': round(x.similarity(modSearchConcept), 3), 'words':x} for x in siblings]
 		rankedSibl = sorted(rankedSibl, key=lambda x: x['rank'], reverse = True)
-		self._translateIntents(rankedSibl, modContext)
+		self._translateIntents(rankedSibl, modContext, queryStems)
 		return rankedSibl
 	
 	def fuzzySearch(self, query, debug = None):
@@ -129,10 +131,10 @@ class FCASearchEngine:
 		
 		return rankedSpec
 	
-	def _translateIntents(self, concepts, context):
+	def _translateIntents(self, concepts, context, queryStems):
 		for con in concepts:
 			stems = con['words'].translate(context).intentNames
-			con['words'] = [self.index.stem2word(stem) for stem in stems]
+			con['words'] = [self.index.stem2word(stem, queryStems) for stem in stems]
 	
 	def _intents2words(self, concepts):
 		return [{self.index.stem2word(stem) for stem in concept} for concept in concepts]
