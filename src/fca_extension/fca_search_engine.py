@@ -7,6 +7,7 @@ from fuzzy.fca.fuzzy_concept import FuzzyConcept
 from fuzzy.FuzzySet import FuzzySet
 from common.czech_stemmer import createStem
 from retrieval.spell_checker import SpellChecker
+from common.string import strip_accents
 import math
 class FCASearchEngine:
 	def __init__(self, searchEngine, index, settings):
@@ -27,7 +28,7 @@ class FCASearchEngine:
 		terms = originResults['terms']
 		wordsTerms = originResults['wordsTerms']
 		
-		queryStems = {createStem(x):x for x in wordsTerms}
+		queryStems = {strip_accents(createStem(x)):x for x in wordsTerms}
 		
 		### Modify context
 		modResult = self.engine.nostemSearch(' OR '.join(terms))
@@ -42,7 +43,7 @@ class FCASearchEngine:
 
 		return {'origin':originResults, 
 				'specialization':self.getSpecialization(lowerN, modContext, terms, modSearchConcept), 
-				'generalization':self.getGeneralization(upperN, modContext, terms, modSearchConcept), 
+				'generalization':self.getGeneralization(upperN, modContext, terms, modSearchConcept, queryStems), 
 				'siblings':self.getSiblings(upperN, lowerN, modContext, modSearchConcept, queryStems),
 				'meta' : {'objects' : modContext.height, 'attributes' : modContext.width},
 				'suggestions' : self.getSuggestions(wordsTerms, len(originResults['documents']))}
@@ -141,6 +142,7 @@ class FCASearchEngine:
 		return rankedSpec
 	
 	def _translateIntents(self, concepts, context, queryStems):
+		# print("queryStems: {0}".format(queryStems))
 		for con in concepts:
 			stems = con['words'].translate(context).intentNames
 			con['words'] = [self.index.stem2word(stem, queryStems) for stem in stems]
@@ -149,7 +151,8 @@ class FCASearchEngine:
 		return [{self.index.stem2word(stem) for stem in concept} for concept in concepts]
 		
 	
-	def getGeneralization(self, upperN, context, terms, searchConcept):
+	def getGeneralization(self, upperN, context, terms, searchConcept, queryStems):
+		# print("queryStems: {0}".format(queryStems))
 		upperN = {x.translate(context) for x in upperN}
 		modSuggTerms = set(terms) | searchConcept.translate(context).intentNames
 		
@@ -159,7 +162,8 @@ class FCASearchEngine:
 		for item in rankedUpper:
 			intent = item['words'].intentNames
 			stems = (modSuggTerms - intent) & set(terms)
-			item['words'] = [self.index.stem2word(stem) for stem in stems]		
+			# print("stemy: {0}".format(stems))
+			item['words'] = [self.index.stem2word(stem, queryStems) for stem in stems]		
 		
 		
 		generalization = [(modSuggTerms - x.intentNames) & set(terms)  for x in upperN]
