@@ -1,4 +1,5 @@
 import math
+from common.string import strip_accents
 
 class SpellChecker():
 	def __init__(self, allWords):
@@ -10,6 +11,8 @@ class SpellChecker():
 		return suggestions
 
 	def check(self, word):
+		word = strip_accents(word)
+
 		if word in self.allWords:
 			return word
 
