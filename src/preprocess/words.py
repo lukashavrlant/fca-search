@@ -1,4 +1,4 @@
-from common.funcfun import sreduce, glmap
+from common.funcfun import sreduce, glmap, lmap
 from collections import Counter
 from common.czech_stemmer import createStem
 from common.string import strip_accents, normalize_text
@@ -29,3 +29,14 @@ def getstem(word):
 def getRealWords(text, stopwords = []):
 	funs = [towords, lambda x: remstopwords(x, stopwords), glmap(strip_accents)]
 	return sreduce(funs, text)
+
+def getWordsWithoutStopWords(text, stopwords):
+	funs = [towords, lambda x: remstopwords(x, stopwords)]
+	return list(sreduce(funs, text))
+
+def stemAndRemoveAccents(words):
+	funs = [tostems, glmap(strip_accents)]
+	return sreduce(funs, words)
+
+def stripAccents(words):
+	return {strip_accents(x) for x in words}

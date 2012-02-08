@@ -2,7 +2,7 @@ from collections import Counter
 from common.funcfun import lmap, nothing
 from functools import reduce
 from operator import add
-from preprocess.words import get_words, getstem, getRealWords
+from preprocess.words import getstem, getWordsWithoutStopWords, stemAndRemoveAccents, stripAccents
 from preprocess.html_remover import HTMLRemover
 from common.string import normalize_text
 from retrieval.ranking import document_score
@@ -47,52 +47,41 @@ def toIndex(documents, stopwords, keylen, elapsed = nothing):
 	htmlrem = HTMLRemover()	
 	compiledDocuments = []
 	docID = 0
+	allRealWords = set()
 	
 	for doc in documents:
 		try:
 			elapsed('parsing: ' + doc['url'])
-			
-			if doc['type'] == 'html':
-				content = htmlrem.getText(doc['content'])
-				normContent = normalize_text(content)
-				tempDoc = get_words(normContent, stopwords)
-				allRealWords = getRealWords(normContent, stopwords)
+
+			if doc['type'] in ['html', 'txt']:
+				if doc['type'] == 'html':
+					content = htmlrem.getText(doc['content'])
+					title = htmlrem.title
+					description = htmlrem.description
+
+				if doc['type'] == 'txt':
+					content = doc['content']
+					title = os.path.basename(doc['url'])
+					description = ''
+
+				words = getWordsWithoutStopWords(normalize_text(content), stopwords)
+				allRealWords |= stripAccents(words)
+
 				compiledDocuments.append({
-					'content':tempDoc, 
-					'title':htmlrem.title, 
-					'url':doc['url'], 
-					'id':docID, 
-					'description':htmlrem.description,
-					'realWords':allRealWords
-					})
+						'content':stemAndRemoveAccents(words), 
+						'title':title,
+						'url':doc['url'], 
+						'id':docID, 
+						'description':description,
+						})
+
 				docID += 1
-			elif doc['type'] == 'txt':
-				content = doc['content']
-				normContent = normalize_text(content)
-				tempDoc = get_words(normContent, stopwords)
-				allRealWords = getRealWords(normContent, stopwords)
-				compiledDocuments.append({
-					'content':tempDoc, 
-					'title':os.path.basename(doc['url']),
-					'url':doc['url'], 
-					'id':docID, 
-					'description':'',
-					'realWords':allRealWords
-					})
-				docID += 1
-			else:
-				pass			
 		except Exception as err:
 			print('Cannot parse ' + str(doc['url']))
 			print(str(err))
 	
 	elapsed('Collecting documents...')
 	sitesStats = getDocsStats([x['content'] for x in compiledDocuments])
-
-	allRealWordsX = set()
-
-	for words in (x['realWords'] for x in compiledDocuments):
-		allRealWordsX |= set(words)
 	
 	for doc, wordscount in zip(compiledDocuments, sitesStats['wordscount']):
 		doc['words'] = wordscount
@@ -100,4 +89,4 @@ def toIndex(documents, stopwords, keylen, elapsed = nothing):
 	index = groupByKeylen(sitesStats['occurences'], keylen)
 	
 	return {'index': index, 'allwords':sitesStats['allwords'], 
-			'documents':compiledDocuments, 'allRealWords':allRealWordsX}
+			'documents':compiledDocuments, 'allRealWords':allRealWords}
