@@ -7,7 +7,7 @@ from fuzzy.fca.fuzzy_concept import FuzzyConcept
 from fuzzy.FuzzySet import FuzzySet
 from common.czech_stemmer import createStem
 from retrieval.spell_checker import SpellChecker
-from common.string import strip_accents
+from common.string import normalizeWord
 import math
 class FCASearchEngine:
 	def __init__(self, searchEngine, index, settings):
@@ -28,7 +28,7 @@ class FCASearchEngine:
 		terms = originResults['terms']
 		wordsTerms = originResults['wordsTerms']
 		
-		queryStems = {strip_accents(createStem(x)):x for x in wordsTerms}
+		queryStems = {normalizeWord(x):x for x in wordsTerms}
 		
 		### Modify context
 		modResult = self.engine.nostemSearch(' OR '.join(terms))
@@ -150,8 +150,6 @@ class FCASearchEngine:
 		return [{self.index.stem2word(stem) for stem in concept} for concept in concepts]
 		
 	def getGeneralization(self, upperN, context, terms, searchConcept, queryStems):
-		# print([str(x) for x in upperN])
-		# print("searchConcept: {0}".format(searchConcept))
 		upperN = {x.translate(context) for x in upperN}
 		modSuggTerms = set(terms) | searchConcept.translate(context).intentNames
 		

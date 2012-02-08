@@ -2,6 +2,7 @@ import re
 import unicodedata
 import string
 from common.funcfun import sreduce
+from common.czech_stemmer import createStem
 
 def replace_single(text, strings, replacement):
 	return re.sub('|'.join(map(re.escape, strings)), replacement, text)	
@@ -56,6 +57,11 @@ def normalizePDF(text):
 	text = text.replace('t’', 't')
 	
 	return text
+
+def normalizeWord(word):
+	word = strip_accents(createStem(word))
+	word = word.lower()
+	return word
 			
 	
 	
