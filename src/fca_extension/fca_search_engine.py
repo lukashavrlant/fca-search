@@ -6,6 +6,7 @@ from other.constants import DATA_FOLDER
 from fuzzy.fca.fuzzy_concept import FuzzyConcept
 from fuzzy.FuzzySet import FuzzySet
 from common.czech_stemmer import createStem
+from retrieval.spell_checker import SpellChecker
 import math
 class FCASearchEngine:
 	def __init__(self, searchEngine, index, settings):
@@ -43,7 +44,15 @@ class FCASearchEngine:
 				'specialization':self.getSpecialization(lowerN, modContext, terms, modSearchConcept), 
 				'generalization':self.getGeneralization(upperN, modContext, terms, modSearchConcept), 
 				'siblings':self.getSiblings(upperN, lowerN, modContext, modSearchConcept, queryStems),
-				'meta' : {'objects' : modContext.height, 'attributes' : modContext.width}}
+				'meta' : {'objects' : modContext.height, 'attributes' : modContext.width},
+				'suggestions' : self.getSuggestions(wordsTerms, len(originResults['documents']))}
+
+	def getSuggestions(self, words, totalResults):
+		if totalResults == 0:
+			spellChecker = SpellChecker(self.index.getAllWords())
+			return spellChecker.checkWords(words)
+		else:
+			return {}
 
 	def getLowerUpper(self, context, searchConcept):
 		return context.lowerNeighbors(searchConcept), context.upperNeighbors(searchConcept)

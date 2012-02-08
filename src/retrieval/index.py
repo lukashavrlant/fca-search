@@ -24,7 +24,10 @@ class Index:
 		self.docKeywords = None
 		self.allKeywords = None
 		self.searchedStem = {}
-		
+
+	def getAllWords(self):
+		return self.info['allwords']
+
 	def applySettings(self, settings):
 		self.keylen = settings.getInt('index', 'keylen')
 		

@@ -2,7 +2,7 @@ from collections import Counter
 from common.funcfun import lmap, nothing
 from functools import reduce
 from operator import add
-from preprocess.words import get_words, getstem
+from preprocess.words import get_words, getstem, getRealWords
 from preprocess.html_remover import HTMLRemover
 from common.string import normalize_text
 from retrieval.ranking import document_score
@@ -54,24 +54,30 @@ def toIndex(documents, stopwords, keylen, elapsed = nothing):
 			
 			if doc['type'] == 'html':
 				content = htmlrem.getText(doc['content'])
-				tempDoc = get_words(normalize_text(content), stopwords)
+				normContent = normalize_text(content)
+				tempDoc = get_words(normContent, stopwords)
+				allRealWords = getRealWords(normContent, stopwords)
 				compiledDocuments.append({
 					'content':tempDoc, 
 					'title':htmlrem.title, 
 					'url':doc['url'], 
 					'id':docID, 
-					'description':htmlrem.description
+					'description':htmlrem.description,
+					'realWords':allRealWords
 					})
 				docID += 1
 			elif doc['type'] == 'txt':
 				content = doc['content']
-				tempDoc = get_words(normalize_text(content), stopwords)
+				normContent = normalize_text(content)
+				tempDoc = get_words(normContent, stopwords)
+				allRealWords = getRealWords(normContent, stopwords)
 				compiledDocuments.append({
 					'content':tempDoc, 
 					'title':os.path.basename(doc['url']),
 					'url':doc['url'], 
 					'id':docID, 
-					'description':''
+					'description':'',
+					'realWords':allRealWords
 					})
 				docID += 1
 			else:
@@ -82,10 +88,16 @@ def toIndex(documents, stopwords, keylen, elapsed = nothing):
 	
 	elapsed('Collecting documents...')
 	sitesStats = getDocsStats([x['content'] for x in compiledDocuments])
+
+	allRealWordsX = set()
+
+	for words in (x['realWords'] for x in compiledDocuments):
+		allRealWordsX |= set(words)
 	
 	for doc, wordscount in zip(compiledDocuments, sitesStats['wordscount']):
 		doc['words'] = wordscount
 	
 	index = groupByKeylen(sitesStats['occurences'], keylen)
 	
-	return {'index': index, 'allwords':sitesStats['allwords'], 'documents':compiledDocuments}
+	return {'index': index, 'allwords':sitesStats['allwords'], 
+			'documents':compiledDocuments, 'allRealWords':allRealWordsX}

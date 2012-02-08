@@ -32,7 +32,7 @@ def printSearch(searchResults, stopwatch):
 	
 			print(str(pos+1).ljust(maxPos), url.ljust(maxURL), keywords.ljust(maxKeywords), score.ljust(maxScore), wordscount)
 	
-	gen, sib, spec, meta = getFcaExt(searchResults)
+	gen, sib, spec, meta, sugg = getFcaExt(searchResults)
 	meta['time'] = str(round(stopwatch.total, 4))
 	
 	print()
@@ -42,17 +42,18 @@ def printSearch(searchResults, stopwatch):
 	print('Search query: ' + str(results['parsedQuery']))
 	print('Number results: ' + str(len(documents)))
 	print()
-	print(meta)
+	print('Did you mean: {0}'.format(sugg))
+	print('Meta: {0}'.format(meta))
 
 	
 def printJson(searchResults, stopwatch):
-	gen, sib, spec, meta = getFcaExt(searchResults)
+	gen, sib, spec, meta, spellcheck = getFcaExt(searchResults)
 	
 	results = searchResults['origin']
 	documents = results['documents']
 	fca = {'gen':gen, 'spec':spec, 'sib':sib}
 	meta['time'] = stopwatch.total
-	data = {'documents':documents, 'fca': fca, 'meta' : meta}
+	data = {'documents':documents, 'fca': fca, 'meta' : meta, 'spellcheck':spellcheck}
 	jsonData = json.dumps(data)
 	print(jsonData)
 	
@@ -61,8 +62,9 @@ def getFcaExt(searchResults):
 	gen = searchResults['generalization']
 	sib = searchResults['siblings']
 	meta = searchResults['meta']
+	spellcheck = searchResults['suggestions']
 	
-	return gen, sib, spec, meta
+	return gen, sib, spec, meta, spellcheck
 
 def search(databaseName, query, outFormat, stopwatch):
 	database = DATABASES_FOLDER + databaseName + '/'

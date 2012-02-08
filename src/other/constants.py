@@ -10,7 +10,7 @@ TEMP_FOLDER = FILES_FOLDER + 'temp/'
 BIN_FOLDER = ROOT_FOLDER + 'bin/'
 
 INDEX_FOLDER_NAME = 'index/'
-INFO_FOLDER_NAME = 'info/'
+INFO_FOLDER_NAME = ''
 
 
 # files

@@ -2,7 +2,7 @@ from common.io import download
 from preprocess.index_builder import toIndex, getKeywords
 from urllib.error import HTTPError
 from other.constants import DOCUMENT_INFO_NAME, STEMSDICT_NAME,	KEYWORDSINDOCUMENTS_NAME,\
-	CHMOD_INDEX, SCORES_TABLE, TEMP_FOLDER, SETTINGS_FILE
+	CHMOD_INDEX, SCORES_TABLE, TEMP_FOLDER, SETTINGS_FILE, INDEX_FOLDER_NAME, INFO_FOLDER_NAME
 from retrieval.index import Index
 import os
 from common.czech_stemmer import wordCounter, savedStems
@@ -55,8 +55,8 @@ class IndexManager:
 			print(status)
 			
 	def _build(self, urls, folder, stopwords):
-		indexFolder = folder + 'index/'
-		infoFolder = folder + 'info/'
+		indexFolder = folder + INDEX_FOLDER_NAME
+		infoFolder = folder + INFO_FOLDER_NAME
 		
 		try:
 			self._createFolder([indexFolder, infoFolder, TEMP_FOLDER])
@@ -77,6 +77,8 @@ class IndexManager:
 			self._elapsed('Creating keywords in documents relation...')
 			infoDtb[KEYWORDSINDOCUMENTS_NAME] = self._getKeywordsInfo(self.totalKeywords, [x['content'] for x in indexInfo['documents']])
 			
+			infoDtb['allwords'] = indexInfo['allRealWords']
+
 			infoDtb.close()
 			os.chmod(infoFolder + 'info.db', CHMOD_INDEX)
 

@@ -25,3 +25,7 @@ def getstem(word):
 	stem = createStem(word)
 	stem = strip_accents(stem)
 	return stem
+
+def getRealWords(text, stopwords = []):
+	funs = [towords, lambda x: remstopwords(x, stopwords), glmap(strip_accents)]
+	return sreduce(funs, text)
