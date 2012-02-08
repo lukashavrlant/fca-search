@@ -142,7 +142,6 @@ class FCASearchEngine:
 		return rankedSpec
 	
 	def _translateIntents(self, concepts, context, queryStems):
-		# print("queryStems: {0}".format(queryStems))
 		for con in concepts:
 			stems = con['words'].translate(context).intentNames
 			con['words'] = [self.index.stem2word(stem, queryStems) for stem in stems]
@@ -150,9 +149,9 @@ class FCASearchEngine:
 	def _intents2words(self, concepts):
 		return [{self.index.stem2word(stem) for stem in concept} for concept in concepts]
 		
-	
 	def getGeneralization(self, upperN, context, terms, searchConcept, queryStems):
-		# print("queryStems: {0}".format(queryStems))
+		# print([str(x) for x in upperN])
+		# print("searchConcept: {0}".format(searchConcept))
 		upperN = {x.translate(context) for x in upperN}
 		modSuggTerms = set(terms) | searchConcept.translate(context).intentNames
 		
@@ -162,12 +161,13 @@ class FCASearchEngine:
 		for item in rankedUpper:
 			intent = item['words'].intentNames
 			stems = (modSuggTerms - intent) & set(terms)
-			# print("stemy: {0}".format(stems))
-			item['words'] = [self.index.stem2word(stem, queryStems) for stem in stems]		
+			item['words'] = frozenset([self.index.stem2word(stem, queryStems) for stem in stems])
 		
-		
-		generalization = [(modSuggTerms - x.intentNames) & set(terms)  for x in upperN]
-		generalization = [{self.index.stem2word(stem) for stem in sugg} for sugg in generalization]
+		rankedUpper = set([tuple(x.items()) for x in rankedUpper])
+		rankedUpper = [dict(x) for x in rankedUpper]
+		for item in rankedUpper:
+			item['words'] = list(item['words'])
+
 		return rankedUpper
 	
 	def _getDocsAndTerms(self, searchRes):
