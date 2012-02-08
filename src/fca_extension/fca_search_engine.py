@@ -23,8 +23,11 @@ class FCASearchEngine:
 		self.maxKeywords = getter('maxKeywordsPerDocument', 6)
 		
 
-	def search(self, query):
-		originResults = self.engine.search(query)	
+	def search(self, query, nostem = False):
+		if nostem:
+			originResults = self.engine.nostemSearch(query)
+		else:
+			originResults = self.engine.search(query)	
 		terms = originResults['terms']
 		wordsTerms = originResults['wordsTerms']
 		
