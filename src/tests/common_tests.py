@@ -4,7 +4,6 @@ from common.list import splitlist
 from common.string import sjoin, isletter, strip_accents, remove_nonletters,\
 	normalize_text, replace_white_spaces, replace_single, replace_dict
 
-
 class TestString(unittest.TestCase):
 	def test_sjoin(self):
 		self.assertEqual('', sjoin([]))
@@ -19,11 +18,11 @@ class TestString(unittest.TestCase):
 		self.assertEqual('escrzyaieuuESCRZYAIEUU', strip_accents('ěščřžýáíéúůĚŠČŘŽÝÁÍÉÚŮ'))
 		
 	def test_remove_nonletters(self):
-		self.assertEquals('helloworld', remove_nonletters('hello__world!!! :-)) <3 :-|'))
-		self.assertEquals('hello  world   ', remove_nonletters('hello__world!?!', ' '))
+		self.assertEqual('helloworld', remove_nonletters('hello__world!!! :-)) <3 :-|'))
+		self.assertEqual('hello  world   ', remove_nonletters('hello__world!?!', ' '))
 		
 	def test_normalize_text(self):
-		self.assertEquals('háčky čárky to je věda dva tři', 
+		self.assertEqual('háčky čárky to je věda dva tři', 
 						normalize_text('Háčky čárky, to je věda! Dva + Tři = __?'))
 		
 	def test_replace_white_spaces(self):
@@ -33,11 +32,11 @@ class TestString(unittest.TestCase):
 						replace_white_spaces('text with  white  		 spaces', ' '))
 		
 	def test_replace_single(self):
-		self.assertEquals('??efghijklmnopqrstuvwxyz', 
+		self.assertEqual('??efghijklmnopqrstuvwxyz', 
 						replace_single(string.ascii_lowercase, ['a', 'bcd', 'xx'], '?'))
 		
 	def test_replace_dict(self):
-		self.assertEquals('?bcdefghijklmnopqrstuvwend', 
+		self.assertEqual('?bcdefghijklmnopqrstuvwend', 
 						replace_dict(string.ascii_lowercase, {'a':'?', 'xyz':'end'}))
 		
 

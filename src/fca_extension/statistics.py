@@ -78,5 +78,5 @@ class Statistics:
 
 	def setDefaults(self):
 		self.maxSpec = 3
-		self.maxQueries = 1000000
-		self.maxMostCommon = 1000
+		self.maxQueries = 1000
+		self.maxMostCommon = 10
