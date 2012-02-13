@@ -8,24 +8,26 @@ from subprocess import Popen, PIPE
 
 
 class SearchTest(unittest.TestCase):
-		
 	def testSearchCommand(self):
 		path = TEST_FOLDER + 'results/'
-		cmd = '/Users/lukashavrlant/Python/fca-search/src/search '
-		fun = lambda dtb, q: (Popen(cmd + '-d ' + dtb + ' -q "' + q + '" -f json', stdout=PIPE, shell=True).stdout.read())
+		fun = self.runShell
 		dfun = lambda dtb, q: fun(dtb, q).decode("utf-8")
 		save = lambda cont, name: savefile(cont, path + name + '.txt', False)
 		read = lambda name: readfile(path + name + '.txt')
-		ass = self.assertEquals
+		ass = self.assertEqual
 		
-		
-		dtbs = ['matweb', 'matweb', 'matweb', 'jpw']
-		queries = ['derivace', 'nesmysl', '(spocetne OR nespocetne) mnoziny', 'input NOT select']
-		filenames = ['derivace', 'nesmysl', 'spocetne', 'input']
-		
-		for d, q, f in zip(dtbs, queries, filenames):
-#			save(fun(d, q), f)
-			ass(dfun(d, q), read(f))
+		# search matweb
+		queries = ['derivace', 'nesmysl', '(spocetne OR nespocetne) mnoziny', 'rovnice', 'rovnice NOT (linearni OR pravdepodobnost)']
+
+		for num, q in enumerate(queries):
+			filename = 'matweb' + str(num)
+			# save(fun('matweb', q), filename)
+			ass(dfun('matweb', q), read(filename))
+
+	def runShell(self, dtb, q):
+		cmd = '/Users/lukashavrlant/Python/fca-search/src/search '
+		with Popen(cmd + '-d ' + dtb + ' -q "' + q + '" -f json -t', stdout=PIPE, shell=True) as sh:
+			return sh.stdout.read()
 		
 		
 
