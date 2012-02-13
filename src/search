@@ -108,7 +108,6 @@ if __name__ == '__main__':
 	try:
 		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:p:f:m:r:a:t')
 		opts = dict(opts)
-		print(opts)
 		
 		# search in database
 		if '-q' in opts:
