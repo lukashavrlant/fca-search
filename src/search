@@ -33,7 +33,8 @@ def printSearch(searchResults, stopwatch):
 			print(str(pos+1).ljust(maxPos), url.ljust(maxURL), keywords.ljust(maxKeywords), score.ljust(maxScore), wordscount)
 	
 	gen, sib, spec, meta, sugg = getFcaExt(searchResults)
-	meta['time'] = str(round(stopwatch.total, 4))
+	if stopwatch:
+		meta['time'] = str(round(stopwatch.total, 4))
 	
 	print()
 	print('Generalization' + str(gen))
@@ -52,7 +53,8 @@ def printJson(searchResults, stopwatch):
 	results = searchResults['origin']
 	documents = results['documents']
 	fca = {'gen':gen, 'spec':spec, 'sib':sib}
-	meta['time'] = stopwatch.total
+	if stopwatch:
+		meta['time'] = stopwatch.total
 	data = {'documents':documents, 'fca': fca, 'meta' : meta, 'spellcheck':spellcheck}
 	jsonData = json.dumps(data)
 	print(jsonData)
@@ -73,7 +75,8 @@ def search(databaseName, query, outFormat, stopwatch):
 	searchEngine = SearchEngine(index, getStopWords())
 	fca = FCASearchEngine(searchEngine, index, settings)
 	searchResults = fca.search(query)
-	stopwatch.elapsed('Done')
+	if stopwatch:
+		stopwatch.elapsed('Done')
 	if outFormat == 'console':
 		printSearch(searchResults, stopwatch)
 	elif outFormat == 'json':
@@ -103,13 +106,14 @@ if __name__ == '__main__':
 	stopwatch = Stopwatch().start()
 	
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:p:f:m:r:a:')
+		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:p:f:m:r:a:t')
 		opts = dict(opts)
+		print(opts)
 		
 		# search in database
 		if '-q' in opts:
 			outFormat = opts.get('-f', 'console')
-			search(opts['-d'], opts['-q'], outFormat, stopwatch)
+			search(opts['-d'], opts['-q'], outFormat, stopwatch if '-t' not in opts else None)
 				
 		# build index
 		elif '-b' in opts:
