@@ -5,6 +5,7 @@ from other.data import getStopWords
 from common.io import readfile, savefile
 from retrieval.index import Index
 from subprocess import Popen, PIPE
+from json import loads
 
 
 class SearchTest(unittest.TestCase):
@@ -23,6 +24,23 @@ class SearchTest(unittest.TestCase):
 			filename = 'matweb' + str(num)
 			# save(fun('matweb', q), filename)
 			ass(dfun('matweb', q), read(filename))
+
+	def test_spellcheck(self):
+		ass = self.assertEqual
+
+		queries = {
+			'poslounposti' : 'posloupnosti',
+			'derivcae' : 'derivace',
+			'nemsysl' : 'nesmysl',
+			'hroamdny' : 'hromadny'
+		}
+
+		for k, v in queries.items():
+			result = loads(self.execute('matweb', k))
+			ass(result['spellcheck'][k], v)
+
+	def execute(self, dtb, q):
+		return self.runShell(dtb, q).decode("utf-8")
 
 	def runShell(self, dtb, q):
 		cmd = '/Users/lukashavrlant/Python/fca-search/src/search '
