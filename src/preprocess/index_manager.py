@@ -32,7 +32,7 @@ class IndexManager:
 		watcher.start()
 		self._build(urls, folder, stopwords)
 		watcher.elapsed('done')
-		print(watcher)
+		# print(watcher)
 
 	def applySettings(self, settings):
 		namespace = 'index'
