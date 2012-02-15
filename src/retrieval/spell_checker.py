@@ -19,7 +19,7 @@ class SpellChecker():
 		lword = len(word)
 		prefix = word[:2]
 		suffix = word[::-1][:2]
-		candidates = {x for x in self.allWords if x[0] in prefix and x[len(x)-1] in suffix and lword == len(x)}
+		candidates = {x for x in self.allWords if x != "" and x[0] in prefix and x[len(x)-1] in suffix and lword == len(x)}
 		maxDiffs = max(1, math.floor(lword / 5))
 		diffs = {x for x in candidates if self.diffRank(word, x) <= maxDiffs}
 		bubbles = {x for x in candidates if self.bubbleRank(word, x)}
