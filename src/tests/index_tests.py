@@ -34,8 +34,16 @@ class TestIndex(unittest.TestCase):
 		self.assertEqual(fun('nonsense'), desired_nonsense)
 		self.assertEqual(fun('derivak'), desired_derivak)
 
-	def test_all_words(self):
+	def test_all_words_count(self):
 		self.assertEqual(len(''.join(self.index.getAllWords())), 12424)
+
+	def test_all_words(self):
+		words = sorted(self.index.getAllWords())
+		self.assertEqual(words[:5], ['a', 'ab', 'abc', 'abed', 'absolutne'])
+		self.assertEqual(words[100:108], ['cervenou', 'ceske', 'cesky', 'cesta', 'ceste', 'cestou', 'cestu', 'cesty'])
+		self.assertEqual(words[550:558], ['matematicke', 'matematickem', 'matematickou', 'matematicky', 'matematika', 'matematiky', 'material', 'maw'])
+		self.assertEqual(words[1550:1558], ['vite', 'viz', 'vlastne', 'vlastni', 'vlastnim', 'vlastnost', 'vlastnosti', 'vlevo'])
+
 		
 	def test_term_frequency(self):
 		fun = self.index.term_frequency 
