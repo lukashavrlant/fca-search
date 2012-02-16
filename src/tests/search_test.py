@@ -1,4 +1,5 @@
 import unittest
+from other.constants import PYTHON3, ROOT_FOLDER
 from retrieval.search_engine import SearchEngine
 from other.constants import TEST_FOLDER
 from other.data import getStopWords
@@ -44,7 +45,7 @@ class SearchTest(unittest.TestCase):
 		return self.runShell(dtb, q).decode("utf-8")
 
 	def runShell(self, dtb, q):
-		cmd = 'python3 /Users/lukashavrlant/Python/fca-search/src/search '
+		cmd = PYTHON3 + ROOT_FOLDER + 'src/search '
 		with Popen(cmd + '-d ' + dtb + ' -q "' + q + '" -f json -t', stdout=PIPE, shell=True) as sh:
 			return sh.stdout.read()
 		

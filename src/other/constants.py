@@ -1,5 +1,7 @@
 import os
 
+LOCALHOST = True if 'lukashavrlant' in __file__ else False
+
 # folders
 ROOT_FOLDER = os.path.realpath(__file__).replace('src/other/constants.py', '')
 FILES_FOLDER = ROOT_FOLDER + 'files/'
@@ -24,10 +26,11 @@ SETTINGS_FILE = 'settings.json'
 
 # bins
 PDFTOTEXT = BIN_FOLDER + 'pdftotext '
-
+PYTHON3 = 'python3 ' if LOCALHOST else '/home/havrlanl/python-3.2.2/bin/python3 '
 
 # other
 CHMOD_INDEX = 0o766
+
 
 def printConstants():
 	print("ROOT_FOLDER: " + ROOT_FOLDER)
