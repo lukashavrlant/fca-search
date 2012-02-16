@@ -6,6 +6,7 @@ from other.settings import Settings
 from preprocess.index_manager import IndexManager
 from glob import glob
 from common.io import md5
+from common.io import readfile
 
 class TestIndex(unittest.TestCase):
 	databaseFolder = DATABASES_FOLDER + 'test/'
@@ -21,26 +22,25 @@ class TestIndex(unittest.TestCase):
 
 	@classmethod
 	def getURLs(cls):
-		path = '/Users/lukashavrlant/WebSites/test-fca-search/'
-		absolute = glob(path + '*')
-		absolute = [x.replace(path, 'http://localhost/test-fca-search/') for x in absolute]
-		return absolute
+		path = DATA_FOLDER + 'test.txt'
+		content = readfile(path).splitlines()
+		return content
 
 	
 	def test_get_stem_info(self):
 		fun = lambda stem: str(self.index.get_stem_info(stem))
-		desired_derivak = "{'documents': {0: 5, 2: 45, 4: 4}, 'docids': {0, 2, 4}, 'stem': 'derivak'}"
+		desired_derivak = "{'documents': {1: 45, 2: 4, 6: 5}, 'docids': {1, 2, 6}, 'stem': 'derivak'}"
 		desired_nonsense = "{'documents': {}, 'docids': set(), 'stem': ''}"
 		self.assertEqual(fun('nonsense'), desired_nonsense)
 		self.assertEqual(fun('derivak'), desired_derivak)
 
 	def test_hash_value(self):
-		self.assertEqual('fc08a1834a89c01c5b09e3f010ab4094', md5(self.databaseFolder + 'info.db'))
+		self.assertEqual('8c3c30b01c596af83a036e4194b38157', md5(self.databaseFolder + 'info.db'))
 		
 	def test_term_frequency(self):
 		fun = self.index.term_frequency 
 		
-		self.assertEqual(fun('derivak', 4), 4)
+		self.assertEqual(fun('derivak', 6), 5)
 		self.assertEqual(fun('nonsense', 1), 0)
 		self.assertEqual(fun('nonsense', 100000), 0)
 		
