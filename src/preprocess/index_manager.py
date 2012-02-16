@@ -89,7 +89,7 @@ class IndexManager:
 			print("Filename: {0}".format(err.filename))
 			
 	def _downloadDocuments(self, urls):
-		distUrls = list(set(urls))
+		distUrls = sorted(list(set(urls)))
 		documents = []
 		handle = FileHandlers()
 		
