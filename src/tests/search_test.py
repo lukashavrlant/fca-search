@@ -25,6 +25,7 @@ class SearchTest(unittest.TestCase):
 			# save(fun('matweb', q), filename)
 			ass(dfun('matweb', q), read(filename))
 
+
 	def test_spellcheck(self):
 		ass = self.assertEqual
 
@@ -43,7 +44,7 @@ class SearchTest(unittest.TestCase):
 		return self.runShell(dtb, q).decode("utf-8")
 
 	def runShell(self, dtb, q):
-		cmd = '/Users/lukashavrlant/Python/fca-search/src/search '
+		cmd = 'python3 /Users/lukashavrlant/Python/fca-search/src/search '
 		with Popen(cmd + '-d ' + dtb + ' -q "' + q + '" -f json -t', stdout=PIPE, shell=True) as sh:
 			return sh.stdout.read()
 		
