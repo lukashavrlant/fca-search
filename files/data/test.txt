@@ -1,0 +1,8 @@
+http://phoebe.inf.upol.cz/~havrlanl/test/binomicka-veta.html
+http://phoebe.inf.upol.cz/~havrlanl/test/derivace.html
+http://phoebe.inf.upol.cz/~havrlanl/test/limita-funkce.html
+http://phoebe.inf.upol.cz/~havrlanl/test/prirozena-cisla.html
+http://phoebe.inf.upol.cz/~havrlanl/test/pythagorova-veta.html
+http://phoebe.inf.upol.cz/~havrlanl/test/rovnice.html
+http://phoebe.inf.upol.cz/~havrlanl/test/spojitost.html
+http://phoebe.inf.upol.cz/~havrlanl/test/zaklady-statistiky.html
