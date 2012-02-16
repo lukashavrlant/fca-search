@@ -1,0 +1,16 @@
+{
+	"index" : 
+	{
+		"keylen" : "1",
+		"keywordsCount" : "10",
+		"keyScoreLimit" : "35",
+		"minKeywords" : "1",
+		"dynamicKeywords" : "True",
+		"maxKeywords" : "10"
+	},
+	"fca" :
+	{
+		"maxDocumentsInContext" : "50",
+		"maxKeywordsPerDocument" : "5"
+	}
+}
