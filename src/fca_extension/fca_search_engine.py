@@ -158,18 +158,27 @@ class FCASearchEngine:
 		
 		rankedUpper = [{'rank':len(x.extent), 'words':x} for x in upperN]
 		rankedUpper = sorted(rankedUpper, key=lambda x: x['rank'], reverse = True)
+
+
 		
 		for item in rankedUpper:
 			intent = item['words'].intentNames
 			stems = (modSuggTerms - intent) & set(terms)
-			item['words'] = frozenset([self.index.stem2word(stem, queryStems) for stem in stems])
+			item['words'] = {self.index.stem2word(stem, queryStems) for stem in stems}
 		
-		rankedUpper = set([tuple(x.items()) for x in rankedUpper])
-		rankedUpper = [dict(x) for x in rankedUpper]
+		rankedUpper = self.filterUniqueGeneralization(rankedUpper)
+
 		for item in rankedUpper:
 			item['words'] = list(item['words'])
 
 		return rankedUpper
+
+	def filterUniqueGeneralization(self, uppers):
+		newUppers = {}
+		for upp in uppers:
+			newUppers[frozenset(upp['words'])] = upp
+		return list(newUppers.values())
+		
 	
 	def _getDocsAndTerms(self, searchRes):
 		return searchRes['documents'][:self.maxDocs], searchRes['terms']
