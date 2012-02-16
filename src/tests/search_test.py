@@ -21,10 +21,13 @@ class SearchTest(unittest.TestCase):
 		# search matweb
 		queries = ['derivace', 'nesmysl', '(spocetne OR nespocetne) mnoziny', 'rovnice', 'rovnice NOT (linearni OR pravdepodobnost)']
 
-		for num, q in enumerate(queries):
-			filename = 'matweb' + str(num)
-			# save(fun('matweb', q), filename)
-			ass(dfun('matweb', q), read(filename))
+		ass(dfun('matweb', 'derivace'), read('matweb0'))
+		ass(dfun('matweb', 'nesmysl'), read('matweb1'))
+
+		# for num, q in enumerate(queries):
+		# 	filename = 'matweb' + str(num)
+		#  	save(fun('matweb', q), filename)
+
 
 
 	def test_spellcheck(self):
