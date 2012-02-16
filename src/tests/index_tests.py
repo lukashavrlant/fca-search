@@ -34,8 +34,8 @@ class TestIndex(unittest.TestCase):
 		self.assertEqual(fun('nonsense'), desired_nonsense)
 		self.assertEqual(fun('derivak'), desired_derivak)
 
-	def test_hash_value(self):
-		self.assertEqual('8c3c30b01c596af83a036e4194b38157', md5(self.databaseFolder + 'info.db'))
+	def test_all_words(self):
+		self.assertEqual(len(''.join(self.index.getAllWords())), 12424)
 		
 	def test_term_frequency(self):
 		fun = self.index.term_frequency 
