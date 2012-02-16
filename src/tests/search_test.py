@@ -11,7 +11,7 @@ from json import loads
 
 class SearchTest(unittest.TestCase):
 	def testSearchCommand(self):
-		path = TEST_FOLDER + 'results/'
+		path = TEST_FOLDER 
 		fun = self.runShell
 		dfun = lambda dtb, q: fun(dtb, q).decode("utf-8")
 		save = lambda cont, name: savefile(cont, path + name + '.txt', False)
