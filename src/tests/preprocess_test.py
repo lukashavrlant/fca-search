@@ -42,9 +42,7 @@ class TestWords(unittest.TestCase):
 	def getURLs(cls):
 		path = DATA_FOLDER + 'test.txt'
 		content = readfile(path).splitlines()
-		return content
-		
-		
+		return content	
 		
 if __name__ == "__main__":
 	#import sys;sys.argv = ['', 'Test.testName']
