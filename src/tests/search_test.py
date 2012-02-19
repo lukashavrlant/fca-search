@@ -23,10 +23,14 @@ class SearchTest(unittest.TestCase):
 
 		ass(dfun('matweb-test', 'derivace'), read('matweb0'))
 		ass(dfun('matweb-test', 'nesmysl'), read('matweb1'))
+		ass(dfun('matweb-test', '(spocetne OR nespocetne) mnoziny'), read('matweb2'))
+		# ass(dfun('matweb-test', 'rovnice'), read('matweb3'))
+		ass(dfun('matweb-test', 'rovnice NOT (linearni OR pravdepodobnost)'), read('matweb4'))
 
-		# for num, q in enumerate(queries):
-		# 	filename = 'matweb' + str(num)
-		# 	save(fun('matweb', q), filename)
+
+		for num, q in enumerate(queries):
+			filename = 'matweb' + str(num)
+			save(fun('matweb', q), filename)
 
 	def test_spellcheck(self):
 		ass = self.assertEqual
