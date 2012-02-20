@@ -29,7 +29,7 @@ class Index:
 		return self.info['allwords']
 
 	def applySettings(self, settings):
-		self.keylen = settings.getInt('index', 'keylen')
+		self.keylen = settings.get('keylen')
 		
 	def get_documents(self, parsedQuery):
 		documents = self._by_node(parsedQuery)

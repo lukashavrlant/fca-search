@@ -18,9 +18,9 @@ class FCASearchEngine:
 		self.stopwatch = None
 
 	def applySettings(self, settings):
-		getter = settings.intGetter('fca')
-		self.maxDocs = getter('maxDocumentsInContext', 50)
-		self.maxKeywords = getter('maxKeywordsPerDocument', 6)
+		getter = settings.get
+		self.maxDocs = getter('maxDocumentsInContext')
+		self.maxKeywords = getter('maxKeywordsPerDocument')
 		
 
 	def search(self, query, nostem = False):

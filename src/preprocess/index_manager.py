@@ -35,14 +35,13 @@ class IndexManager:
 		# print(watcher)
 
 	def applySettings(self, settings):
-		namespace = 'index'
-		getter = settings.intGetter(namespace)
-		self.keylen = getter('keylen', 1)
-		self.keywordsCount = getter('keywordsCount', 10)
-		self.keyScoreLimit = getter('keyScoreLimit', 35)
-		self.minKeywords = getter('minKeywords', 1)
-		self.maxKeywords = getter('maxKeywords', 10)
-		self.dynamicKeywords = settings.getBool(namespace, 'dynamicKeywords', True)
+		getter = settings.get
+		self.keylen = getter('keylen')
+		self.keywordsCount = getter('keywordsCount')
+		self.keyScoreLimit = getter('keyScoreLimit')
+		self.minKeywords = getter('minKeywords')
+		self.maxKeywords = getter('maxKeywords')
+		self.dynamicKeywords = getter('dynamicKeywords')
 		self.unsupportedFiles = {'.'+x for x in {'doc', 'zip', 'png', 'jpg', 'gif', 'gz', 'ico'}}
 		
 	def deleteFolder(self, path):

@@ -1,16 +1,11 @@
 {
-	"index" : 
-	{
-		"keylen" : "1",
-		"keywordsCount" : "10",
-		"keyScoreLimit" : "35",
-		"minKeywords" : "1",
-		"dynamicKeywords" : "True",
-		"maxKeywords" : "10"
-	},
-	"fca" :
-	{
-		"maxDocumentsInContext" : "50",
-		"maxKeywordsPerDocument" : "5"
-	}
+		"keylen" : 1,
+		"keywordsCount" : 10,
+		"keyScoreLimit" : 35,
+		"minKeywords" : 1,
+		"dynamicKeywords" : true,
+		"maxKeywords" : 10,
+		"disallowedExtensions" : ["doc", "zip", "png", "jpg", "gif", "gz", "ico"],
+		"maxDocumentsInContext" : 50,
+		"maxKeywordsPerDocument" : 5
 }
