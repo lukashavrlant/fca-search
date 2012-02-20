@@ -43,6 +43,7 @@ class IndexManager:
 		self.minKeywords = getter('minKeywords', 1)
 		self.maxKeywords = getter('maxKeywords', 10)
 		self.dynamicKeywords = settings.getBool(namespace, 'dynamicKeywords', True)
+		self.unsupportedFiles = {'.'+x for x in {'doc', 'zip', 'png', 'jpg', 'gif', 'gz'}}
 		
 	def deleteFolder(self, path):
 		try:
@@ -87,9 +88,14 @@ class IndexManager:
 		except IOError as err:
 			print("I/O error: {0}".format(err))
 			print("Filename: {0}".format(err.filename))
+
+	def filterURL(self, urls):
+		filtered = {x for x in urls if os.path.splitext(x)[1] not in self.unsupportedFiles}
+		return sorted(filtered)
+
 			
 	def _downloadDocuments(self, urls):
-		distUrls = sorted(list(set(urls)))
+		distUrls = self.filterURL(urls)
 		documents = []
 		handle = FileHandlers()
 		
