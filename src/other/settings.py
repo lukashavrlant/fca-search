@@ -14,12 +14,11 @@ class Settings():
 		savefile(self.text, path)
 
 	def get(self, key):
-		return self.settings.get(key, defaultValues[key])
+		try:
+			return self.settings[key]
+		except Exception as e:
+			return defaultValues[key]
 
-	def getDefaultValue(self, key):
-		return defaultValues[key]
-
-		
 defaultValues = {
 		"keylen" : 1,
 		"keywordsCount" : 10,
@@ -27,6 +26,7 @@ defaultValues = {
 		"minKeywords" : 1,
 		"dynamicKeywords" : True,
 		"maxKeywords" : 10,
+		"disallowedExtensions" : ["doc", "zip", "png", "jpg", "gif", "gz", "ico", "rtf"],
 		"maxDocumentsInContext" : 50,
 		"maxKeywordsPerDocument" : 5
 }
