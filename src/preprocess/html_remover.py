@@ -38,5 +38,5 @@ class HTMLRemover(HTMLParser):
 		if tag == 'meta':
 			attributes = dict(attr)
 			name = attributes.get('name', '')
-			if name == "description":
+			if name.strip().lower() == "description":
 				self.description = attributes.get('content', '')
