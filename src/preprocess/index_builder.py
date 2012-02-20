@@ -32,11 +32,10 @@ def groupByKeylen(database, keylen):
 
 def getKeywords(documents, index):
 		keywords = []
-		for doc in documents:
-			distContent = set(doc['content'])
+		for ident, doc in enumerate(documents):
+			distContent = {getstem(x) for x in set(doc['content'])}
 			keyValues = {}
-			for word in distContent:
-				stem = getstem(word)
+			for stem in distContent:
 				keyValues[stem] = round(document_score([stem], doc['id'], index), 5)
 				
 			foo = sorted(keyValues.items(), key=lambda x: x[1], reverse = True)
