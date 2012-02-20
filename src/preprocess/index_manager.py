@@ -161,7 +161,7 @@ class IndexManager:
 			
 	def _getDocsInfo(self, indexInfo, folder, infoFolder):
 		documentsInfo = indexInfo['documents']
-		keywordsScore = getKeywords(documentsInfo, Index(folder, self.settings, documentsInfo))
+		keywordsScore = getKeywords(documentsInfo, Index(folder, self.settings, documentsInfo), self._elapsed)
 		totalKeywords = set()
 			
 		for docInfo, allDocKeywords in zip(documentsInfo, keywordsScore):

@@ -30,9 +30,10 @@ def groupByKeylen(database, keylen):
 			dic[key] = [record]
 	return dic
 
-def getKeywords(documents, index):
+def getKeywords(documents, index, elapsed):
 		keywords = []
-		for ident, doc in enumerate(documents):
+		for doc in documents:
+			elapsed('getting keywords from ' + doc['url'])
 			distContent = {getstem(x) for x in set(doc['content'])}
 			keyValues = {}
 			for stem in distContent:
