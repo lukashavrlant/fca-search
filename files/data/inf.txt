@@ -53,8 +53,6 @@ http://www.inf.upol.cz/ukazky-studentskych-praci
 http://www.inf.upol.cz/vyzkum
 http://www.inf.upol.cz/zamestnani
 http://www.inf.upol.cz/zapis-zkousek-doktorat
-http://www.inf.upol.cz/atom/aktuality/index.html
-http://www.inf.upol.cz/atom/kalendar/index.html
 http://www.inf.upol.cz/css/main.css
 http://www.inf.upol.cz/downloads/.DS_Store
 http://www.inf.upol.cz/downloads/dokumenty/druhe-opravne-zk.pdf
