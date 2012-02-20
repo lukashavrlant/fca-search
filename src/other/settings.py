@@ -26,7 +26,7 @@ defaultValues = {
 		"minKeywords" : 1,
 		"dynamicKeywords" : True,
 		"maxKeywords" : 10,
-		"disallowedExtensions" : ["doc", "zip", "png", "jpg", "gif", "gz", "ico", "rtf"],
+		"disallowExtensions" : ["doc", "zip", "png", "jpg", "gif", "gz", "ico", "rtf"],
 		"maxDocumentsInContext" : 50,
 		"maxKeywordsPerDocument" : 5
 }

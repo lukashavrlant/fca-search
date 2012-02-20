@@ -42,7 +42,7 @@ class IndexManager:
 		self.minKeywords = getter('minKeywords')
 		self.maxKeywords = getter('maxKeywords')
 		self.dynamicKeywords = getter('dynamicKeywords')
-		self.unsupportedFiles = {'.'+x for x in getter('disallowedExtensions')}
+		self.unsupportedFiles = {'.'+x for x in getter('disallowExtensions')}
 		
 	def deleteFolder(self, path):
 		try:
