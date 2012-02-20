@@ -12,7 +12,7 @@ http://www.inf.upol.cz/disertacni-prace
 http://www.inf.upol.cz/doktorske-studium
 http://www.inf.upol.cz/dokumenty
 http://www.inf.upol.cz/favicon.ico
-http://www.inf.upol.cz/index.html
+http://www.inf.upol.cz/
 http://www.inf.upol.cz/informaticky-seminar
 http://www.inf.upol.cz/kalendar
 http://www.inf.upol.cz/kalendar?d=1
@@ -54,7 +54,6 @@ http://www.inf.upol.cz/vyzkum
 http://www.inf.upol.cz/zamestnani
 http://www.inf.upol.cz/zapis-zkousek-doktorat
 http://www.inf.upol.cz/css/main.css
-http://www.inf.upol.cz/downloads/.DS_Store
 http://www.inf.upol.cz/downloads/dokumenty/druhe-opravne-zk.pdf
 http://www.inf.upol.cz/downloads/dokumenty/Evidence-studijnich-vysledku.pdf
 http://www.inf.upol.cz/downloads/dokumenty/opatreni-dekana-2.pdf
@@ -79,7 +78,7 @@ http://www.inf.upol.cz/downloads/studium/harmonogram.pdf
 http://www.inf.upol.cz/downloads/studium/KombStudiumKonzultace2011.pdf
 http://www.inf.upol.cz/downloads/studium/SZZ2011-2012.pdf
 http://www.inf.upol.cz/downloads/studium/SZZleden2012obhajobyBc.pdf
-http://www.inf.upol.cz/downloads/studium/SZZunor2012navazující.pdf
+http://www.inf.upol.cz/downloads/studium/SZZunor2012navazuj%C3%ADc%C3%AD.pdf
 http://www.inf.upol.cz/downloads/studium/SZZunor2012ustniBc.pdf
 http://www.inf.upol.cz/galerie/promo
 http://www.inf.upol.cz/kombinovane-studium/algoritmicka-matematika-1

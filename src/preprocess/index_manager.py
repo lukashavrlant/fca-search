@@ -43,7 +43,7 @@ class IndexManager:
 		self.minKeywords = getter('minKeywords', 1)
 		self.maxKeywords = getter('maxKeywords', 10)
 		self.dynamicKeywords = settings.getBool(namespace, 'dynamicKeywords', True)
-		self.unsupportedFiles = {'.'+x for x in {'doc', 'zip', 'png', 'jpg', 'gif', 'gz'}}
+		self.unsupportedFiles = {'.'+x for x in {'doc', 'zip', 'png', 'jpg', 'gif', 'gz', 'ico'}}
 		
 	def deleteFolder(self, path):
 		try:
