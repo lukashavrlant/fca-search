@@ -11,6 +11,7 @@ from other.stopwatch import Stopwatch
 import shelve
 import shutil
 from preprocess.file_handlers import FileHandlers
+from urllib.parse import urlparse
 
 class IndexManager:
 	
@@ -89,7 +90,17 @@ class IndexManager:
 			print("Filename: {0}".format(err.filename))
 
 	def filterURL(self, urls):
-		filtered = {x for x in urls if os.path.splitext(x)[1] not in self.unsupportedFiles}
+		filtered = set()
+		for url in urls:
+			purl = urlparse(url)
+			print(purl)
+			if all([purl.scheme, purl.scheme]):
+				filtered.add(url)
+
+		filtered = [x for x in filtered if os.path.splitext(x)[1] not in self.unsupportedFiles]
+		if len(filtered) == 0:
+			raise Exception('No URL to download. Are you sure the file with URLs has the right format? (One URL per line.)')
+
 		return sorted(filtered)
 
 			
