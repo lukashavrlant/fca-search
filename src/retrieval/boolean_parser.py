@@ -77,7 +77,7 @@ class BooleanParser:
 		if isinstance(node, Node):
 			return True
 		
-		return node not in ['', '()']
+		return node not in ['', '()', '(', ')']
 	
 	def _parse_pure_list(self, tokens):
 		tokens = lfilter(lambda x: x != 'AND', tokens)
