@@ -34,17 +34,13 @@ class SearchTest(unittest.TestCase):
 
 	def test_spellcheck(self):
 		ass = self.assertEqual
+		fun = lambda q: searchQuery('matweb-test', q)['suggestions'][q]
 
-		queries = {
-			'poslounposti' : 'posloupnosti',
-			'derivcae' : 'derivace',
-			'nemsysl' : 'nesmysl',
-			'hroamdny' : 'hromadny'
-		}
+		ass(fun('poslounposti'), 'posloupnosti')
+		ass(fun('derivcae'), 'derivace')
+		ass(fun('nemsysl'), 'nesmysl')
+		ass(fun('hroamdny'), 'hromadny')
 
-		for k, v in queries.items():
-			result = loads(self.execute('matweb', k))
-			ass(result['spellcheck'][k], v)
 
 	def test_Generalization(self):
 		ass = self.assertEqual
@@ -53,6 +49,15 @@ class SearchTest(unittest.TestCase):
 		ass(fun('inverzni mnoziny prvky'), [{'words': ['inverzni'], 'rank': 24}, {'words': ['prvky'], 'rank': 20}, {'words': ['mnoziny'], 'rank': 19}])
 		ass(fun('derivace'), [])
 		ass(fun('bod hokus'), [{'words': ['hokus'], 'rank': 1}])
+
+	def test_Specialization(self):
+		ass = self.assertEqual
+		fun = lambda q: searchQuery('matweb-test', q)['specialization']
+
+		ass(fun('derivace'), [{'rank': 13, 'words': ['limita']}, {'rank': 12, 'words': ['posloupnosti']}, {'rank': 10, 'words': ['bodě']}, {'rank': 3, 'words': ['symboly']}])
+		ass(fun('Pravděpodobnost OR množiny'), [{'rank': 6, 'words': ['hesla']}, {'rank': 5, 'words': ['lidí']}, {'rank': 4, 'words': ['kostce']}])
+		ass(fun('kravina'), [])
+
 
 	def execute(self, dtb, q):
 		return self.runShell(dtb, q).decode("utf-8")
