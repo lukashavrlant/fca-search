@@ -9,6 +9,7 @@ from preprocess.index_manager import IndexManager
 from other.stopwatch import Stopwatch
 from other.settings import Settings
 import json
+from other.interface import searchQuery
 
 ## functions 
 def printSearch(searchResults, stopwatch):
@@ -67,12 +68,7 @@ def getFcaExt(searchResults):
 	return gen, sib, spec, meta, spellcheck
 
 def search(databaseName, query, outFormat, stopwatch):
-	database = DATABASES_FOLDER + databaseName + '/'
-	settings = Settings(database + SETTINGS_FILE)
-	index = Index(database, settings)
-	searchEngine = SearchEngine(index, getStopWords())
-	fca = FCASearchEngine(searchEngine, index, settings)
-	searchResults = fca.search(query)
+	searchResults = searchQuery(databaseName, query, stopwatch)
 	if stopwatch:
 		stopwatch.elapsed('Done')
 	if outFormat == 'console':
