@@ -93,7 +93,6 @@ class IndexManager:
 		filtered = set()
 		for url in urls:
 			purl = urlparse(url)
-			print(purl)
 			if all([purl.scheme, purl.scheme]):
 				filtered.add(url)
 
