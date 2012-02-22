@@ -7,7 +7,7 @@ from common.io import readfile, savefile
 from retrieval.index import Index
 from subprocess import Popen, PIPE
 from json import loads
-
+from other.interface import searchQuery
 
 class SearchTest(unittest.TestCase):
 	def testSearchCommand(self):
@@ -45,6 +45,14 @@ class SearchTest(unittest.TestCase):
 		for k, v in queries.items():
 			result = loads(self.execute('matweb', k))
 			ass(result['spellcheck'][k], v)
+
+	def test_Generalization(self):
+		ass = self.assertEqual
+		fun = lambda q: searchQuery('matweb-test', q)['generalization']
+
+		ass(fun('inverzni mnoziny prvky'), [{'words': ['inverzni'], 'rank': 24}, {'words': ['prvky'], 'rank': 20}, {'words': ['mnoziny'], 'rank': 19}])
+		ass(fun('derivace'), [])
+		ass(fun('bod hokus'), [{'words': ['hokus'], 'rank': 1}])
 
 	def execute(self, dtb, q):
 		return self.runShell(dtb, q).decode("utf-8")
