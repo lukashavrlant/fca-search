@@ -157,9 +157,6 @@ class FCASearchEngine:
 		modSuggTerms = set(terms) | searchConcept.translate(context).intentNames
 		
 		rankedUpper = [{'rank':len(x.extent), 'words':x} for x in upperN]
-		rankedUpper = sorted(rankedUpper, key=lambda x: x['rank'], reverse = True)
-
-
 		
 		for item in rankedUpper:
 			intent = item['words'].intentNames
@@ -167,6 +164,7 @@ class FCASearchEngine:
 			item['words'] = {self.index.stem2word(stem, queryStems) for stem in stems}
 		
 		rankedUpper = self.filterUniqueGeneralization(rankedUpper)
+		rankedUpper = sorted(rankedUpper, key=lambda x: x['rank'], reverse = True)
 
 		for item in rankedUpper:
 			item['words'] = list(item['words'])
