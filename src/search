@@ -76,8 +76,11 @@ def search(databaseName, query, outFormat, stopwatch):
 	elif outFormat == 'json':
 		printJson(searchResults, stopwatch)
 	
-def buildIndex(databaseName, linksSourcePath, maxLinksToDownload):
+def buildIndex(databaseName, linksSourcePath, maxLinksToDownload, charset):
 	settings = Settings(DATA_FOLDER + SETTINGS_FILE)
+	if charset:
+		settings.set('charset', charset)
+
 	database = DATABASES_FOLDER + databaseName + '/'
 	links = readfile(linksSourcePath).splitlines()
 	if maxLinksToDownload:
@@ -100,7 +103,7 @@ if __name__ == '__main__':
 	stopwatch = Stopwatch().start()
 	
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:p:f:m:r:a:t')
+		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:p:f:m:r:a:c:t')
 		opts = dict(opts)
 		
 		# search in database
@@ -112,8 +115,9 @@ if __name__ == '__main__':
 		elif '-b' in opts:
 			databaseName = opts['-b']
 			linksSourcePath = opts.get('-p', DATA_FOLDER + opts['-b'] + '.txt')
+			charset = opts.get('-c', '')
 			maxLinksToDownload = int(opts.get('-m', 0))
-			buildIndex(databaseName, linksSourcePath, maxLinksToDownload)
+			buildIndex(databaseName, linksSourcePath, maxLinksToDownload, charset)
 		
 		# refresh index
 		elif '-r' in opts:

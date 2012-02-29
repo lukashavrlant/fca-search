@@ -19,6 +19,9 @@ class Settings():
 		except Exception as e:
 			return defaultValues[key]
 
+	def set(self, key, value):
+		self.settings[key] = value
+
 defaultValues = {
 		"keylen" : 1,
 		"keywordsCount" : 10,
