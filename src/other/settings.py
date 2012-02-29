@@ -20,7 +20,11 @@ class Settings():
 			return defaultValues[key]
 
 	def set(self, key, value):
-		self.settings[key] = value
+		try:
+			self.settings[key] = int(value)
+		except Exception:
+			self.settings[key] = value
+
 		self.text = json.dumps(self.settings)
 
 defaultValues = {

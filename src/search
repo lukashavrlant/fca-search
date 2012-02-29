@@ -76,10 +76,10 @@ def search(databaseName, query, outFormat, stopwatch):
 	elif outFormat == 'json':
 		printJson(searchResults, stopwatch)
 	
-def buildIndex(databaseName, linksSourcePath, maxLinksToDownload, charset):
+def buildIndex(databaseName, linksSourcePath, maxLinksToDownload, currSettings):
 	settings = Settings(DATA_FOLDER + SETTINGS_FILE)
-	if charset:
-		settings.set('charset', charset)
+	for key, value in currSettings.items():
+		settings.set(key, value)
 
 	database = DATABASES_FOLDER + databaseName + '/'
 	links = readfile(linksSourcePath).splitlines()
@@ -101,10 +101,17 @@ def rebuildIndex(databaseName, newLinks = []):
 
 if __name__ == '__main__':
 	stopwatch = Stopwatch().start()
-	
+	longOptions = ['keylen', 'keywordsCount', 'keyScoreLimit', 'charset',
+					'minKeywords', 'dynamicKeywords', 'maxKeywords', 
+					'disallowExtensions', 'maxDocumentsInContext', 'maxKeywordsPerDocument']
+
+	longEqOptions = [x + '=' for x in longOptions]
+	longDashOptions = ["--" + x for x in longOptions]
+
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:p:f:m:r:a:c:t')
+		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:p:f:m:r:a:t', longEqOptions)
 		opts = dict(opts)
+		currSettings = {k[2:]:v for k,v in opts.items() if k in longDashOptions}
 		
 		# search in database
 		if '-q' in opts:
@@ -115,9 +122,8 @@ if __name__ == '__main__':
 		elif '-b' in opts:
 			databaseName = opts['-b']
 			linksSourcePath = opts.get('-p', DATA_FOLDER + opts['-b'] + '.txt')
-			charset = opts.get('-c', '')
 			maxLinksToDownload = int(opts.get('-m', 0))
-			buildIndex(databaseName, linksSourcePath, maxLinksToDownload, charset)
+			buildIndex(databaseName, linksSourcePath, maxLinksToDownload, currSettings)
 		
 		# refresh index
 		elif '-r' in opts:
