@@ -57,6 +57,10 @@ class Index:
 		documents = stem.documents
 		freq = documents.get(documentID, 0)
 		return freq
+
+	def totalTermFrequency(self, term):
+		documents = self.get_stem_info(term).documents	
+		return sum(x[1] for x in documents.items())
 	
 	def contains_term(self, term, documentID):
 		if not self.docKeywords:

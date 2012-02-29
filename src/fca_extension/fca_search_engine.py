@@ -9,6 +9,8 @@ from common.czech_stemmer import createStem
 from retrieval.spell_checker import SpellChecker
 from common.string import normalizeWord
 import math
+from collections import Counter
+
 class FCASearchEngine:
 	def __init__(self, searchEngine, index, settings):
 		self.engine = searchEngine
@@ -73,54 +75,6 @@ class FCASearchEngine:
 		self._translateIntents(rankedSibl, modContext, queryStems)
 		return rankedSibl
 	
-	def fuzzySearch(self, query, debug = None):
-		originResults = self.engine.search(query)	
-		terms = originResults['terms']
-
-		### Modify context
-		modResult = self.engine.search(' OR '.join(terms))
-		
-		modDoc, modTerms = self._getDocsAndTerms(modResult)
-		
-		# fuzzy context
-		fuzzyContext = getFuzzyContext(modDoc, modTerms, self.index.getKeywordsScore(), self.index.term_frequency)
-
-		fuzzyContext.setRoundMethod(lambda x: 0 if x == 0 else (1 if x > 0.7 else 0.5))
-		fuzzyContext.allValues = [0, 0.5, 1]
-
-		fuzzyContext.normalize()
-
-		searchConcept = self._getFuzzySearchConceptByAttr(modTerms, fuzzyContext)
-		
-		print("Search concept:")
-		print(searchConcept)
-		
-		upperN = fuzzyContext.upperNeighbors(searchConcept)
-		lowerN = fuzzyContext.lowerNeighbors(searchConcept)
-		left = self._getLower(upperN, fuzzyContext)
-		
-		print(fuzzyContext)
-		specialization = self._getFuzzySpecialization(lowerN, fuzzyContext, terms, searchConcept)
-		
-		if left:
-			right = self._getUppers(lowerN, fuzzyContext)	
-			siblings = (left & right) - {searchConcept}
-		
-		generalization = self._getGeneralization(upperN, modContext, terms, modSearchConcept)		
-		modLowerN = modContext.lowerNeighbors(modSearchConcept)
-		modSpec = self._getSpecialization(modLowerN, modContext, terms, modSearchConcept)
-
-	def _getFuzzySpecialization(self, lower, context, terms, searchConcept):
-		lowerN = [list(x.intent.support()) for x in lower]
-		print(lowerN)
-		
-	def remLocalhost(self, url):
-		return url.replace("http://localhost/matweb/", "")
-		
-	def _getFuzzySearchConceptByAttr(self, attrs, fuzzyContext):
-		extent = fuzzyContext.down(FuzzySet({attr:1 for attr in attrs}))
-		intent = fuzzyContext.up(extent)
-		return FuzzyConcept(extent, intent)
 	
 	def _getUppers(self, concepts, context):
 		upperN = set()
@@ -138,11 +92,19 @@ class FCASearchEngine:
 		lowerN = {x.translate(context) for x in lowerN}		
 		suggTerms = set(terms) | searchConcept.translate(context).intentNames
 		specialization = [x.intentNames - suggTerms for x in lowerN]
+		specialization = [self.removeUselessSpec(x) for x in specialization]
 		specialization = self._intents2words(specialization)
 		rankedSpec = [{'words':list(x[0]), 'rank':len(x[1].extent)} for x in zip(specialization, lowerN)]
 		rankedSpec = sorted(rankedSpec, key=lambda s: s['rank'], reverse=True)
 		
 		return rankedSpec
+
+	def removeUselessSpec(self, specialization):
+		if len(specialization) == 1:
+			return specialization
+		else:
+			ranks = Counter({x:self.index.totalTermFrequency(x) for x in specialization})
+			return {ranks.most_common(1)[0][0]}
 	
 	def _translateIntents(self, concepts, context, queryStems):
 		for con in concepts:
@@ -197,3 +159,63 @@ class FCASearchEngine:
 		sConcept.extent = context.down(attributes)
 		sConcept.intent = context.up(sConcept.extent)
 		return sConcept
+
+
+
+
+
+
+
+
+
+
+	#### fuzzy part ####
+	def fuzzySearch(self, query, debug = None):
+		originResults = self.engine.search(query)	
+		terms = originResults['terms']
+
+		### Modify context
+		modResult = self.engine.search(' OR '.join(terms))
+		
+		modDoc, modTerms = self._getDocsAndTerms(modResult)
+		
+		# fuzzy context
+		fuzzyContext = getFuzzyContext(modDoc, modTerms, self.index.getKeywordsScore(), self.index.term_frequency)
+
+		fuzzyContext.setRoundMethod(lambda x: 0 if x == 0 else (1 if x > 0.7 else 0.5))
+		fuzzyContext.allValues = [0, 0.5, 1]
+
+		fuzzyContext.normalize()
+
+		searchConcept = self._getFuzzySearchConceptByAttr(modTerms, fuzzyContext)
+		
+		print("Search concept:")
+		print(searchConcept)
+		
+		upperN = fuzzyContext.upperNeighbors(searchConcept)
+		lowerN = fuzzyContext.lowerNeighbors(searchConcept)
+		left = self._getLower(upperN, fuzzyContext)
+		
+		print(fuzzyContext)
+		specialization = self._getFuzzySpecialization(lowerN, fuzzyContext, terms, searchConcept)
+		
+		if left:
+			right = self._getUppers(lowerN, fuzzyContext)	
+			siblings = (left & right) - {searchConcept}
+		
+		generalization = self._getGeneralization(upperN, modContext, terms, modSearchConcept)		
+		modLowerN = modContext.lowerNeighbors(modSearchConcept)
+		modSpec = self._getSpecialization(modLowerN, modContext, terms, modSearchConcept)
+
+	def _getFuzzySpecialization(self, lower, context, terms, searchConcept):
+		lowerN = [list(x.intent.support()) for x in lower]
+		print(lowerN)
+		
+	def remLocalhost(self, url):
+		return url.replace("http://localhost/matweb/", "")
+		
+	def _getFuzzySearchConceptByAttr(self, attrs, fuzzyContext):
+		extent = fuzzyContext.down(FuzzySet({attr:1 for attr in attrs}))
+		intent = fuzzyContext.up(extent)
+		return FuzzyConcept(extent, intent)
+	
