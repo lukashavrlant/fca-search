@@ -21,6 +21,7 @@ class Settings():
 
 	def set(self, key, value):
 		self.settings[key] = value
+		self.text = json.dumps(self.settings)
 
 defaultValues = {
 		"keylen" : 1,
