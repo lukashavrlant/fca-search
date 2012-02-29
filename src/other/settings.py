@@ -28,5 +28,6 @@ defaultValues = {
 		"maxKeywords" : 10,
 		"disallowExtensions" : ["doc", "zip", "png", "jpg", "gif", "gz", "ico", "rtf"],
 		"maxDocumentsInContext" : 50,
-		"maxKeywordsPerDocument" : 5
+		"maxKeywordsPerDocument" : 5,
+		"charset" : 'utf-8'
 }

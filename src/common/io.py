@@ -3,8 +3,8 @@ from common.funcfun import each, lmap
 import codecs
 import hashlib
 
-def download(site):
-	return urlopen(site).read().decode('utf-8')
+def download(site, charset = 'utf-8'):
+	return urlopen(site).read().decode(charset)
 
 def downloads(sites):
 	return list(map(download, sites))

@@ -44,6 +44,7 @@ class IndexManager:
 		self.maxKeywords = getter('maxKeywords')
 		self.dynamicKeywords = getter('dynamicKeywords')
 		self.unsupportedFiles = {'.'+x for x in getter('disallowExtensions')}
+		self.charset = getter('charset')
 		
 	def deleteFolder(self, path):
 		try:
@@ -62,6 +63,9 @@ class IndexManager:
 		try:
 			self._createFolder([indexFolder, infoFolder, TEMP_FOLDER])
 			sites = self._downloadDocuments(urls)
+			if not sites:
+				raise Exception('No documents downloaded')
+
 			infoDtb = shelve.open(infoFolder + 'info') 
 			indexInfo = toIndex(sites, stopwords, self.keylen, self._elapsed)
 			self._createIndex(indexInfo, indexFolder, infoFolder)
@@ -88,6 +92,8 @@ class IndexManager:
 		except IOError as err:
 			print("I/O error: {0}".format(err))
 			print("Filename: {0}".format(err.filename))
+		except Exception as err:
+			print("Error: {0}".format(err))
 
 	def filterURL(self, urls):
 		filtered = set()
@@ -118,7 +124,7 @@ class IndexManager:
 				elif extension == '.odt':
 					document = {'type':'txt', 'content':handle.ODT(url), 'url':url}
 				else:
-					document = {'type':'html', 'content':download(url), 'url':url}
+					document = {'type':'html', 'content':download(url, self.charset), 'url':url}
 					
 				documents.append(document)
 			except HTTPError as err:
