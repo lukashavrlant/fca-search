@@ -3,7 +3,7 @@ from common.string import strip_accents
 
 class SpellChecker():
 	def __init__(self, allWords):
-		self.allWords = allWords
+		self.allWords = {x for x in allWords if x != ''}
 
 	def checkWords(self, words):
 		suggestions = {x:self.check(x) for x in words}
@@ -19,7 +19,7 @@ class SpellChecker():
 		lword = len(word)
 		prefix = word[:2]
 		suffix = word[::-1][:2]
-		candidates = {x for x in self.allWords if x != "" and x[0] in prefix and x[len(x)-1] in suffix and lword == len(x)}
+		candidates = {x for x in self.allWords if x[0] in prefix and x[len(x)-1] in suffix and lword == len(x)}
 		maxDiffs = max(1, math.floor(lword / 5))
 		diffs = {x for x in candidates if self.diffRank(word, x) <= maxDiffs}
 		bubbles = {x for x in candidates if self.bubbleRank(word, x)}
@@ -32,7 +32,37 @@ class SpellChecker():
 			if union:
 				return list(union)[0]
 			else:
-				return word
+				return self.oneLetterMissing(word)
+
+	def oneLetterMissing(self, word):
+		print(word)
+		lword = len(word)
+		first = word[0]
+		last = word[len(word)-1]
+		candidates = {x for x in self.allWords if (x[0] == first or x[len(x)-1] == last) and abs(len(x) - lword) == 1}
+
+		for candidate in candidates:
+			if self.isOneLetterMissing(word, candidate):
+				return candidate
+
+		return word
+		
+
+	def isOneLetterMissing(self, mismatch, word):
+	    lmismatch = len(mismatch)
+	    for a, m, w in zip(range(lmismatch), mismatch, word):
+	        if m != w:
+	            break
+	    else:
+	        a += 1
+
+	    for b, m, w in zip(range(lmismatch), mismatch[::-1], word[::-1]):
+	        if m != w:
+	            break
+	    else:
+	        b += 1
+
+	    return (a+b) >= min(lmismatch, len(word))
 
 		
 	def diffRank(self, word, candidate):
