@@ -4,7 +4,7 @@ class HTMLRemover(HTMLParser):
 	"Remove HTML tags, comments, and useless content like scripts or styles"
 	
 	def __init__(self):
-		self.title = 'No name'
+		self.title = ''
 		self.elementName = ''
 		self.disabledElements = ['script', 'style']
 		HTMLParser.__init__(self)

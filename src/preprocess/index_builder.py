@@ -67,6 +67,9 @@ def toIndex(documents, stopwords, keylen, elapsed = nothing):
 					title = htmlrem.title
 					description = htmlrem.description
 
+					if not title:
+						title = os.path.basename(doc['url'])
+
 				if doc['type'] == 'txt':
 					content = doc['content']
 					title = os.path.basename(doc['url'])
