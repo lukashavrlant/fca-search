@@ -2,9 +2,10 @@ from urllib.request import urlopen, urlretrieve
 from common.funcfun import each, lmap
 import codecs
 import hashlib
+import re
 
-def download(site, charset = 'utf-8'):
-	return urlopen(site).read().decode(charset)
+def download(site):
+	return urlopen(site).read()
 
 def downloads(sites):
 	return list(map(download, sites))
@@ -48,3 +49,9 @@ def md5(fileName):
             break
     fd.close()
     return md5.hexdigest()
+
+def getEncoding(bytes, default='utf-8'):
+	try:
+	 	return re.search('<\s*meta.*content\s*=.*charset\s*=\s*([a-z0-9-]+)', str(bytes), re.IGNORECASE).group(1)
+	except Exception:
+	 	return default

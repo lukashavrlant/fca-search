@@ -1,4 +1,5 @@
 from common.io import download
+from common.io import getEncoding
 from preprocess.index_builder import toIndex, getKeywords
 from urllib.error import HTTPError
 from other.constants import DOCUMENT_INFO_NAME, STEMSDICT_NAME,	KEYWORDSINDOCUMENTS_NAME,\
@@ -124,7 +125,7 @@ class IndexManager:
 				elif extension == '.odt':
 					document = {'type':'txt', 'content':handle.ODT(url), 'url':url}
 				else:
-					document = {'type':'html', 'content':download(url, self.charset), 'url':url}
+					document = {'type':'html', 'content':self.downloadWebsite(url), 'url':url}
 					
 				documents.append(document)
 			except HTTPError as err:
@@ -136,6 +137,11 @@ class IndexManager:
 			handle.cleanTempIfNes(extension)
 					
 		return documents
+
+	def downloadWebsite(self, url):
+		data = download(url)
+		charset = getEncoding(data)
+		return data.decode(charset.lower())
 			
 	def _getKeywordsInfo(self, keywords, documents):
 		documents = [set(x) for x in documents]
