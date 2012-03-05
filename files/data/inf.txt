@@ -133,3 +133,11 @@ http://www.inf.upol.cz/lide/vilem-vychodil
 http://www.inf.upol.cz/lide/vladimir-sklenar
 http://www.inf.upol.cz/lide/webmaster
 http://www.inf.upol.cz/lide/zdenka-nesvadbova
+http://phoenix.inf.upol.cz/esf/about.htm
+http://phoenix.inf.upol.cz/esf/dotaznik.htm
+http://phoenix.inf.upol.cz/esf/index.html
+http://phoenix.inf.upol.cz/esf/kontakty.htm
+http://phoenix.inf.upol.cz/esf/materialy.htm
+http://phoenix.inf.upol.cz/esf/publicita.htm
+http://phoenix.inf.upol.cz/esf/rizeni.htm
+http://phoenix.inf.upol.cz/esf/tym.htm
