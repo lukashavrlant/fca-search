@@ -87,6 +87,9 @@ def toIndex(documents, stopwords, keylen, elapsed = nothing):
 		except Exception as err:
 			print('Cannot parse ' + str(doc['url']))
 			print(str(err))
+
+	if not compiledDocuments:
+		raise Exception('No document parsed')
 	
 	elapsed('Collecting documents...')
 	sitesStats = getDocsStats([x['content'] for x in compiledDocuments])
