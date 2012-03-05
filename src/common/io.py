@@ -52,6 +52,6 @@ def md5(fileName):
 
 def getEncoding(bytes, default='utf-8'):
 	try:
-	 	return re.search('<\s*meta.*content\s*=.*charset\s*=\s*([a-z0-9-]+)', str(bytes), re.IGNORECASE).group(1)
+	 	return re.search('<meta.+content\s*=.+charset\s*=\s*([a-z0-9-]+)', str(bytes), re.IGNORECASE).group(1)
 	except Exception:
 	 	return default
