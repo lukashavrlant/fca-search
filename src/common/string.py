@@ -84,7 +84,35 @@ def unescapeHTMLEntities(text):
             except KeyError:
                 pass
         return text # leave as is
-    return re.sub("&#?\w+;", fixup, text)			
+    return re.sub("&#?\w+;", fixup, text)	
+
+# source: http://effbot.org/zone/re-sub.htm#strip-html
+def strip_html(text):
+    def fixup(m):
+        text = m.group(0)
+        if text[:1] == "<":
+            return "" # ignore tags
+        if text[:2] == "&#":
+            try:
+                if text[:3] == "&#x":
+                    return chr(int(text[3:-1], 16))
+                else:
+                    return chr(int(text[2:-1]))
+            except ValueError:
+                pass
+        elif text[:1] == "&":
+            import html.entities
+            entity = html.entities.entitydefs.get(text[1:-1])
+            if entity:
+                if entity[:2] == "&#":
+                    try:
+                        return chr(int(entity[2:-1]))
+                    except ValueError:
+                        pass
+                else:
+                    return entity 
+        return text # leave as is
+    return re.sub("(?s)<[^>]*>|&#?\w+;", fixup, text)		
 	
 	
 	
