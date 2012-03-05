@@ -7,7 +7,7 @@ class SpellChecker():
 
 	def checkWords(self, words):
 		suggestions = {x:self.check(x) for x in words}
-		suggestions = {k:v for k,v in suggestions.items() if k != v}
+		suggestions = {k:v for k,v in suggestions.items() if strip_accents(k) != v}
 		return suggestions
 
 	def check(self, word):
