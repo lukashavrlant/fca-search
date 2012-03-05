@@ -1,4 +1,5 @@
 from collections import Counter
+from common.string import unescapeHTMLEntities
 from common.funcfun import lmap, nothing
 from functools import reduce
 from operator import add
@@ -55,7 +56,8 @@ def toIndex(documents, stopwords, keylen, elapsed = nothing):
 
 			if doc['type'] in ['html', 'txt']:
 				if doc['type'] == 'html':
-					content = htmlrem.getText(doc['content'])
+					content = unescapeHTMLEntities(doc['content'])
+					content = htmlrem.getText(content)
 					title = htmlrem.title
 					description = htmlrem.description
 
