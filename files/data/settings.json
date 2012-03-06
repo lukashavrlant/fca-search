@@ -1,7 +1,7 @@
 {
 		"keylen" : 1,
 		"keywordsCount" : 10,
-		"keyScoreLimit" : 35,
+		"keyScoreLimit" : 40,
 		"minKeywords" : 1,
 		"dynamicKeywords" : true,
 		"maxKeywords" : 10,
