@@ -43,15 +43,20 @@ class FCASearchEngine:
 		modSearchConcept = self._getSearchConceptByAttr(modContext, modAttrsID)
 
 		lowerN, upperN = self.getLowerUpper(modContext, modSearchConcept)
+		self.totalConcepts = set(lowerN | upperN)
 		# print(modTerms)
 #		self.fuzzySearch(query, modContext.ids2attrs(modSearchConcept.intent))
 
-		return {'origin':originResults, 
+		res = {'origin':originResults, 
 				'specialization':self.getSpecialization(lowerN, modContext, terms, modSearchConcept), 
 				'generalization':self.getGeneralization(upperN, modContext, terms, modSearchConcept, queryStems), 
 				'siblings':self.getSiblings(upperN, lowerN, modContext, modSearchConcept, queryStems),
 				'meta' : {'objects' : modContext.height, 'attributes' : modContext.width},
 				'suggestions' : self.getSuggestions(wordsTerms, len(originResults['documents']))}
+
+		res['meta'].update({'lower' : len(lowerN), 'upper' : len(upperN), 'neighbor' : len(self.totalConcepts)})
+
+		return res
 
 	def getSuggestions(self, words, totalResults):
 		if totalResults == 0:
@@ -66,8 +71,10 @@ class FCASearchEngine:
 	def getSiblings(self, upperN, lowerN, modContext, modSearchConcept, queryStems):
 		siblings = set()
 		left = self._getLower(upperN, modContext)
+		self.totalConcepts |= left
 		if left:
 			right = self._getUppers(lowerN, modContext)
+			self.totalConcepts |= right
 			siblings = (left & right) - {modSearchConcept}
 			
 		rankedSibl = [{'rank': round(x.similarity(modSearchConcept), 3), 'words':x} for x in siblings]
