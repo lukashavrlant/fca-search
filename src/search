@@ -94,7 +94,7 @@ if __name__ == '__main__':
 	longOptions = ['keylen', 'keywordsCount', 'keyScoreLimit', 'charset',
 					'minKeywords', 'dynamicKeywords', 'maxKeywords', 
 					'disallowExtensions', 'maxDocumentsInContext', 'maxKeywordsPerDocument',
-					'stem', 'freq', 'docid', 'findURL', 'findDocID', 'docFrequency', 'docinfo',
+					'stem', 'freq', 'docid', 'findURL', 'finddocid', 'docFrequency', 'docinfo',
 					'tf']
 
 	longEqOptions = [x + '=' for x in longOptions]
@@ -153,8 +153,8 @@ if __name__ == '__main__':
 					print(wordFrequency(databaseName, opts['--freq']))
 			elif '--findURL' in opts:
 				print(findURL(databaseName, opts['--findURL']))
-			elif '--findDocID' in opts:
-				print(findDocID(databaseName, opts['--findDocID']))
+			elif '--finddocid' in opts:
+				print(findDocID(databaseName, opts['--finddocid']))
 			elif '--docFrequency' in opts:
 				print(documentFrequency(databaseName, opts['--docFrequency']))
 			elif '--docinfo' in opts:
