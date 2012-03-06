@@ -19,6 +19,8 @@ class HTMLRemover(HTMLParser):
 		
 	def reset(self):
 		self.description = ''
+		self.title = ''
+		self.elementName = ''
 		self.puredata = []
 		self.printp = True
 		HTMLParser.reset(self)
@@ -28,7 +30,7 @@ class HTMLRemover(HTMLParser):
 			self.puredata.append(data)
 		
 		if self.elementName == 'title':
-			if data.strip():
+			if data.strip() and not self.title:
 				self.title = data.strip()
 				
 		
