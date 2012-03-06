@@ -6,6 +6,7 @@ import shelve
 from other.constants import INDEX_FOLDER_NAME, DOCUMENT_INFO_NAME, INFO_FOLDER_NAME, STEMSDICT_NAME,\
 	KEYWORDSINDOCUMENTS_NAME, SCORES_TABLE
 from retrieval.stem import Stem
+import math
 
 class Index:
 	
@@ -52,11 +53,14 @@ class Index:
 				print(err)
 			return stemObject
 	
-	def term_frequency(self, term, documentID):
+	def term_frequency(self, term, documentID, wordsCount):
 		stem = self.get_stem_info(term)
 		documents = stem.documents
 		freq = documents.get(documentID, 0)
-		return freq
+		if wordsCount > 1:
+			return freq / math.log(wordsCount)
+		else: 
+			return freq / 1000
 
 	def totalTermFrequency(self, term):
 		documents = self.get_stem_info(term).documents	
@@ -71,7 +75,7 @@ class Index:
 		if term in self.allKeywords:
 			return term in self.docKeywords[documentID]
 		else:
-			return self.term_frequency(term, documentID) > 0
+			return self.term_frequency(term, documentID, math.e) > 0
 	
 	def document_frequency(self, term):
 		return len(self.get_stem_info(term).documents)

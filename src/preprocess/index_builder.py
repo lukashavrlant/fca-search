@@ -39,7 +39,7 @@ def getKeywords(documents, index, elapsed):
 			distContent = {getstem(x) for x in set(doc['content'])}
 			keyValues = {}
 			for stem in distContent:
-				keyValues[stem] = round(document_score([stem], doc['id'], index), 5)
+				keyValues[stem] = round(document_score([stem], doc['id'], index, doc['words']), 8)
 				
 			foo = sorted(keyValues.items(), key=lambda x: x[1], reverse = True)
 			keywords.append(foo)

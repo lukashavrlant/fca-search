@@ -9,20 +9,20 @@ def inverseDF(term, index):
 	except ZeroDivisionError:
 		return 0
 
-def tf_idf(term, docID, index):
+def tf_idf(term, docID, index, wordsCount):
 	idf = inverseDF(term, index)
-	tf = index.term_frequency(term, docID)
+	tf = index.term_frequency(term, docID, wordsCount)
 	return idf * tf
 
-def document_score(terms, docID, index):
+def document_score(terms, docID, index, wordsCount):
 	res = 0
 	for term in terms:
-		res += tf_idf(term, docID, index)
+		res += tf_idf(term, docID, index, wordsCount)
 	return res
 
 def score(terms, documents, index):
 	for doc in documents:
-		doc['score'] = document_score(terms, doc['id'], index)
+		doc['score'] = document_score(terms, doc['id'], index, doc['words'])
 	
 	rankTitleAndURL(terms, documents)
 	return documents
@@ -33,9 +33,7 @@ def rankTitleAndURL(terms, documents):
 		url = normalize(doc['url'])
 
 		for term in terms:
-			if term in title:
-				doc['score'] *= 2
-			if term in url:
+			if term in title or term in url:
 				doc['score'] *= 2
 
 def normalize(text):
