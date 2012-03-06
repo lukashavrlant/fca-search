@@ -9,7 +9,7 @@ from preprocess.index_manager import IndexManager
 from other.stopwatch import Stopwatch
 from other.settings import Settings
 import json
-from other.interface import searchQuery
+from other.interface import searchQuery, buildIndex
 
 ## functions 
 def printSearch(searchResults, stopwatch):
@@ -66,6 +66,7 @@ def getFcaExt(searchResults):
 	spellcheck = searchResults['suggestions']
 	
 	return gen, sib, spec, meta, spellcheck
+	
 
 def search(databaseName, query, outFormat, stopwatch):
 	searchResults = searchQuery(databaseName, query, stopwatch)
@@ -75,19 +76,7 @@ def search(databaseName, query, outFormat, stopwatch):
 		printSearch(searchResults, stopwatch)
 	elif outFormat == 'json':
 		printJson(searchResults, stopwatch)
-	
-def buildIndex(databaseName, linksSourcePath, maxLinksToDownload, currSettings):
-	settings = Settings(DATA_FOLDER + SETTINGS_FILE)
-	for key, value in currSettings.items():
-		settings.set(key, value)
 
-	database = DATABASES_FOLDER + databaseName + '/'
-	links = readfile(linksSourcePath).splitlines()
-	if maxLinksToDownload:
-		links = links[:int(maxLinksToDownload)]
-	indexManager = IndexManager(settings)
-	indexManager.shutUp = False
-	indexManager.build(links, database, getStopWords())
 	
 def rebuildIndex(databaseName, newLinks = []):
 	database = DATABASES_FOLDER + databaseName + '/'
@@ -123,7 +112,7 @@ if __name__ == '__main__':
 			databaseName = opts['-b']
 			linksSourcePath = opts.get('-p', DATA_FOLDER + opts['-b'] + '.txt')
 			maxLinksToDownload = int(opts.get('-m', 0))
-			buildIndex(databaseName, linksSourcePath, maxLinksToDownload, currSettings)
+			buildIndex(databaseName, linksSourcePath, currSettings)
 		
 		# refresh index
 		elif '-r' in opts:
