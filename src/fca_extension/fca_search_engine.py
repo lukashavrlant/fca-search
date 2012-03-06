@@ -18,6 +18,7 @@ class FCASearchEngine:
 		self.settings = settings
 		self.applySettings(settings)
 		self.stopwatch = None
+		self.siblings = {}
 
 	def applySettings(self, settings):
 		getter = settings.get
@@ -44,8 +45,6 @@ class FCASearchEngine:
 
 		lowerN, upperN = self.getLowerUpper(modContext, modSearchConcept)
 		self.totalConcepts = set(lowerN | upperN)
-		# print(modTerms)
-#		self.fuzzySearch(query, modContext.ids2attrs(modSearchConcept.intent))
 
 		res = {'origin':originResults, 
 				'specialization':self.getSpecialization(lowerN, modContext, terms, modSearchConcept), 
@@ -54,9 +53,19 @@ class FCASearchEngine:
 				'meta' : {'objects' : modContext.height, 'attributes' : modContext.width},
 				'suggestions' : self.getSuggestions(wordsTerms, len(originResults['documents']))}
 
+		namedLower = self.getNamedIntents(lowerN, modContext)
+		namedUpper = self.getNamedIntents(upperN, modContext)
+		namedSearchConcept = self.getNamedIntents([modSearchConcept], modContext)[0]
+		namedSiblings = self.getNamedIntents(self.siblings, modContext)
+	
+		res['lattice'] = {'lower' : namedLower, 'upper' : namedUpper, 'siblings' : namedSiblings, 'concept' : namedSearchConcept}
 		res['meta'].update({'lower' : len(lowerN), 'upper' : len(upperN), 'neighbor' : len(self.totalConcepts)})
-
 		return res
+
+	def getNamedIntents(self, concepts, context):
+		intents = [set(x.intent) for x in concepts]
+		return [list(context.ids2attrs(x)) for x in intents]
+
 
 	def getSuggestions(self, words, totalResults):
 		if totalResults == 0:
@@ -76,6 +85,7 @@ class FCASearchEngine:
 			right = self._getUppers(lowerN, modContext)
 			self.totalConcepts |= right
 			siblings = (left & right) - {modSearchConcept}
+			self.siblings = siblings
 			
 		rankedSibl = [{'rank': round(x.similarity(modSearchConcept), 3), 'words':x} for x in siblings]
 		rankedSibl = sorted(rankedSibl, key=lambda x: x['rank'], reverse = True)

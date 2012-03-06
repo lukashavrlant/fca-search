@@ -32,7 +32,7 @@ def printSearch(searchResults, stopwatch):
 	
 			print(str(pos+1).ljust(maxPos), url.ljust(maxURL), keywords.ljust(maxKeywords), score.ljust(maxScore), wordscount)
 	
-	gen, sib, spec, meta, sugg = getFcaExt(searchResults)
+	gen, sib, spec, meta, sugg, lattice = getFcaExt(searchResults)
 	if stopwatch:
 		meta['time'] = str(round(stopwatch.total, 4))
 	
@@ -48,14 +48,14 @@ def printSearch(searchResults, stopwatch):
 
 	
 def printJson(searchResults, stopwatch):
-	gen, sib, spec, meta, spellcheck = getFcaExt(searchResults)
+	gen, sib, spec, meta, spellcheck, lattice = getFcaExt(searchResults)
 	
 	results = searchResults['origin']
 	documents = results['documents']
 	fca = {'gen':gen, 'spec':spec, 'sib':sib}
 	if stopwatch:
 		meta['time'] = stopwatch.total
-	data = {'documents':documents, 'fca': fca, 'meta' : meta, 'spellcheck':spellcheck}
+	data = {'documents':documents, 'fca': fca, 'meta' : meta, 'spellcheck':spellcheck, 'lattice':lattice}
 	jsonData = json.dumps(data)
 	print(jsonData)
 	
@@ -65,8 +65,9 @@ def getFcaExt(searchResults):
 	sib = searchResults['siblings']
 	meta = searchResults['meta']
 	spellcheck = searchResults['suggestions']
+	lattice = searchResults['lattice']
 	
-	return gen, sib, spec, meta, spellcheck
+	return gen, sib, spec, meta, spellcheck, lattice
 
 
 def search(databaseName, query, outFormat, stopwatch):
