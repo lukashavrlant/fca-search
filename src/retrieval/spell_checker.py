@@ -35,7 +35,6 @@ class SpellChecker():
 				return self.oneLetterMissing(word)
 
 	def oneLetterMissing(self, word):
-		print(word)
 		lword = len(word)
 		first = word[0]
 		last = word[len(word)-1]
