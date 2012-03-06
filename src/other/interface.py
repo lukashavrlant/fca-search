@@ -42,9 +42,15 @@ def findDocID(databaseName, URLmatch):
 def documentFrequency(databaseName, word):
 	return getIndex(databaseName).document_frequency(createStem(word))
 
+def documentInfo(databaseName, docID):
+	return getIndex(databaseName).getDocInfo(int(docID))
+
+def getWordCountInDoc(databaseName, word, docID):
+	return getIndex(databaseName).getTermCountInDoc(createStem(word), int(docID))
 	
 def wordInDocFrequency(databaseName, word, docID):
-	return getIndex(databaseName).term_frequency(createStem(word), int(docID))
+	wordscount = documentInfo(databaseName, docID)['words']
+	return getIndex(databaseName).term_frequency(createStem(word), int(docID), wordscount)
 
 def wordFrequency(databaseName, word):
 	return getIndex(databaseName).totalTermFrequency(createStem(word))

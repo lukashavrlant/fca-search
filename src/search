@@ -94,12 +94,13 @@ if __name__ == '__main__':
 	longOptions = ['keylen', 'keywordsCount', 'keyScoreLimit', 'charset',
 					'minKeywords', 'dynamicKeywords', 'maxKeywords', 
 					'disallowExtensions', 'maxDocumentsInContext', 'maxKeywordsPerDocument',
-					'stem', 'frequency', 'docID', 'findURL', 'findDocID', 'docFrequency']
+					'stem', 'freq', 'docid', 'findURL', 'findDocID', 'docFrequency', 'docinfo',
+					'tf']
 
 	longEqOptions = [x + '=' for x in longOptions]
 	longDashOptions = ["--" + x for x in longOptions]
 
-	parameters = ['links', 'linkscount', 'words']
+	parameters = ['links', 'linkscount', 'words', 'wordscount', 'description', 'title', 'keywords', 'id', 'url']
 	dashParameters = ['--' + x for x in parameters]
 
 	try:
@@ -143,17 +144,36 @@ if __name__ == '__main__':
 				print(len(getAllLinks(databaseName)))
 			elif '--words' in opts:
 				print(getAllWords(databaseName))
-			elif '--frequency' in opts:
-				if '--docID' in opts:
-					print(wordInDocFrequency(databaseName, opts['--frequency'], opts['--docID']))
+			elif '--freq' in opts:
+				if '--docid' in opts:
+					print(getWordCountInDoc(databaseName, opts['--freq'], opts['--docid']))
+				elif '--tf' in opts:
+					print(wordInDocFrequency(databaseName, opts['--freq'], opts['--tf']))
 				else:
-					print(wordFrequency(databaseName, opts['--frequency']))
+					print(wordFrequency(databaseName, opts['--freq']))
 			elif '--findURL' in opts:
 				print(findURL(databaseName, opts['--findURL']))
 			elif '--findDocID' in opts:
 				print(findDocID(databaseName, opts['--findDocID']))
 			elif '--docFrequency' in opts:
 				print(documentFrequency(databaseName, opts['--docFrequency']))
+			elif '--docinfo' in opts:
+				docinfo = documentInfo(databaseName, opts['--docinfo'])
+				if '--wordscount' in opts: 
+					print(docinfo['words'])
+				elif '--title' in opts:
+					print(docinfo['title'])
+				elif '--description' in opts:
+					print(docinfo['description'])
+				elif '--keywords' in opts:
+					print(docinfo['keywords'])
+				elif '--url' in opts:
+					print(docinfo['url'])
+				elif '--id' in opts:
+					print(docinfo['id'])
+				else:
+					print(docinfo)
+				
 
 	except getopt.GetoptError as err:
 		print(err) 

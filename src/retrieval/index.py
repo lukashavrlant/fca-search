@@ -26,6 +26,9 @@ class Index:
 		self.allKeywords = None
 		self.searchedStem = {}
 
+	def getDocInfo(self, docID):
+		return self.documents_info[docID]
+
 	def getAllWords(self):
 		return self.info['allwords']
 
@@ -52,6 +55,10 @@ class Index:
 			except Exception as err:
 				print(err)
 			return stemObject
+
+	def getTermCountInDoc(self, term, docID):
+		documents = self.get_stem_info(term).documents
+		return documents.get(docID, 0)
 	
 	def term_frequency(self, term, documentID, wordsCount):
 		stem = self.get_stem_info(term)
