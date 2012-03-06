@@ -179,15 +179,37 @@ class IndexManager:
 			
 	def _createIndex(self, indexInfo, indexFolder, infoFolder):
 		self._saveIndex(indexInfo['index'], indexFolder)
+
+	def countKeywordsLimit(self, keywordsScore):
+		scores = []
+
+		for ks in keywordsScore:
+			for sc in ks:
+				if sc[1]:
+					scores.append(sc[1])
+
+		scores = sorted(scores)
+		lscores = len(scores)
+
+		cut = int(lscores / 100)
+		cutScores = scores[cut:-cut]
+
+		minScore = cutScores[0]
+		maxScore = cutScores[len(cutScores)-1]
+		diff = maxScore - minScore
+		realLimit = (diff / 100) * self.keyScoreLimit
+		return realLimit
+		
 			
 	def _getDocsInfo(self, indexInfo, folder, infoFolder):
 		documentsInfo = indexInfo['documents']
 		keywordsScore = getKeywords(documentsInfo, Index(folder, self.settings, documentsInfo), self._elapsed)
 		totalKeywords = set()
+		realLimit = self.countKeywordsLimit(keywordsScore)
 			
 		for docInfo, allDocKeywords in zip(documentsInfo, keywordsScore):
 			if self.dynamicKeywords:
-				topKeywords = [x for x in allDocKeywords if x[1] > self.keyScoreLimit][:self.maxKeywords]
+				topKeywords = [x for x in allDocKeywords if x[1] > realLimit][:self.maxKeywords]
 				if len(topKeywords) < self.minKeywords:
 					topKeywords = allDocKeywords[:self.minKeywords]
 			else:
