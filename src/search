@@ -9,7 +9,8 @@ from preprocess.index_manager import IndexManager
 from other.stopwatch import Stopwatch
 from other.settings import Settings
 import json
-from other.interface import searchQuery, buildIndex
+from other.interface import *
+from common.czech_stemmer import createStem
 
 ## functions 
 def printSearch(searchResults, stopwatch):
@@ -66,7 +67,7 @@ def getFcaExt(searchResults):
 	spellcheck = searchResults['suggestions']
 	
 	return gen, sib, spec, meta, spellcheck
-	
+
 
 def search(databaseName, query, outFormat, stopwatch):
 	searchResults = searchQuery(databaseName, query, stopwatch)
@@ -92,13 +93,17 @@ if __name__ == '__main__':
 	stopwatch = Stopwatch().start()
 	longOptions = ['keylen', 'keywordsCount', 'keyScoreLimit', 'charset',
 					'minKeywords', 'dynamicKeywords', 'maxKeywords', 
-					'disallowExtensions', 'maxDocumentsInContext', 'maxKeywordsPerDocument']
+					'disallowExtensions', 'maxDocumentsInContext', 'maxKeywordsPerDocument',
+					'stem', 'frequency', 'docID', 'findURL', 'findDocID', 'docFrequency']
 
 	longEqOptions = [x + '=' for x in longOptions]
 	longDashOptions = ["--" + x for x in longOptions]
 
+	parameters = ['links', 'linkscount', 'words']
+	dashParameters = ['--' + x for x in parameters]
+
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:p:f:m:r:a:t', longEqOptions)
+		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:p:f:m:r:a:t', longEqOptions + parameters)
 		opts = dict(opts)
 		currSettings = {k[2:]:v for k,v in opts.items() if k in longDashOptions}
 		
@@ -124,6 +129,32 @@ if __name__ == '__main__':
 			linksSourcePath = opts.get('-p')
 			links = readfile(linksSourcePath).splitlines()
 			rebuildIndex(databaseName, links)
+
+		# stemmer
+		elif '--stem' in opts:
+			print(createStem(opts['--stem']))
+
+		# API call
+		elif '-d' in opts:
+			databaseName = opts['-d']
+			if '--links' in opts:
+				print(getAllLinks(databaseName))
+			elif '--linkscount' in opts:
+				print(len(getAllLinks(databaseName)))
+			elif '--words' in opts:
+				print(getAllWords(databaseName))
+			elif '--frequency' in opts:
+				if '--docID' in opts:
+					print(wordInDocFrequency(databaseName, opts['--frequency'], opts['--docID']))
+				else:
+					print(wordFrequency(databaseName, opts['--frequency']))
+			elif '--findURL' in opts:
+				print(findURL(databaseName, opts['--findURL']))
+			elif '--findDocID' in opts:
+				print(findDocID(databaseName, opts['--findDocID']))
+			elif '--docFrequency' in opts:
+				print(documentFrequency(databaseName, opts['--docFrequency']))
+
 	except getopt.GetoptError as err:
 		print(err) 
 		sys.exit(2)
