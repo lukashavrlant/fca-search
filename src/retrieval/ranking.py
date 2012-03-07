@@ -24,10 +24,10 @@ def score(terms, documents, index):
 	for doc in documents:
 		doc['score'] = document_score(terms, doc['id'], index, doc['words'])
 	
-	rankTitleAndURL(terms, documents)
+	rankMetaInfo(terms, documents)
 	return documents
 
-def rankTitleAndURL(terms, documents):
+def rankMetaInfo(terms, documents):
 	for doc in documents:
 		title = normalize(doc['title'])
 		url = normalize(doc['url'])
