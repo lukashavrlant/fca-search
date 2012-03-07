@@ -58,7 +58,6 @@ class FCASearchEngine:
 		namedSearchConcept = self.getNamedIntents([modSearchConcept], modContext)[0]
 		namedSiblings = self.getNamedIntents(self.siblings, modContext)
 		namedTrash = self.getNamedIntents(self.totalConcepts - (upperN | lowerN | self.siblings | {modSearchConcept}), modContext)
-		# print(namedTrash)
 	
 		res['lattice'] = {'lower' : namedLower, 'upper' : namedUpper, 'siblings' : namedSiblings, 'concept' : namedSearchConcept, 'trash' : namedTrash}
 		res['meta'].update({'lower' : len(lowerN), 'upper' : len(upperN), 'neighbor' : len(self.totalConcepts)})
