@@ -7,17 +7,17 @@ from retrieval.index import Index
 from fca_extension.fca_search_engine import FCASearchEngine
 from other.data import getStopWords
 from common.io import readfile
-from common.czech_stemmer import createStem
+from common.string import createStem
 
-def searchQuery(databaseName, query, stopwatch = None):
+def searchQuery(databaseName, query, lang, stopwatch = None):
 	index, settings = getIndexAndSettings(databaseName)
 	searchEngine = SearchEngine(index, getStopWords())
 	fca = FCASearchEngine(searchEngine, index, settings)
-	searchResults = fca.search(query)
+	searchResults = fca.search(query, lang)
 	return searchResults
 
 
-def buildIndex(databaseName, linksSourcePath, currSettings):
+def buildIndex(databaseName, linksSourcePath, currSettings, lang):
 	settings = Settings(DATA_FOLDER + SETTINGS_FILE)
 	for key, value in currSettings.items():
 		settings.set(key, value)
@@ -26,7 +26,7 @@ def buildIndex(databaseName, linksSourcePath, currSettings):
 	links = readfile(linksSourcePath).splitlines()
 	indexManager = IndexManager(settings)
 	indexManager.shutUp = False
-	indexManager.build(links, database, getStopWords())
+	indexManager.build(links, database, getStopWords(), lang)
 
 def findURL(databaseName, match):
 	links = getAllLinks(databaseName)
@@ -40,20 +40,20 @@ def findDocID(databaseName, URLmatch):
 	return dict(links)
 
 def documentFrequency(databaseName, word):
-	return getIndex(databaseName).document_frequency(createStem(word))
+	return getIndex(databaseName).document_frequency(createStem(word, 'cs'))
 
 def documentInfo(databaseName, docID):
 	return getIndex(databaseName).getDocInfo(int(docID))
 
 def getWordCountInDoc(databaseName, word, docID):
-	return getIndex(databaseName).getTermCountInDoc(createStem(word), int(docID))
+	return getIndex(databaseName).getTermCountInDoc(createStem(word, 'cs'), int(docID))
 	
 def wordInDocFrequency(databaseName, word, docID):
 	wordscount = documentInfo(databaseName, docID)['words']
-	return getIndex(databaseName).term_frequency(createStem(word), int(docID), wordscount)
+	return getIndex(databaseName).term_frequency(createStem(word, 'cs'), int(docID), wordscount)
 
 def wordFrequency(databaseName, word):
-	return getIndex(databaseName).totalTermFrequency(createStem(word))
+	return getIndex(databaseName).totalTermFrequency(createStem(word, 'cs'))
 
 def getAllWords(databaseName):
 	return getIndex(databaseName).getAllWords()

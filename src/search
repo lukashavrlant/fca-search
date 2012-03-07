@@ -10,7 +10,7 @@ from other.stopwatch import Stopwatch
 from other.settings import Settings
 import json
 from other.interface import *
-from common.czech_stemmer import createStem
+from common.string import createStem
 
 ## functions 
 def printSearch(searchResults, stopwatch):
@@ -70,8 +70,8 @@ def getFcaExt(searchResults):
 	return gen, sib, spec, meta, spellcheck, lattice
 
 
-def search(databaseName, query, outFormat, stopwatch):
-	searchResults = searchQuery(databaseName, query, stopwatch)
+def search(databaseName, query, outFormat, stopwatch, lang):
+	searchResults = searchQuery(databaseName, query, lang, stopwatch)
 	if stopwatch:
 		stopwatch.elapsed('Done')
 	if outFormat == 'console':
@@ -96,7 +96,7 @@ if __name__ == '__main__':
 					'minKeywords', 'dynamicKeywords', 'maxKeywords', 
 					'disallowExtensions', 'maxDocumentsInContext', 'maxKeywordsPerDocument',
 					'stem', 'freq', 'docid', 'findURL', 'finddocid', 'docFrequency', 'docinfo',
-					'tf']
+					'tf', 'lang']
 
 	longEqOptions = [x + '=' for x in longOptions]
 	longDashOptions = ["--" + x for x in longOptions]
@@ -112,14 +112,15 @@ if __name__ == '__main__':
 		# search in database
 		if '-q' in opts:
 			outFormat = opts.get('-f', 'console')
-			search(opts['-d'], opts['-q'], outFormat, stopwatch if '-t' not in opts else None)
+			lang = opts.get('--lang', 'cs')
+			search(opts['-d'], opts['-q'], outFormat, stopwatch if '-t' not in opts else None, lang)
 				
 		# build index
 		elif '-b' in opts:
 			databaseName = opts['-b']
 			linksSourcePath = opts.get('-p', DATA_FOLDER + opts['-b'] + '.txt')
-			maxLinksToDownload = int(opts.get('-m', 0))
-			buildIndex(databaseName, linksSourcePath, currSettings)
+			lang = opts.get('--lang', 'cs')
+			buildIndex(databaseName, linksSourcePath, currSettings, lang)
 		
 		# refresh index
 		elif '-r' in opts:
@@ -134,7 +135,7 @@ if __name__ == '__main__':
 
 		# stemmer
 		elif '--stem' in opts:
-			print(createStem(opts['--stem']))
+			print(createStem(opts['--stem'], 'cs'))
 
 		# API call
 		elif '-d' in opts:

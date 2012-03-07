@@ -20,18 +20,18 @@ def document_score(terms, docID, index, wordsCount):
 		res += tf_idf(term, docID, index, wordsCount)
 	return res
 
-def score(terms, documents, index):
+def score(terms, documents, index, lang):
 	for doc in documents:
 		doc['score'] = document_score(terms, doc['id'], index, doc['words'])
 	
-	rankMetaInfo(terms, documents)
+	rankMetaInfo(terms, documents, lang)
 	return documents
 
-def rankMetaInfo(terms, documents):
+def rankMetaInfo(terms, documents, lang):
 	for doc in documents:
-		title = normalize(doc['title'])
-		url = normalize(doc['url'])
-		description = normalize(doc['description'])
+		title = normalize(doc['title'], lang)
+		url = normalize(doc['url'], lang)
+		description = normalize(doc['description'], lang)
 
 		for term in terms:
 			if term in title or term in url:
@@ -40,5 +40,5 @@ def rankMetaInfo(terms, documents):
 			if term in description:
 				doc['score'] *= 2
 
-def normalize(text):
-	return stemAndRemoveAccents(towords(normalize_text(text)))
+def normalize(text, lang):
+	return stemAndRemoveAccents(towords(normalize_text(text)), lang)

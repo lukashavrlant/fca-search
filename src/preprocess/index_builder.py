@@ -32,11 +32,11 @@ def groupByKeylen(database, keylen):
 			dic[key] = [record]
 	return dic
 
-def getKeywords(documents, index, elapsed):
+def getKeywords(documents, index, elapsed, lang):
 		keywords = []
 		for doc in documents:
 			elapsed('getting keywords from ' + doc['url'])
-			distContent = {getstem(x) for x in set(doc['content'])}
+			distContent = {getstem(x, lang) for x in set(doc['content'])}
 			keyValues = {}
 			for stem in distContent:
 				keyValues[stem] = round(document_score([stem], doc['id'], index, doc['words']), 8)
@@ -45,7 +45,7 @@ def getKeywords(documents, index, elapsed):
 			keywords.append(foo)
 		return keywords
 
-def toIndex(documents, stopwords, keylen, elapsed = nothing):
+def toIndex(documents, stopwords, keylen, lang, elapsed = nothing):
 	htmlrem = HTMLRemover()	
 	compiledDocuments = []
 	docID = 0
@@ -79,7 +79,7 @@ def toIndex(documents, stopwords, keylen, elapsed = nothing):
 				allRealWords |= stripAccents(words)
 
 				compiledDocuments.append({
-						'content':stemAndRemoveAccents(words), 
+						'content':stemAndRemoveAccents(words, lang), 
 						'title':title,
 						'url':doc['url'], 
 						'id':docID, 

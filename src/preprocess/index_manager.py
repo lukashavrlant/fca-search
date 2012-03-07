@@ -6,7 +6,7 @@ from other.constants import DOCUMENT_INFO_NAME, STEMSDICT_NAME,	KEYWORDSINDOCUME
 	CHMOD_INDEX, SCORES_TABLE, TEMP_FOLDER, SETTINGS_FILE, INDEX_FOLDER_NAME, INFO_FOLDER_NAME
 from retrieval.index import Index
 import os
-from common.czech_stemmer import wordCounter, savedStems
+from common.string import wordCounter, savedStems
 from common.string import strip_accents
 from other.stopwatch import Stopwatch
 import shelve
@@ -27,12 +27,12 @@ class IndexManager:
 		links = list(set(newLinks) | set(oldLinks))
 		self.build(links, folder, stopwords)
 		
-	def build(self, urls, folder, stopwords):
+	def build(self, urls, folder, stopwords, lang):
 		"Builds an index in 'folder'"
 		self.deleteFolder(folder)
 		watcher = Stopwatch()
 		watcher.start()
-		self._build(urls, folder, stopwords)
+		self._build(urls, folder, stopwords, lang)
 		watcher.elapsed('done')
 		# print(watcher)
 
@@ -57,7 +57,7 @@ class IndexManager:
 		if not self.shutUp:
 			print(status)
 			
-	def _build(self, urls, folder, stopwords):
+	def _build(self, urls, folder, stopwords, lang):
 		indexFolder = folder + INDEX_FOLDER_NAME
 		infoFolder = folder + INFO_FOLDER_NAME
 		
@@ -68,11 +68,11 @@ class IndexManager:
 				raise Exception('No documents downloaded')
 
 			infoDtb = shelve.open(infoFolder + 'info') 
-			indexInfo = toIndex(sites, stopwords, self.keylen, self._elapsed)
+			indexInfo = toIndex(sites, stopwords, self.keylen, lang, self._elapsed)
 			self._createIndex(indexInfo, indexFolder, infoFolder)
 			
 			self._elapsed('Creating documents info and keywords...')
-			metadata, scoresTable = self._getDocsInfo(indexInfo, folder, infoFolder)
+			metadata, scoresTable = self._getDocsInfo(indexInfo, folder, infoFolder, lang)
 			
 			infoDtb[DOCUMENT_INFO_NAME] = metadata 
 			infoDtb[SCORES_TABLE] = scoresTable
@@ -201,9 +201,9 @@ class IndexManager:
 		return realLimit
 		
 			
-	def _getDocsInfo(self, indexInfo, folder, infoFolder):
+	def _getDocsInfo(self, indexInfo, folder, infoFolder, lang):
 		documentsInfo = indexInfo['documents']
-		keywordsScore = getKeywords(documentsInfo, Index(folder, self.settings, documentsInfo), self._elapsed)
+		keywordsScore = getKeywords(documentsInfo, Index(folder, self.settings, documentsInfo), self._elapsed, lang)
 		totalKeywords = set()
 		realLimit = self.countKeywordsLimit(keywordsScore)
 			

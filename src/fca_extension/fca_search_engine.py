@@ -5,7 +5,6 @@ from common.io import trySaveFile
 from other.constants import DATA_FOLDER
 from fuzzy.fca.fuzzy_concept import FuzzyConcept
 from fuzzy.FuzzySet import FuzzySet
-from common.czech_stemmer import createStem
 from retrieval.spell_checker import SpellChecker
 from common.string import normalizeWord
 import math
@@ -26,18 +25,18 @@ class FCASearchEngine:
 		self.maxKeywords = getter('maxKeywordsPerDocument')
 		
 
-	def search(self, query, nostem = False):
+	def search(self, query, lang, nostem = False):
 		if nostem:
-			originResults = self.engine.nostemSearch(query)
+			originResults = self.engine.nostemSearch(query, lang)
 		else:
-			originResults = self.engine.search(query)	
+			originResults = self.engine.search(query, lang)	
 		terms = originResults['terms']
 		wordsTerms = originResults['wordsTerms']
 		
 		queryStems = {normalizeWord(x):x for x in wordsTerms}
 		
 		### Modify context
-		modResult = self.engine.nostemSearch(' OR '.join(terms))
+		modResult = self.engine.nostemSearch(' OR '.join(terms), lang)
 		modDoc, modTerms = self._getDocsAndTerms(modResult)
 		modContext = getContextFromSR(modDoc, modTerms, self.index.contains_term, self.maxKeywords)		
 		modAttrsID = modContext.attrs2ids(terms)

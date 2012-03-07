@@ -24,7 +24,8 @@ class BooleanParser:
 	def __init__(self, stem = True):
 		self.stem = stem
 	
-	def parse(self, query, stopwords = []):
+	def parse(self, query, lang, stopwords = []):
+		self.lang = lang
 		tree = self._pure_parse(query)
 		tree = self._simplify(tree, stopwords)
 		return self._query_to_stems(tree)
@@ -47,7 +48,7 @@ class BooleanParser:
 			return query
 		else:
 			if query and self.stem:
-				return getstem(query)
+				return getstem(query, self.lang)
 			else:
 				return query
 	

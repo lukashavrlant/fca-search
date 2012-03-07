@@ -7,24 +7,8 @@ Ported from the Java implementation available at:
 '''
 import re
 import sys
-from collections import Counter
 
-savedStems = {}
-wordCounter = Counter()
-
-def createStem(word, save=False, aggressive=False):
-    if save:
-        try:
-            stem = savedStems[word]
-        except Exception:
-            stem = cz_stem(word, aggressive)
-            savedStems[word] = stem
-        wordCounter[word] += 1
-        return stem
-    else:
-        return cz_stem(word, aggressive)
-
-def cz_stem(word, aggressive=False):
+def cs_stem(word, aggressive=False):
     if not re.match("^\\w+$", word):
         return word
     if not word.islower() and not word.istitle() and not word.isupper():
