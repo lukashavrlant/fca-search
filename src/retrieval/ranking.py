@@ -31,9 +31,13 @@ def rankMetaInfo(terms, documents):
 	for doc in documents:
 		title = normalize(doc['title'])
 		url = normalize(doc['url'])
+		description = normalize(doc['description'])
 
 		for term in terms:
 			if term in title or term in url:
+				doc['score'] *= 3
+
+			if term in description:
 				doc['score'] *= 2
 
 def normalize(text):
