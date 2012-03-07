@@ -18,7 +18,7 @@ class FCASearchEngine:
 		self.settings = settings
 		self.applySettings(settings)
 		self.stopwatch = None
-		self.siblings = {}
+		self.siblings = set()
 
 	def applySettings(self, settings):
 		getter = settings.get
@@ -57,14 +57,19 @@ class FCASearchEngine:
 		namedUpper = self.getNamedIntents(upperN, modContext)
 		namedSearchConcept = self.getNamedIntents([modSearchConcept], modContext)[0]
 		namedSiblings = self.getNamedIntents(self.siblings, modContext)
+		namedTrash = self.getNamedIntents(self.totalConcepts - (upperN | lowerN | self.siblings | {modSearchConcept}), modContext)
+		# print(namedTrash)
 	
-		res['lattice'] = {'lower' : namedLower, 'upper' : namedUpper, 'siblings' : namedSiblings, 'concept' : namedSearchConcept}
+		res['lattice'] = {'lower' : namedLower, 'upper' : namedUpper, 'siblings' : namedSiblings, 'concept' : namedSearchConcept, 'trash' : namedTrash}
 		res['meta'].update({'lower' : len(lowerN), 'upper' : len(upperN), 'neighbor' : len(self.totalConcepts)})
 		return res
 
 	def getNamedIntents(self, concepts, context):
 		intents = [set(x.intent) for x in concepts]
-		return [list(context.ids2attrs(x)) for x in intents]
+		intents = [context.ids2attrs(x) for x in intents]
+		intents = self._intents2words(intents)
+		intents = list(map(list, intents))
+		return intents
 
 
 	def getSuggestions(self, words, totalResults):
