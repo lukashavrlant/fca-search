@@ -112,7 +112,7 @@ if __name__ == '__main__':
 		# search in database
 		if '-q' in opts:
 			outFormat = opts.get('-f', 'console')
-			lang = opts.get('--lang', 'cs')
+			lang = opts.get('--lang', False)
 			search(opts['-d'], opts['-q'], outFormat, stopwatch if '-t' not in opts else None, lang)
 				
 		# build index
@@ -135,7 +135,7 @@ if __name__ == '__main__':
 
 		# stemmer
 		elif '--stem' in opts:
-			print(createStem(opts['--stem'], 'cs'))
+			print(createStem(opts['--stem'], opts.get('--lang', 'cs')))
 
 		# API call
 		elif '-d' in opts:

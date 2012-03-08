@@ -33,7 +33,7 @@ class FCASearchEngine:
 		terms = originResults['terms']
 		wordsTerms = originResults['wordsTerms']
 		
-		queryStems = {normalizeWord(x):x for x in wordsTerms}
+		queryStems = {normalizeWord(x, lang):x for x in wordsTerms}
 		
 		### Modify context
 		modResult = self.engine.nostemSearch(' OR '.join(terms), lang)

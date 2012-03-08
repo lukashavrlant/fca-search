@@ -84,8 +84,8 @@ def normalizePDF(text):
 	
 	return text
 
-def normalizeWord(word):
-	word = strip_accents(createStem(word, 'cs'))
+def normalizeWord(word, lang):
+	word = strip_accents(createStem(word, lang))
 	word = word.lower()
 	return word
 

@@ -13,6 +13,8 @@ def searchQuery(databaseName, query, lang, stopwatch = None):
 	index, settings = getIndexAndSettings(databaseName)
 	searchEngine = SearchEngine(index, getStopWords())
 	fca = FCASearchEngine(searchEngine, index, settings)
+	if not lang:
+		lang = settings.get('lang')
 	searchResults = fca.search(query, lang)
 	return searchResults
 
