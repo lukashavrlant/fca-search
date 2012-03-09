@@ -1,6 +1,6 @@
 from retrieval.search_engine import SearchEngine
 from other.data import getStopWords
-from other.constants import DATABASES_FOLDER, DATA_FOLDER, SETTINGS_FILE
+from other.constants import DATABASES_FOLDER, SETTINGS_FILE, LINKS_FOLDER
 from retrieval.index import Index
 from fca_extension.fca_search_engine import FCASearchEngine
 import getopt, sys
@@ -118,7 +118,7 @@ if __name__ == '__main__':
 		# build index
 		elif '-b' in opts:
 			databaseName = opts['-b']
-			linksSourcePath = opts.get('-p', DATA_FOLDER + opts['-b'] + '.txt')
+			linksSourcePath = opts.get('-p', LINKS_FOLDER + opts['-b'] + '.txt')
 			lang = opts.get('--lang', 'cs')
 			buildIndex(databaseName, linksSourcePath, currSettings, lang)
 		

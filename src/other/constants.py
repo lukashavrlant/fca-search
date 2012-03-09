@@ -6,6 +6,7 @@ LOCALHOST = True if 'lukashavrlant' in __file__ else False
 ROOT_FOLDER = os.path.realpath(__file__).replace('src/other/constants.py', '')
 FILES_FOLDER = ROOT_FOLDER + 'files/'
 DATA_FOLDER = FILES_FOLDER + 'data/'
+LINKS_FOLDER = FILES_FOLDER + 'links/'
 TEST_FOLDER = FILES_FOLDER + 'tests/'
 DATABASES_FOLDER = FILES_FOLDER + 'databases/'
 TEMP_FOLDER = FILES_FOLDER + 'temp/'
