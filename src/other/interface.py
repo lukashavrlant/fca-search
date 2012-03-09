@@ -45,7 +45,10 @@ def documentFrequency(databaseName, word):
 	return getIndex(databaseName).document_frequency(createStem(word, 'cs'))
 
 def documentInfo(databaseName, docID):
-	return getIndex(databaseName).getDocInfo(int(docID))
+	index = getIndex(databaseName)
+	res = index.getDocInfo(int(docID))
+	res['keywords'] = {index.stem2word(a) : b for a,b in res['keywords']}
+	return res
 
 def getWordCountInDoc(databaseName, word, docID):
 	return getIndex(databaseName).getTermCountInDoc(createStem(word, 'cs'), int(docID))
