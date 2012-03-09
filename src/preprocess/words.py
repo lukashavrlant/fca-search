@@ -9,9 +9,6 @@ def towords(text):
 def remstopwords(words, stopwords):
 	return filter(lambda x: not(x in stopwords), words)
 
-def getcounter(words):
-	return Counter(words)
-
 def tostems(words, lang):
 	return map(lambda x: createStem(x, lang, save=True), words)
 
