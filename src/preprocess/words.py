@@ -3,11 +3,6 @@ from collections import Counter
 from common.string import createStem
 from common.string import strip_accents, normalize_text
 
-
-def get_words(text, lang, stopwords = []):
-	funs = [lambda x: tostems(x, lang), lambda x: remstopwords(x, stopwords), lambda x: tostems(x, lang), glmap(strip_accents)]
-	return sreduce(funs, text)
-
 def towords(text):
 	return text.split(' ')
 
