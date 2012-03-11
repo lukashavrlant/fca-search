@@ -7,7 +7,8 @@ def towords(text):
 	return text.split(' ')
 
 def remstopwords(words, stopwords):
-	return filter(lambda x: not(x in stopwords), words)
+	return (x for x in words if len(x) > 2 and x not in stopwords)
+
 
 def tostems(words, lang):
 	return map(lambda x: createStem(x, lang, save=True), words)
@@ -18,7 +19,7 @@ def getstem(word, lang):
 	stem = strip_accents(stem)
 	return stem
 
-def getRealWords(text, stopwords = []):
+def getRealWords(text, stopwords):
 	funs = [towords, lambda x: remstopwords(x, stopwords), glmap(strip_accents)]
 	return sreduce(funs, text)
 

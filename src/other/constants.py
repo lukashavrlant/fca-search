@@ -19,7 +19,7 @@ INFO_FOLDER_NAME = ''
 # files
 DOCUMENT_INFO_NAME = 'documents_info'
 ALL_WORDS_NAME = 'allwords.txt'
-STOPWORDS_NAME = 'stopwords.txt'
+STOPWORDS_NAME = 'stopwords'
 STEMSDICT_NAME = 'stemsdict'
 KEYWORDSINDOCUMENTS_NAME = 'keywordsInDocuments'
 SCORES_TABLE = 'scoresTable'

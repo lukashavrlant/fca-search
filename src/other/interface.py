@@ -11,10 +11,11 @@ from common.string import createStem
 
 def searchQuery(databaseName, query, lang, stopwatch = None):
 	index, settings = getIndexAndSettings(databaseName)
-	searchEngine = SearchEngine(index, getStopWords())
-	fca = FCASearchEngine(searchEngine, index, settings)
 	if not lang:
 		lang = settings.get('lang')
+		
+	searchEngine = SearchEngine(index, getStopWords(lang))
+	fca = FCASearchEngine(searchEngine, index, settings)
 	searchResults = fca.search(query, lang)
 	return searchResults
 
@@ -28,7 +29,7 @@ def buildIndex(databaseName, linksSourcePath, currSettings, lang):
 	links = readfile(linksSourcePath).splitlines()
 	indexManager = IndexManager(settings)
 	indexManager.shutUp = False
-	indexManager.build(links, database, getStopWords(), lang)
+	indexManager.build(links, database, getStopWords(lang), lang)
 
 def findURL(databaseName, match):
 	links = getAllLinks(databaseName)

@@ -3,8 +3,8 @@ from common.io import readfile
 
 _data = {}
 
-def getStopWords():
-	return _cache_result('stopwords', lambda: readfile(DATA_FOLDER + STOPWORDS_NAME).split() + list('abcdefghijklmnopqrstuvwxyz'))
+def getStopWords(lang):
+	return _cache_result('stopwords', lambda: readfile(DATA_FOLDER + STOPWORDS_NAME + "." + lang + ".txt").split() + list('abcdefghijklmnopqrstuvwxyz'))
 	
 def _cache_result(key, getValue):
 	try:
