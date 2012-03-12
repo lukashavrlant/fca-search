@@ -6,7 +6,7 @@ from other.constants import DOCUMENT_INFO_NAME, STEMSDICT_NAME,	KEYWORDSINDOCUME
 	CHMOD_INDEX, SCORES_TABLE, TEMP_FOLDER, SETTINGS_FILE, INDEX_FOLDER_NAME, INFO_FOLDER_NAME
 from retrieval.index import Index
 import os
-from common.string import wordCounter, savedStems
+from common.string import wordCounter, savedStems, normalizeWord
 from common.string import strip_accents
 from other.stopwatch import Stopwatch
 import shelve
@@ -74,7 +74,6 @@ class IndexManager:
 			self._elapsed('Creating documents info and keywords...')
 			metadata, scoresTable = self._getDocsInfo(indexInfo, folder, infoFolder, lang)
 			
-			infoDtb[DOCUMENT_INFO_NAME] = metadata 
 			infoDtb[SCORES_TABLE] = scoresTable
 			
 			self._elapsed('Creating stems dictionary...')
@@ -85,8 +84,11 @@ class IndexManager:
 			
 			infoDtb['allwords'] = indexInfo['allRealWords']
 
+			self.findDescription(metadata, indexInfo['documents'], lang)
+			infoDtb[DOCUMENT_INFO_NAME] = metadata
 			infoDtb.close()
 			os.chmod(infoFolder + 'info.db', CHMOD_INDEX)
+
 
 			self.settings.save(folder + SETTINGS_FILE)
 			self._elapsed('Done!')
@@ -95,6 +97,37 @@ class IndexManager:
 			print("Filename: {0}".format(err.filename))
 		except Exception as err:
 			print("Error: {0}".format(err))
+
+	def findDescription(self, metadata, sites, lang):
+		for info, content in zip(metadata, sites):
+			if not info['description']:
+				keyword = info['keywords'][0][0]
+				content = content['pureContent']
+				descs = []
+				for part in self.splitContent(content, 3):
+					descs.append(self.findSentence(part, keyword, lang))
+				info['description'] = " … ".join(descs)
+
+	def splitContent(self, content, parts):
+		splitted = []
+		length = int(len(content) / parts)
+
+		for i in range(parts):
+			splitted.append(content[i * length : (i+1)*length])
+
+		return splitted
+
+	def findSentence(self, content, word, lang):
+		index = self.findWordIndex(content, word, lang)
+		if index:
+			return " ".join(content[max(0, index - 5):index+5])
+		else:
+			return ""
+
+	def findWordIndex(self, content, word, lang):
+		for i, w in enumerate(content):
+			if normalizeWord(w, lang) == word:
+				return i
 
 	def filterURL(self, urls):
 		filtered = set()

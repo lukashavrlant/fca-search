@@ -79,6 +79,7 @@ def toIndex(documents, stopwords, keylen, lang, elapsed = nothing):
 				allRealWords |= stripAccents(words)
 
 				compiledDocuments.append({
+						'pureContent':words,
 						'content':stemAndRemoveAccents(words, lang), 
 						'title':title,
 						'url':doc['url'], 
