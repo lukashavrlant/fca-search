@@ -69,7 +69,7 @@ class BooleanParser:
 			else:
 				return ''
 		else:
-			if to_normal_lower(node) in stopwords:
+			if to_normal_lower(node) in stopwords or getstem(node, self.lang) in stopwords:
 				return ''
 			else:
 				return node

@@ -6,9 +6,12 @@ class SpellChecker():
 		self.allWords = {x for x in allWords if x != ''}
 
 	def checkWords(self, words):
-		suggestions = {x:self.check(x) for x in words}
-		suggestions = {k:v for k,v in suggestions.items() if strip_accents(k) != v}
-		return suggestions
+		if words and words[0]:
+			suggestions = {x:self.check(x) for x in words}
+			suggestions = {k:v for k,v in suggestions.items() if strip_accents(k) != v}
+			return suggestions
+		else:
+			return {}
 
 	def check(self, word):
 		word = strip_accents(word)
