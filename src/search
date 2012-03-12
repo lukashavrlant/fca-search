@@ -8,7 +8,7 @@ from common.io import readfile
 from preprocess.index_manager import IndexManager
 from other.stopwatch import Stopwatch
 from other.settings import Settings
-import json
+from json import dumps
 from other.interface import *
 from common.string import createStem
 
@@ -56,7 +56,7 @@ def printJson(searchResults, stopwatch):
 	if stopwatch:
 		meta['time'] = stopwatch.total
 	data = {'documents':documents, 'fca': fca, 'meta' : meta, 'spellcheck':spellcheck, 'lattice':lattice}
-	jsonData = json.dumps(data)
+	jsonData = dumps(data)
 	print(jsonData)
 	
 def getFcaExt(searchResults):
@@ -86,6 +86,9 @@ def rebuildIndex(databaseName, newLinks = []):
 	indexManager = IndexManager(settings)
 	indexManager.shutUp = False
 	indexManager.rebuild(newLinks, database, getStopWords())
+
+def printJSON(data):
+	print(dumps(data))
 	
 	
 ## main
@@ -95,7 +98,7 @@ if __name__ == '__main__':
 	longOptions = ['keylen', 'keywordsCount', 'keyScoreLimit', 'charset',
 					'minKeywords', 'dynamicKeywords', 'maxKeywords', 
 					'disallowExtensions', 'maxDocumentsInContext', 'maxKeywordsPerDocument',
-					'stem', 'freq', 'docid', 'findURL', 'finddocid', 'docFrequency', 'docinfo',
+					'stem', 'freq', 'docid', 'findurl', 'finddocid', 'docfreq', 'docinfo',
 					'tf', 'lang']
 
 	longEqOptions = [x + '=' for x in longOptions]
@@ -146,40 +149,40 @@ if __name__ == '__main__':
 		elif '-d' in opts:
 			databaseName = opts['-d']
 			if '--links' in opts:
-				print(getAllLinks(databaseName))
+				printJSON(getAllLinks(databaseName))
 			elif '--linkscount' in opts:
-				print(len(getAllLinks(databaseName)))
+				printJSON(len(getAllLinks(databaseName)))
 			elif '--words' in opts:
-				print(getAllWords(databaseName))
+				printJSON(getAllWords(databaseName))
 			elif '--freq' in opts:
 				if '--docid' in opts:
-					print(getWordCountInDoc(databaseName, opts['--freq'], opts['--docid']))
+					printJSON(getWordCountInDoc(databaseName, opts['--freq'], opts['--docid']))
 				elif '--tf' in opts:
-					print(wordInDocFrequency(databaseName, opts['--freq'], opts['--tf']))
+					printJSON(wordInDocFrequency(databaseName, opts['--freq'], opts['--tf']))
 				else:
-					print(wordFrequency(databaseName, opts['--freq']))
-			elif '--findURL' in opts:
-				print(findURL(databaseName, opts['--findURL']))
+					printJSON(wordFrequency(databaseName, opts['--freq']))
+			elif '--findurl' in opts:
+				printJSON(findURL(databaseName, opts['--findurl']))
 			elif '--finddocid' in opts:
-				print(findDocID(databaseName, opts['--finddocid']))
-			elif '--docFrequency' in opts:
-				print(documentFrequency(databaseName, opts['--docFrequency']))
+				printJSON(findDocID(databaseName, opts['--finddocid']))
+			elif '--docfreq' in opts:
+				printJSON(documentFrequency(databaseName, opts['--docfreq']))
 			elif '--docinfo' in opts:
 				docinfo = documentInfo(databaseName, opts['--docinfo'])
 				if '--wordscount' in opts: 
-					print(docinfo['words'])
+					printJSON(docinfo['words'])
 				elif '--title' in opts:
-					print(docinfo['title'])
+					printJSON(docinfo['title'])
 				elif '--description' in opts:
-					print(docinfo['description'])
+					printJSON(docinfo['description'])
 				elif '--keywords' in opts:
-					print(docinfo['keywords'])
+					printJSON(docinfo['keywords'])
 				elif '--url' in opts:
-					print(docinfo['url'])
+					printJSON(docinfo['url'])
 				elif '--id' in opts:
-					print(docinfo['id'])
+					printJSON(docinfo['id'])
 				else:
-					print(docinfo)
+					printJSON(docinfo)
 				
 
 	except getopt.GetoptError as err:

@@ -94,7 +94,6 @@ class Index:
 		if not self.stemsDict:
 			self.stemsDict = self.info[STEMSDICT_NAME] 
 
-		# return self.stemsDict.get(stem, queryStems.get(stem, stem))
 		return queryStems.get(stem, self.stemsDict.get(stem, stem))
 			
 	

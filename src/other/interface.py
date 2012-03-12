@@ -8,12 +8,13 @@ from fca_extension.fca_search_engine import FCASearchEngine
 from other.data import getStopWords
 from common.io import readfile
 from common.string import createStem
+from json import dumps
 
 def searchQuery(databaseName, query, lang, stopwatch = None):
 	index, settings = getIndexAndSettings(databaseName)
 	if not lang:
 		lang = settings.get('lang')
-		
+
 	searchEngine = SearchEngine(index, getStopWords(lang))
 	fca = FCASearchEngine(searchEngine, index, settings)
 	searchResults = fca.search(query, lang)
