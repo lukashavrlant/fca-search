@@ -2,9 +2,7 @@ http://www.inf.upol.cz/aktuality
 http://www.inf.upol.cz/aktuality?rok=2009
 http://www.inf.upol.cz/aktuality?rok=2010
 http://www.inf.upol.cz/aktuality?rok=2011
-http://www.inf.upol.cz/aktuality?rok=2011&d=0
 http://www.inf.upol.cz/aktuality?rok=2012
-http://www.inf.upol.cz/aktuality?rok=2012&d=0
 http://www.inf.upol.cz/bakalarska-statni-zkouska
 http://www.inf.upol.cz/bakalarske-prace
 http://www.inf.upol.cz/diplomove-prace
