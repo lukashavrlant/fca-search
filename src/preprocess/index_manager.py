@@ -46,6 +46,7 @@ class IndexManager:
 		self.dynamicKeywords = getter('dynamicKeywords')
 		self.unsupportedFiles = {'.'+x for x in getter('disallowExtensions')}
 		self.charset = getter('charset')
+		self.forceDesc = getter('forceDesc')
 		
 	def deleteFolder(self, path):
 		try:
@@ -84,6 +85,7 @@ class IndexManager:
 			
 			infoDtb['allwords'] = indexInfo['allRealWords']
 
+			self._elapsed('Fixing description')
 			self.findDescription(metadata, indexInfo['documents'], lang)
 			infoDtb[DOCUMENT_INFO_NAME] = metadata
 			infoDtb.close()
@@ -100,7 +102,7 @@ class IndexManager:
 
 	def findDescription(self, metadata, sites, lang):
 		for info, content in zip(metadata, sites):
-			if not info['description']:
+			if not info['description'] or self.forceDesc:
 				keyword = info['keywords'][0][0]
 				content = content['pureContent']
 				descs = []

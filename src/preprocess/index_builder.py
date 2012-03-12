@@ -78,16 +78,17 @@ def toIndex(documents, stopwords, keylen, lang, elapsed = nothing):
 				words = getWordsWithoutStopWords(normalize_text(content), stopwords)
 				allRealWords |= stripAccents(words)
 
-				compiledDocuments.append({
-						'pureContent':words,
-						'content':stemAndRemoveAccents(words, lang), 
-						'title':title,
-						'url':doc['url'], 
-						'id':docID, 
-						'description':description,
-						})
+				if words:
+					compiledDocuments.append({
+							'pureContent':words,
+							'content':stemAndRemoveAccents(words, lang), 
+							'title':title,
+							'url':doc['url'], 
+							'id':docID, 
+							'description':description,
+							})
 
-				docID += 1
+					docID += 1
 		except Exception as err:
 			print('Cannot parse ' + str(doc['url']))
 			print(str(err))

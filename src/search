@@ -102,12 +102,17 @@ if __name__ == '__main__':
 	longDashOptions = ["--" + x for x in longOptions]
 
 	parameters = ['links', 'linkscount', 'words', 'wordscount', 'description', 'title', 'keywords', 'id', 'url']
+	settingsParameters = ['forceDesc']
 	dashParameters = ['--' + x for x in parameters]
 
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:p:f:m:r:a:t', longEqOptions + parameters)
+		opts, args = getopt.getopt(sys.argv[1:], 'd:q:b:p:f:m:r:a:t', longEqOptions + parameters + settingsParameters)
 		opts = dict(opts)
 		currSettings = {k[2:]:v for k,v in opts.items() if k in longDashOptions}
+
+		for par in settingsParameters:
+			if '--'+par in opts:
+				currSettings[par] = True
 		
 		# search in database
 		if '-q' in opts:

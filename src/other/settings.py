@@ -38,5 +38,6 @@ defaultValues = {
 		"maxDocumentsInContext" : 50,
 		"maxKeywordsPerDocument" : 5,
 		"charset" : 'utf-8',
-		"lang" : 'cs'
+		"lang" : 'cs',
+		"forceDesc" : False
 }

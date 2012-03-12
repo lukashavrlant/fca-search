@@ -1,5 +1,4 @@
 http://localhost/data/articles/AdBe_Fcnbdga.pdf
-http://localhost/data/articles/AdBe_Fcnbdga.txt
 http://localhost/data/articles/ADea_Cr.pdf
 http://localhost/data/articles/BaBe_Ksadgks.pdf
 http://localhost/data/articles/BaBe_Ksgks.pdf
@@ -138,7 +137,6 @@ http://localhost/data/articles/KrVychodil09_Dafcfcumrf.pdf
 http://localhost/data/articles/KrVychodil09_Dpdosootfmiap.pdf
 http://localhost/data/articles/KrVychodil10_Stmfipfl.pdf
 http://localhost/data/articles/KuVychodil10_Cofross.pdf
-http://localhost/data/articles/UvodDoInformatiky.pdf
 http://localhost/data/articles/Vychodil05_Cawifhl.pdf
 http://localhost/data/articles/Vychodil05_Faiafolwtes.pdf
 http://localhost/data/articles/Vychodil06_Anocpafl.pdf
