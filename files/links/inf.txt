@@ -13,7 +13,6 @@ http://www.inf.upol.cz/favicon.ico
 http://www.inf.upol.cz/
 http://www.inf.upol.cz/informaticky-seminar
 http://www.inf.upol.cz/kalendar
-http://www.inf.upol.cz/kalendar?d=1
 http://www.inf.upol.cz/kalendar?rok=2010
 http://www.inf.upol.cz/kalendar?rok=2011
 http://www.inf.upol.cz/kalendar?rok=2012
