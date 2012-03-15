@@ -58,16 +58,6 @@ def printJson(searchResults, stopwatch):
 	data = {'documents':documents, 'fca': fca, 'meta' : meta, 'spellcheck':spellcheck, 'lattice':lattice}
 	jsonData = dumps(data)
 	print(jsonData)
-	
-def getFcaExt(searchResults):
-	spec = searchResults['specialization']
-	gen = searchResults['generalization']
-	sib = searchResults['siblings']
-	meta = searchResults['meta']
-	spellcheck = searchResults['suggestions']
-	lattice = searchResults['lattice']
-	
-	return gen, sib, spec, meta, spellcheck, lattice
 
 
 def search(databaseName, query, outFormat, stopwatch, lang):
@@ -99,7 +89,7 @@ if __name__ == '__main__':
 					'minKeywords', 'dynamicKeywords', 'maxKeywords', 
 					'disallowExtensions', 'maxDocumentsInContext', 'maxKeywordsPerDocument',
 					'stem', 'freq', 'docid', 'findurl', 'finddocid', 'docfreq', 'docinfo',
-					'tf', 'lang']
+					'tf', 'lang', 'data']
 
 	longEqOptions = [x + '=' for x in longOptions]
 	longDashOptions = ["--" + x for x in longOptions]
@@ -183,6 +173,10 @@ if __name__ == '__main__':
 					printJSON(docinfo['id'])
 				else:
 					printJSON(docinfo)
+
+		elif '--data' in opts:
+			print(tempSearch(opts['--data']))
+			# print(opts['--data'])
 				
 
 	except getopt.GetoptError as err:

@@ -8,7 +8,49 @@ from fca_extension.fca_search_engine import FCASearchEngine
 from other.data import getStopWords
 from common.io import readfile
 from common.string import createStem
-from json import dumps
+from json import dumps, loads
+from retrieval.temp_search import TempSearch
+
+def tempSearch(path):
+	content = readfile(path)
+	data = loads(content);
+	options = data.get('options', {})
+	lang = options.get('lang', 'en')
+	tempIndex = TempSearch()
+	index = tempIndex.build(data, getStopWords(lang))
+	res=tempSearchQuery(index, options.get('query', 'lion'), {}, lang)
+	return getJson(res)
+
+def getJson(searchResults, stopwatch = None):
+	gen, sib, spec, meta, spellcheck, lattice = getFcaExt(searchResults)
+	
+	results = searchResults['origin']
+	documents = results['documents']
+	fca = {'gen':gen, 'spec':spec, 'sib':sib}
+	if stopwatch:
+		meta['time'] = stopwatch.total
+	data = {'documents':documents, 'fca': fca, 'meta' : meta, 'spellcheck':spellcheck, 'lattice':lattice}
+	jsonData = dumps(data)
+	return jsonData
+
+def tempSearchQuery(index, query, settings, lang):
+	if not lang:
+		lang = settings.get('lang')
+
+	searchEngine = SearchEngine(index, getStopWords(lang))
+	fca = FCASearchEngine(searchEngine, index, settings)
+	searchResults = fca.search(query, lang)
+	return searchResults
+
+def getFcaExt(searchResults):
+	spec = searchResults['specialization']
+	gen = searchResults['generalization']
+	sib = searchResults['siblings']
+	meta = searchResults['meta']
+	spellcheck = searchResults['suggestions']
+	lattice = searchResults['lattice']
+	
+	return gen, sib, spec, meta, spellcheck, lattice
 
 def searchQuery(databaseName, query, lang, stopwatch = None):
 	index, settings = getIndexAndSettings(databaseName)

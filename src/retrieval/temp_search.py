@@ -13,7 +13,7 @@ class TempSearch:
 		self.maxKeywords = 2
 		self.minKeywords = 1
 
-	def build(self, documents):
+	def build(self, documents, stopwords):
 		infoDtb = {}
 		options = documents.get('options', {})
 		lang = options.get('lang', 'cs')
@@ -22,7 +22,7 @@ class TempSearch:
 		if not documentsData:
 			raise Exception('No documents downloaded')
 
-		indexInfo = toIndex(documentsData, [], self.keylen, lang)
+		indexInfo = toIndex(documentsData, stopwords, self.keylen, lang)
 		self.indexProxy = IndexProxy()
 		self.indexProxy.setIndexInfo(indexInfo)
 		metadata, scoresTable = self.getDocsInfo(indexInfo, lang)
