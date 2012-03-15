@@ -33,17 +33,17 @@ def groupByKeylen(database, keylen):
 	return dic
 
 def getKeywords(documents, index, elapsed, lang):
-		keywords = []
-		for doc in documents:
-			elapsed('getting keywords from ' + doc['url'])
-			distContent = {getstem(x, lang) for x in set(doc['content'])}
-			keyValues = {}
-			for stem in distContent:
-				keyValues[stem] = round(document_score([stem], doc['id'], index, doc['words']), 8)
-				
-			foo = sorted(keyValues.items(), key=lambda x: x[1], reverse = True)
-			keywords.append(foo)
-		return keywords
+	keywords = []
+	for doc in documents:
+		elapsed('getting keywords from ' + doc['url'])
+		distContent = {getstem(x, lang) for x in set(doc['content'])}
+		keyValues = {}
+		for stem in distContent:
+			keyValues[stem] = round(document_score([stem], doc['id'], index, doc['words']), 8)
+			
+		foo = sorted(keyValues.items(), key=lambda x: x[1], reverse = True)
+		keywords.append(foo)
+	return keywords
 
 def toIndex(documents, stopwords, keylen, lang, elapsed = nothing):
 	htmlrem = HTMLRemover()	
