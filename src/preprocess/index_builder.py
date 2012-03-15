@@ -36,7 +36,7 @@ def getKeywords(documents, index, elapsed, lang):
 	keywords = []
 	for doc in documents:
 		elapsed('getting keywords from ' + doc['url'])
-		distContent = {getstem(x, lang) for x in set(doc['content'])}
+		distContent = set(doc['content']) #{getstem(x, lang) for x in set(doc['content'])}
 		keyValues = {}
 		for stem in distContent:
 			keyValues[stem] = round(document_score([stem], doc['id'], index, doc['words']), 8)
