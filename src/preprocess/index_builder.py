@@ -72,8 +72,8 @@ def toIndex(documents, stopwords, keylen, lang, elapsed = nothing):
 
 				if doc['type'] == 'txt':
 					content = doc['content']
-					title = os.path.basename(doc['url'])
-					description = ''
+					title = doc.get('title', os.path.basename(doc['url']))
+					description = doc.get('description', '')
 
 				words = getWordsWithoutStopWords(normalize_text(content), stopwords)
 				allRealWords |= stripAccents(words)
