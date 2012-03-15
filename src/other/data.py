@@ -4,7 +4,7 @@ from common.io import readfile
 _data = {}
 
 def getStopWords(lang):
-	return _cache_result('stopwords', lambda: readfile(DATA_FOLDER + STOPWORDS_NAME + "." + lang + ".txt").split() + list('abcdefghijklmnopqrstuvwxyz'))
+	return _cache_result('stopwords', lambda: set(readfile(DATA_FOLDER + STOPWORDS_NAME + "." + lang + ".txt").split()))
 	
 def _cache_result(key, getValue):
 	try:
