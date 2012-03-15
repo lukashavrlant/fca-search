@@ -227,7 +227,7 @@ class IndexManager:
 		lscores = len(scores)
 
 		cut = int(lscores / 100)
-		cutScores = scores[cut:-cut]
+		cutScores = scores[cut:min(-1, -cut)]
 
 		minScore = cutScores[0]
 		maxScore = cutScores[len(cutScores)-1]
