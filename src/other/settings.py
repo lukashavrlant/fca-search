@@ -3,8 +3,12 @@ import json
 
 class Settings():
 	"""Settings for search engine"""
-	def __init__(self, path):
-		self.loadSettings(path)
+	def __init__(self, path = None):
+		if path:
+			self.loadSettings(path)
+		else:
+			self.text = ''
+			self.settings = {}
 	
 	def loadSettings(self, path):
 		self.text = readfile(path)
