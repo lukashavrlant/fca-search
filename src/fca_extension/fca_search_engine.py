@@ -136,8 +136,10 @@ class FCASearchEngine:
 		
 	def getGeneralization(self, upperN, context, terms, searchConcept, queryStems):
 		upperN = {x.translate(context) for x in upperN}
-		modSuggTerms = set(terms) | searchConcept.translate(context).intentNames
-		
+		# Why set(terms)?
+		# modSuggTerms = set(terms) | searchConcept.translate(context).intentNames 
+		modSuggTerms = searchConcept.translate(context).intentNames
+
 		rankedUpper = [{'rank':len(x.extent), 'words':x} for x in upperN]
 		
 		for item in rankedUpper:
