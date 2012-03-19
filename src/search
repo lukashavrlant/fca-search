@@ -35,6 +35,7 @@ def printSearch(searchResults, stopwatch):
 	gen, sib, spec, meta, sugg, lattice = getFcaExt(searchResults)
 	if stopwatch:
 		meta['time'] = str(round(stopwatch.total, 4))
+	del(meta['context'])
 	
 	print()
 	print('Generalization' + str(gen))
