@@ -45,11 +45,14 @@ class FCASearchEngine:
 		lowerN, upperN = self.getLowerUpper(modContext, modSearchConcept)
 		self.totalConcepts = set(lowerN | upperN)
 
+		jsonContext = modContext.getJSON()
+		jsonContext['attributes'] = [self.index.stem2word(x) for x in jsonContext['attributes']]
+
 		res = {'origin':originResults, 
 				'specialization':self.getSpecialization(lowerN, modContext, terms, modSearchConcept), 
 				'generalization':self.getGeneralization(upperN, modContext, terms, modSearchConcept, queryStems), 
 				'siblings':self.getSiblings(upperN, lowerN, modContext, modSearchConcept, queryStems),
-				'meta' : {'objects' : modContext.height, 'attributes' : modContext.width},
+				'meta' : {'objects' : modContext.height, 'attributes' : modContext.width, 'context':jsonContext},
 				'suggestions' : self.getSuggestions(wordsTerms, len(originResults['documents']))}
 
 		namedLower = self.getNamedIntents(lowerN, modContext)
@@ -58,7 +61,9 @@ class FCASearchEngine:
 		namedSiblings = self.getNamedIntents(self.siblings, modContext)
 		namedTrash = self.getNamedIntents(self.totalConcepts - (upperN | lowerN | self.siblings | {modSearchConcept}), modContext)
 	
-		res['lattice'] = {'lower' : namedLower, 'upper' : namedUpper, 'siblings' : namedSiblings, 'concept' : namedSearchConcept, 'trash' : namedTrash}
+		res['lattice'] = {	'lower' : namedLower, 'upper' : namedUpper, 
+							'siblings' : namedSiblings, 'conceptintent' : namedSearchConcept, 
+							'trash' : namedTrash, 'conceptextent' : list(modSearchConcept.extent)}
 		res['meta'].update({'lower' : len(lowerN), 'upper' : len(upperN), 'neighbor' : len(self.totalConcepts)})
 		return res
 

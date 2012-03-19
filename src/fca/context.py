@@ -36,6 +36,11 @@ class Context:
 			else:
 				M = M - {x}
 		return neighbors
+
+	def getJSON(self):
+		data = {'objects' : self.objects, 'attributes' : self.attributes}
+		data['table'] = [[1 if y else 0 for y in x] for x in self.table]
+		return data
 		
 	def up(self, objects):
 		attr = set(range(self.width))
