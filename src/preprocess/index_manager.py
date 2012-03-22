@@ -232,7 +232,7 @@ class IndexManager:
 		minScore = cutScores[0]
 		maxScore = cutScores[len(cutScores)-1]
 		diff = maxScore - minScore
-		realLimit = (diff / 100) * self.keyScoreLimit
+		realLimit = (diff / 100) * self.keyScoreLimit + minScore
 		return realLimit
 		
 			
