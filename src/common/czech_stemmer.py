@@ -4,6 +4,9 @@ Copyright © 2010 Luís Gomes <luismsgomes@gmail.com>.
 Ported from the Java implementation available at:
     http://members.unine.ch/jacques.savoy/clef/index.html
 
+This code is released under a Creative Commons Attribution 3.0 Unported License:
+    http://creativecommons.org/licenses/by/3.0/
+
 '''
 import re
 import sys
