@@ -90,7 +90,7 @@ if __name__ == '__main__':
 					'minKeywords', 'dynamicKeywords', 'maxKeywords', 
 					'disallowExtensions', 'maxDocumentsInContext', 'maxKeywordsPerDocument',
 					'stem', 'freq', 'docid', 'findurl', 'finddocid', 'docfreq', 'docinfo',
-					'tf', 'lang', 'data']
+					'tf', 'lang', 'tempsearch']
 
 	longEqOptions = [x + '=' for x in longOptions]
 	longDashOptions = ["--" + x for x in longOptions]
@@ -175,8 +175,8 @@ if __name__ == '__main__':
 				else:
 					printJSON(docinfo)
 
-		elif '--data' in opts:
-			print(tempSearch(opts['--data']))
+		elif '--tempsearch' in opts:
+			print(tempSearch(opts['--tempsearch']))
 			# print(opts['--data'])
 				
 
