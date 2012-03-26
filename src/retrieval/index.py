@@ -95,7 +95,6 @@ class Index:
 			self.stemsDict = self.info[STEMSDICT_NAME] 
 
 		return queryStems.get(stem, self.stemsDict.get(stem, stem))
-			
 	
 	def getLinks(self):
 		return [x['url'] for x in self.info[DOCUMENT_INFO_NAME]]
