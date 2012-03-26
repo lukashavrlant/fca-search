@@ -6,6 +6,9 @@ Adapted from pyporter2 by Michael Dirolf.
 This algorithm is more correct but (at least in this implementation)
 several times slower than the original porter algorithm as implemented
 in stemming.porter.
+
+Source: https://bitbucket.org/mchaput/stemming/src
+Licence: Public domain
 """
 
 import re
