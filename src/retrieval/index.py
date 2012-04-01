@@ -53,7 +53,7 @@ class Index:
 			except KeyError:
 				stemObject = Stem()
 			except Exception as err:
-				print(err)
+				stemObject = Stem()
 			return stemObject
 
 	def getTermCountInDoc(self, term, docID):
