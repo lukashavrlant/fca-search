@@ -40,7 +40,21 @@ class FCASearchEngine:
 		modDoc, modTerms = self._getDocsAndTerms(modResult)
 		modContext = getContextFromSR(modDoc, modTerms, self.index.contains_term, self.maxKeywords)		
 		modAttrsID = modContext.attrs2ids(terms)
-		modSearchConcept = self._getSearchConceptByAttr(modContext, modAttrsID)
+		
+
+		originDocumentsID = {x['url'] for x in originResults['documents']}
+		modDocumentsID = {x['url'] for x in modDoc}
+		documentsID = originDocumentsID & modDocumentsID
+		documentsID = modContext.objects2ids(documentsID)
+
+		pq = str(originResults['parsedQuery'])
+		notAndQuery = ' OR ' in pq or 'NOT(' in pq
+		
+		if notAndQuery:
+			modSearchConcept = self.getSearchConceptByObjects(modContext, documentsID)
+		else:
+			modSearchConcept = self._getSearchConceptByAttr(modContext, modAttrsID) 
+		
 
 		lowerN, upperN = self.getLowerUpper(modContext, modSearchConcept)
 		self.totalConcepts = set(lowerN | upperN)
@@ -50,7 +64,7 @@ class FCASearchEngine:
 
 		res = {'origin':originResults, 
 				'specialization':self.getSpecialization(lowerN, modContext, terms, modSearchConcept), 
-				'generalization':self.getGeneralization(upperN, modContext, terms, modSearchConcept, queryStems), 
+				'generalization':self.getGeneralization(upperN, modContext, terms, modSearchConcept, queryStems, notAndQuery), 
 				'siblings':self.getSiblings(upperN, lowerN, modContext, modSearchConcept, queryStems),
 				'meta' : {'objects' : modContext.height, 'attributes' : modContext.width, 'context':jsonContext},
 				'suggestions' : self.getSuggestions(wordsTerms, len(originResults['documents']))}
@@ -125,7 +139,7 @@ class FCASearchEngine:
 		return rankedSpec
 
 	def removeUselessSpec(self, specialization):
-		if len(specialization) == 1:
+		if len(specialization) <= 1:
 			return specialization
 		else:
 			ranks = Counter({x:self.index.totalTermFrequency(x) for x in specialization})
@@ -139,7 +153,9 @@ class FCASearchEngine:
 	def _intents2words(self, concepts):
 		return [{self.index.stem2word(stem) for stem in concept} for concept in concepts]
 		
-	def getGeneralization(self, upperN, context, terms, searchConcept, queryStems):
+	def getGeneralization(self, upperN, context, terms, searchConcept, queryStems, notAndQuery):
+		if notAndQuery:
+			return []
 		upperN = {x.translate(context) for x in upperN}
 		# Why set(terms)?
 		# modSuggTerms = set(terms) | searchConcept.translate(context).intentNames 
@@ -185,6 +201,12 @@ class FCASearchEngine:
 		sConcept = Concept()
 		sConcept.extent = context.down(attributes)
 		sConcept.intent = context.up(sConcept.extent)
+		return sConcept
+
+	def getSearchConceptByObjects(self, context, objects):
+		sConcept = Concept()
+		sConcept.intent = context.up(objects)
+		sConcept.extent = context.down(sConcept.intent)
 		return sConcept
 
 
