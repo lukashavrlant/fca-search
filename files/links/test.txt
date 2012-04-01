@@ -1,1 +1,7 @@
-http://localhost/semantika/navody.html
+http://phoebe.inf.upol.cz/~havrlanl/data/doc-tests/derivace.html
+http://phoebe.inf.upol.cz/~havrlanl/data/doc-tests/mnozinove-operace.html
+http://phoebe.inf.upol.cz/~havrlanl/data/doc-tests/test-odt1.odt
+http://phoebe.inf.upol.cz/~havrlanl/data/doc-tests/test1.pdf
+http://phoebe.inf.upol.cz/~havrlanl/data/doc-tests/test-odt2.odt
+http://phoebe.inf.upol.cz/~havrlanl/data/doc-tests/test2.pdf
+http://phoebe.inf.upol.cz/~havrlanl/data/doc-tests/vektory.html
