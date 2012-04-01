@@ -7,6 +7,8 @@ Ported from the Java implementation available at:
 This code is released under a Creative Commons Attribution 3.0 Unported License:
     http://creativecommons.org/licenses/by/3.0/
 
+Source: http://hlt.di.fct.unl.pt/luis/czech_stemmer/index.html
+
 '''
 import re
 import sys
