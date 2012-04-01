@@ -39,10 +39,12 @@ class FileHandlers:
 			self.cleanTemp()
 	
 	def cleanTemp(self):
-		files = glob(TEMP_FOLDER + "*")
-		for path in files:
-			if os.path.isdir(path):
-				shutil.rmtree(path)
-			else:
-				os.remove(path)
-	
+		try:
+			files = glob(TEMP_FOLDER + "*")
+			for path in files:
+				if os.path.isdir(path):
+					shutil.rmtree(path)
+				else:
+					os.remove(path)
+		except Exception:
+			pass
