@@ -132,6 +132,7 @@ class FCASearchEngine:
 		suggTerms = set(terms) | searchConcept.translate(context).intentNames
 		specialization = [x.intentNames - suggTerms for x in lowerN]
 		specialization = [self.removeUselessSpec(x) for x in specialization]
+		specialization = [x for x in specialization if x]
 		specialization = self._intents2words(specialization)
 		rankedSpec = [{'words':list(x[0]), 'rank':len(x[1].extent)} for x in zip(specialization, lowerN)]
 		rankedSpec = sorted(rankedSpec, key=lambda s: s['rank'], reverse=True)
