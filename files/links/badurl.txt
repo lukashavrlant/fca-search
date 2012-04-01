@@ -1,1 +1,0 @@
-['http://localhost/novinky/www.novinky.cz_domaci_10-clanek.html', 'http://localhost/novinky/www.novinky.cz_domaci_100-clanek.html', 'http://localhost/novinky/www.novinky.cz_domaci_1000-clanek.html']
