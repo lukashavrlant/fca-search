@@ -7,3 +7,4 @@ http://localhost/matweb/tri-dvere
 http://localhost/matweb/trojclenka
 http://localhost/matweb/trojuhelnik
 http://localhost/matweb/uhel
+http://localhost/data/kombinace.html
