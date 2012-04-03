@@ -21,11 +21,11 @@ class IndexManager:
 		self.applySettings(settings)
 		self.shutUp = True
 		
-	def rebuild(self, newLinks, folder, stopwords):
+	def rebuild(self, newLinks, folder, stopwords, lang):
 		index = Index(folder, self.settings)
 		oldLinks = index.getLinks()
 		links = list(set(newLinks) | set(oldLinks))
-		self.build(links, folder, stopwords)
+		self.build(links, folder, stopwords, lang)
 		
 	def build(self, urls, folder, stopwords, lang):
 		"Builds an index in 'folder'"

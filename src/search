@@ -71,12 +71,12 @@ def search(databaseName, query, outFormat, stopwatch, lang):
 		printJson(searchResults, stopwatch)
 
 	
-def rebuildIndex(databaseName, newLinks = []):
+def rebuildIndex(databaseName, lang, newLinks = []):
 	database = DATABASES_FOLDER + databaseName + '/'
 	settings = Settings(database + SETTINGS_FILE)
 	indexManager = IndexManager(settings)
 	indexManager.shutUp = False
-	indexManager.rebuild(newLinks, database, getStopWords())
+	indexManager.rebuild(newLinks, database, getStopWords(lang), lang)
 
 def printJSON(data):
 	print(dumps(data))
@@ -123,14 +123,16 @@ if __name__ == '__main__':
 		
 		# refresh index
 		elif '-r' in opts:
-			rebuildIndex(opts['-r'])
+			lang = opts.get('--lang', 'cs')
+			rebuildIndex(opts['-r'], lang)
 			
 		# add links to index
 		elif '-a' in opts:
 			databaseName = opts['-a']
 			linksSourcePath = opts.get('-p')
 			links = readfile(linksSourcePath).splitlines()
-			rebuildIndex(databaseName, links)
+			lang = opts.get('--lang', 'cs')
+			rebuildIndex(databaseName, lang, links)
 
 		# stemmer
 		elif '--stem' in opts:
