@@ -1,11 +1,11 @@
 import math
-
 from common.string import normalize_text
 from preprocess.words import stemAndRemoveAccents, towords
+
 def inverseDF(term, index):
 	try:
 		arg = index.total_records / index.document_frequency(term)
-		return math.log(arg)
+		return math.log(arg) + 1
 	except ZeroDivisionError:
 		return 0
 
